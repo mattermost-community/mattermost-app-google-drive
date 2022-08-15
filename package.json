@@ -1,0 +1,41 @@
+{
+  "name": "mattermost-app-opsgenie",
+  "version": "0.0.1",
+  "description": "Plugin to connect with the OpsGenine service through the Mattermost platform",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist node_modules",
+    "build": "tsc -p .",
+    "start": "tsc -p . && node dist/index.js",
+    "dev": "ts-node-dev src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/dominion-ancient/mattermost-app-opsgenie.git"
+  },
+  "author": "Santiago Benavides Juan Carlos <santiago.benavides@ancient.mx>",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/dominion-ancient/mattermost-app-opsgenie#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "date-fns": "^2.28.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "morgan": "^1.10.0",
+    "opsgenie-sdk": "^0.5.1",
+    "query-string": "^7.1.1",
+    "request": "^2.88.2",
+    "ts-node": "^10.7.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.182",
+    "@types/body-parser": "^1.19.2",
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^17.0.31",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.4"
+  }
+}
