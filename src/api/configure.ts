@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import {
     CallResponseHandler,
-    newErrorCallResponseWithMessage,
     newFormCallResponse,
+    newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
 import { AppCallResponse } from '../types';
-import { googleClientConfigForm } from '../forms/configure-google-client';
+import { googleClientConfigForm, googleClientConfigFormSubmit } from '../forms/configure-google-client';
+import { showMessageToMattermost } from '../utils/utils';
 
 export const configureGoogleClient: CallResponseHandler = async (req: Request, res: Response) => {
     let callResponse: AppCallResponse;
@@ -14,7 +15,19 @@ export const configureGoogleClient: CallResponseHandler = async (req: Request, r
         const form = await googleClientConfigForm(req.body);
         callResponse = newFormCallResponse(form);
     } catch (error: any) {
-        callResponse = newErrorCallResponseWithMessage('Unable to open configuration form: ' + error.message);
+        callResponse = showMessageToMattermost(error);
+    }
+    res.json(callResponse);
+};
+
+export const configureGoogleClientSubmit: CallResponseHandler = async (req: Request, res: Response) => {
+    let callResponse: AppCallResponse;
+
+    try {
+        await googleClientConfigFormSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown('Successfully updated Google Client configuration!');
+    } catch (error: any) {
+        callResponse = showMessageToMattermost(error);
     }
     res.json(callResponse);
 };

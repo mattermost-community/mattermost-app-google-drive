@@ -1,5 +1,6 @@
 import {
     AppCallRequest,
+    AppCallValues,
     AppForm,
     KVStoreOptions,
     KVStoreProps,
@@ -61,3 +62,23 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     return form;
 }
 
+export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<void> {
+    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+    const botAccessToken: string | undefined = call.context.bot_access_token;
+    const values: AppCallValues = <any>call.values;
+
+    const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
+    const gClientSecret: string = values[ConfigureClientForm.CLIENT_SECRET];
+
+    const options: KVStoreOptions = {
+        mattermostUrl: <string>mattermostUrl,
+        accessToken: <string>botAccessToken,
+    };
+    const kvStoreClient = new KVStoreClient(options);
+
+    const config: KVStoreProps = {
+        google_drive_client_id: gClientID,
+        google_drive_client_secret: gClientSecret
+    };
+    await kvStoreClient.kvSet(StoreKeys.config, config);
+}

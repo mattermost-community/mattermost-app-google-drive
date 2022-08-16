@@ -15,6 +15,7 @@ router.post(Routes.App.CallPathHelp, cHelp.getHelp);
 
 // Configure Google Client
 router.post(Routes.App.CallPathConfigForm, cConfigure.configureGoogleClient);
+router.post(Routes.App.CallPathConfigSubmit, cConfigure.configureGoogleClientSubmit);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));
