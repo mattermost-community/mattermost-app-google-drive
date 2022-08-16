@@ -1,1 +1,36 @@
-{}
+{
+   "app_id": "GoogleDrive",
+   "version": "v1.0.0",
+   "homepage_url": "https://github.com/development-ancient/mattermost-business-apps",
+   "display_name": "Google Drive",
+   "description": "Google Drive App for Mattermost",
+   "icon": "google.png",
+   "on_install": {
+      "expand": {
+         "app": "all",
+         "acting_user_access_token": "all"
+      },
+      "path": "/install"
+   },
+   "bindings": {
+      "path": "/bindings",
+      "expand": {
+         "acting_user": "all",
+         "oauth2_app": "all",
+         "oauth2_user": "all"
+      }
+   },
+   "requested_permissions": [
+      "act_as_bot",
+      "act_as_user",
+      "remote_webhooks",
+      "remote_oauth2"
+   ],
+   "requested_locations": [
+      "/command",
+      "/channel_header"
+   ],
+   "http": {
+      "root_url": ""
+   }
+}
