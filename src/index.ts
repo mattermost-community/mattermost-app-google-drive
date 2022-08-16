@@ -15,3 +15,4 @@ app.use('/', apiRoutes);
 
 const port: number = config.APP.PORT;
 app.listen(port, () => console.log('Listening on ' + port));
+
