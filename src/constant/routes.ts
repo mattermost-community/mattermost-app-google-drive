@@ -10,6 +10,9 @@ const AppPaths = {
     BindingsPath: '/bindings',
     InstallPath: '/install',
     CallPathHelp: '/help',
+
+    CallPathConfigForm: '/config/form',
+    CallPathConfigSubmit: '/config/form/submit',
 }
 
 const GooglePaths = {
