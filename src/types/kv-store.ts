@@ -4,5 +4,5 @@ export interface KVStoreOptions {
 }
 
 export interface ConfigStoreProps {
-   opsgenie_apikey: string;
+   
 }

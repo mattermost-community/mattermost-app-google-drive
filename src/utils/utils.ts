@@ -1,7 +1,6 @@
 import GeneralConstants from '../constant/general';
-import { AppActingUser, AppCallResponse, ConfigStoreProps } from '../types';
-import { ExceptionType, Routes, StoreKeys} from '../constant';
-import { KVStoreClient } from "../clients/kvstore";
+import { AppActingUser, AppCallResponse } from '../types';
+import { ExceptionType } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
 import config from '../config';
@@ -16,12 +15,6 @@ export function isConfigured(oauth2: any): boolean {
 
 export function isUserSystemAdmin(actingUser: AppActingUser): boolean {
     return Boolean(actingUser.roles && actingUser.roles.includes(GeneralConstants.SYSTEM_ADMIN_ROLE));
-}
-
-export async function existsKvOpsGenieConfig(kvClient: KVStoreClient): Promise<boolean> {
-    const opsGenieConfig: ConfigStoreProps = await kvClient.kvGet(StoreKeys.config);
-
-    return Boolean(Object.keys(opsGenieConfig).length);
 }
 
 export function isConnected(oauth2user: any): boolean {

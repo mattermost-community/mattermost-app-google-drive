@@ -44,7 +44,6 @@ export type BindingOptions = {
     isSystemAdmin: boolean,
     isConfigured: boolean,
     isConnected: boolean
-    opsGenieUserRole: any,
     mattermostSiteUrl: string
 }
 

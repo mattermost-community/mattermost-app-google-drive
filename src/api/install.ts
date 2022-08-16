@@ -30,6 +30,6 @@ export const getInstall = async (request: Request, response: Response) => {
 function getCommands(): string {
     const homepageUrl: string = manifest.homepage_url;
     return `${joinLines(
-        `To finish configuring the Opsgenie app please read the [Quick Start](${homepageUrl}#quick-start) section of the README`
+        `To finish configuring the Google Drive app please read the [Quick Start](${homepageUrl}#quick-start) section of the README`
     )}\n`;
 }

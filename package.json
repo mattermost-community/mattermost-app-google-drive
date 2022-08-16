@@ -24,7 +24,6 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "morgan": "^1.10.0",
-    "opsgenie-sdk": "^0.5.1",
     "query-string": "^7.1.1",
     "request": "^2.88.2",
     "ts-node": "^10.9.1"
