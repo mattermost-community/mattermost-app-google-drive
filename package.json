@@ -16,7 +16,7 @@
   },
   "author": "Lizeth García Segura <lizeth.garcia@ancient.mx>",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/dominion-ancient/mattermost-business-apps#readme",
+  "homepage": "https://github.com/development-ancient/mattermost-business-apps#readme",
   "dependencies": {
     "axios": "^0.27.2",
     "body-parser": "^1.20.0",
