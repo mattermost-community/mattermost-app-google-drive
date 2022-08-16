@@ -1,7 +1,11 @@
 import { KVStoreClient } from "../clients";
 import { AppBindingLocations, Commands, CommandTrigger, GoogleDriveIcon } from "../constant";
 import { AppBinding, AppCallRequest, AppsState, KVStoreOptions } from "../types";
-import { getConfigureBinding, getHelpBinding } from "./bindings";
+import { 
+   getConfigureBinding, 
+   getConnectBinding, 
+   getHelpBinding
+ } from "./bindings";
 
 const newCommandBindings = (bindings: AppBinding[], commands: string[]): AppsState => {
    return {
@@ -32,10 +36,12 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
    const commands: string[] = [
       Commands.HELP,
       Commands.CONFIGURE,
+      Commands.CONNECT,
    ];
 
    bindings.push(getHelpBinding());
-   bindings.push(getConfigureBinding())
+   bindings.push(getConfigureBinding());
+   bindings.push(getConnectBinding());
    
    return newCommandBindings(bindings, commands);
 };

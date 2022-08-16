@@ -13,6 +13,9 @@ const AppPaths = {
 
     CallPathConfigForm: '/config/form',
     CallPathConfigSubmit: '/config/form/submit',
+
+    CallPathConnectSubmit: '/connect/login/submit',
+    OAuthConnectPath: '/oauth2/connect',
 }
 
 const GooglePaths = {
