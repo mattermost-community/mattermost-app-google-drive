@@ -44,3 +44,22 @@ export const getConfigureBinding = (): any => {
       }
    }
 };
+
+export const getConnectBinding = (): any => {
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.CONNECT,
+      description: 'Connect your Google account',
+      form: {
+         title: "Google account login",
+         icon: GoogleDriveIcon,
+         submit: {
+            path: Routes.App.CallPathConnectSubmit,
+            expand: {
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            }
+         }
+      }
+   }
+};

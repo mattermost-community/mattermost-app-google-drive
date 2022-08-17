@@ -6,6 +6,7 @@ export default {
         HOST: process.env.HOST || 'https://799a-201-160-205-66.ngrok.io'
     },
     GOOGLE: {
-        URL: ''
+        URL: 'https://www.googleapis.com',
+        SCOPES: 'https://www.googleapis.com/auth'
     }
 }
