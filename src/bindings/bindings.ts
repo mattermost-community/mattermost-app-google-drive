@@ -21,3 +21,26 @@ export const getHelpBinding = (): any => {
       }
    };
 };
+
+export const getConfigureBinding = (): any => {
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.CONFIGURE,
+      description: 'Setup Google Client',
+      form: {
+         title: "Setup Google Client",
+         icon: GoogleDriveIcon,
+         submit: {
+            path: Routes.App.CallPathConfigForm,
+            expand: {
+               admin_access_token: AppExpandLevels.EXPAND_SUMMARY,
+               acting_user: AppExpandLevels.EXPAND_SUMMARY,
+               acting_user_access_token: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+               app: AppExpandLevels.EXPAND_SUMMARY,
+            }
+         }
+      }
+   }
+};
