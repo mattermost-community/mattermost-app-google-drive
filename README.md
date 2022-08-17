@@ -1,4 +1,4 @@
-# Mattermost/OpsGenie Integration
+# Mattermost/Google Drive Integration
 
 * [Feature summary](#feature-summary)
 * [Setting up](#setting-up)
@@ -6,19 +6,41 @@
     * [Configuration](#configuration)
 * [Admin guide](#admin-guide)
     * [Slash commands](#slash-commands)
+    * [Channel header bindings](#channel-header-bindings)
 * [End user guide](#end-user-guide)
     * [Getting started](#getting-started)
-    * [Using /opsgenie commands](#using-genie-commands)
+    * [Using /google commands](#using-google-commands)
 * [Development](#development)
     * [Manual installation](#manual-installation)
     * [Running the local development environment](#running-the-local-development-environment)
     * [Running the local development environment with docker](#running-the-local-development-environment-with-docker)
 
-This application allows you to integrate OpsGenie to your Mattermost instance, letting you know when a new alert is created, as well as getting notified about alert updates. Also, allows the user to create new alerts, add notes to alerts, close alerts, assign alerts, etc. without moving from the Mattermost window.
+This application allows you to integrate Google Drive to your Mattermost instance, letting you:
+- Share a Google Drive link
+- Connect your Google Drive account
+
+### Use Google Drive in Mattermost
+- Create a Google Drive file
+- Share a Google Drive file
+- View and reply to comments
+
+### Manage Google Drive notifications
+- Enable or disable notifications for all files
+
 
 # Feature summary
 
-**OpsGenie to Mattermost notifications:** Link your Mattermost channels with the OpsGenie Teams you want to see, so you and your team can get notifications about the creation and updates of each alert.
+This application allows you to integrate Google Drive to your Mattermost instance, letting you:
+- Share a Google Drive link
+- Connect your Google Drive account
+
+**Use Google Drive in Mattermost**
+- Create a Google Drive file
+- Share a Google Drive file
+- View and reply to comments
+
+**Manage Google Drive notifications**
+- Enable or disable notifications for all files
 
 # Setting up
 
@@ -26,40 +48,27 @@ This application allows you to integrate OpsGenie to your Mattermost instance, l
 
 This plugin requires that your Mattermost workspace has the ``/apps install`` command enabled.
 
-To install, as a super admin user role, execute command /apps install http OPSGENIE_API_URL in any channel. /genie command should be available after the configuration has been successfully installed. OPSGENIE_API_URL should be replaced with the URL where the OpsGenie API instance is running. Example: /apps install http https://mattermost-opsgenie-dev.ancient.mx/manifest.json
+To install, as a super admin user role, execute command ``/apps install http GOOGLE_API_URL`` in any channel. ``/google`` command should be available after the configuration has been successfully installed. GOOGLE_API_URL should be replaced with the URL where the Google Drive API instance is running. Example: ``/apps install http https://mattermost-bussiness-dev.ancient.mx/manifest.json``
 
 ## Configuration
 
-Configuration Step 1: Firstly, you need to install the app in your current Mattermost instance (refer to Installation), the /genie command should be available.
-Step 2: Configure OpsGenie Api-Key As a super admin role user, execute /genie configure command, which will open a modal were the API key will be asked (https://example.app.opsgenie.com/settings/integration/edit/API/[id]). To be able to obtain the OpsGenie Api-Key first you have to add an api integration to your OpsGenie account, you can create the integration going to the settings/integrations tab and clicking the “Add Integration” button. Once inside the “Add Integration” menu, select the “API” option. To finish the api integration setup you just need to click the “Save Integration” button
+**Step 1:** Firstly, you need to install the app in your current Mattermost instance (refer to Installation), the ``/google`` command should be available.
+
 
 # Admin guide
 
 ## Slash commands
 
-/pd configure: This command will enable all the other commands; it asks the administrator for an API key (which will be used to execute calls to OpsGenie’s API)
+## Channel header bindings
 
 # End user guide
 
 ## Getting started
 
-## Using /genie commands
+## Using /google commands
 
-- /pd help: This command will show all current commands available for this application.
-- /pd alert create: Allow any user to create a new alert.
-- /pd alert note: Adds a note to an existing alert.
-- /pd alert close: Closes an existing alert.
-- /pd alert ack: Acknowledge an existing alert.
-- /pd alert unack: UnAcknowledge an existing alert.
-- /pd alert snooze: Snooze an existing alert for a period of time.
-- /pd alert assign: Assign an existing to a mattermost team member.
-- /pd alert own: Take ownership of an existing alert (assign alert to yourself).
-- /pd alert priority: Set the priority of an existing alert.
-- /pd list alert: Get a list of the existing alerts.
-- /pd list team: Get a list of the existing teams.
-- /pd subscription add: Creates a new subscription for notifications: choose a team and a channel and get notified of the updates in that team. You can subscribe more than one team per channel.
-- /pd subscription list: Show the list of all subscriptions made in all of your channels.
-- /pd subscription remove: Will allow you to remove a subscription. No more notifications from that team will be received.
+- ``/google help``: This command will show all current commands available for this application.
+
 
 # Development
 
@@ -83,9 +92,9 @@ $ npm install
 ```
 file: .env
 
-PROJECT=mattermost-opsgenie-app
-PORT=4002
-HOST=https://mattermost-opsgenie-dev.ancient.mx
+PROJECT=mattermost-business-apps
+PORT=4005
+HOST=https://mattermost-bussiness-dev.ancient.mx
 ```
 
 Variable definition
@@ -94,7 +103,7 @@ PROJECT: in case of executing the project with docker using the .build.sh this v
 
 PORT: port number on which the opsgenie integration is listening
 
-HOST: OpsGenie api usage url
+HOST: Google Drive api usage url
 
 * Finally, the project must be executed.
 
@@ -116,5 +125,5 @@ https://docs.docker.com/desktop/windows/install/ - Windows
 $ ./build
 ```
 
-When the container is created correctly, the api will be running at the url http://127.0.0.1:4002
+When the container is created correctly, the api will be running at the url http://127.0.0.1:4005
 in such a way that the installation can be carried out in Mattermost.

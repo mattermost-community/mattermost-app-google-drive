@@ -6,6 +6,11 @@
 # Node artifact files
 node_modules/
 dist/
+.idea
+/node_modules/
+/dist/
+/.idea/
+
 
 # Compiled Java class files
 *.class
