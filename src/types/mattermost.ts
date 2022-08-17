@@ -123,6 +123,7 @@ export type Attachment = {
 export type PostCreate = {
     channel_id: string;
     message: string;
+    user_id?: string;
     root_id?: string;
     file_ids?: string[];
     props?: {
