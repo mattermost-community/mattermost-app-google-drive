@@ -53,6 +53,16 @@ To install, as a super admin user role, execute command ``/apps install http GOO
 ## Configuration
 
 **Step 1:** Firstly, you need to install the app in your current Mattermost instance (refer to Installation), the ``/google`` command should be available.
+**Step 2:** Go to [Google Cloud Dashboard](https://console.cloud.google.com/home/dashboard) and create a new project.
+**Step 3:** After creating a project click on `Go to APIs overview` card from the dashboard which will take you to the API dashboard.
+**Step 4:** From the left menu select `Library` and activate the Google Calendar API.
+**Step 5:** From the left menu select `Domain verification` and verify the domain of your Mattermost installation.
+**Step 6:** From the left menu select `Credentials`.
+**Step 7:** Now click on `Create Credentials` dropdown and select `OAuth client ID` option.
+**Step 8:** While creating the Oauth credentials, enter the values of `Authorized Javascript Origins` as `<Mattermost server URL>` and the value of `Authorised redirect URIs` as `<Mattermost server URL>/plugins/com.mattermost.google-calendar/oauth/complete`.
+**Step 9:** After creating the Oauth client, copy the Client ID and secret.
+**Step 10:** Upload the plugin to Mattermost and go to `Google Calendar Plugin settings`. Paste the client id and secret.
+**Step 11:** Enable the plugin and you should be able to see event reminder notifications.
 
 
 # Admin guide

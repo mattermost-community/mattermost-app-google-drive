@@ -1,7 +1,7 @@
 {
    "app_id": "GoogleDrive",
    "version": "v1.0.0",
-   "homepage_url": "https://github.com/development-ancient/mattermost-business-apps",
+   "homepage_url": "https://bitbucket.org/dominion-ancient/mattermost-business-apps/src/master/README.md",
    "display_name": "Google Drive",
    "description": "Google Drive App for Mattermost",
    "icon": "google.png",
