@@ -2,11 +2,11 @@ import {
     AppCallRequest, 
     AppCallValues, 
     Channel, 
-    GoogleToken, 
     GoogleTokenResponse, 
     KVStoreOptions, 
     KVStoreProps,
     MattermostOptions,
+    Oauth2App,
     Oauth2CurrentUser,
     PostCreate,
 } from '../types';
@@ -14,7 +14,18 @@ import { KVStoreClient } from '../clients/kvstore';
 import { StoreKeys } from '../constant';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
 import { MattermostClient } from '../clients';
+import { isConnected } from '../utils/utils';
+import { hyperlink } from '../utils/markdown';
 const { google } = require('googleapis');
+
+export async function getConnectLink(call: AppCallRequest): Promise<string> {
+    const connectUrl: string | undefined = call.context.oauth2?.connect_url;
+    const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
+    const message: string = isConnected(oauth2?.user)
+        ? `You are already logged into Google`
+        : `Follow this ${hyperlink('link', <string>connectUrl)} to connect Mattermost to your Google Account.`;
+    return message;
+}
 
 export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
