@@ -21,6 +21,7 @@ router.post(Routes.App.CallPathConfigSubmit, cConfigure.configureGoogleClientSub
 // Connect User's Google account
 router.post(`${Routes.App.CallPathConnectSubmit}`, cConnect.getConnectGoogleURL);
 router.post(`${Routes.App.OAuthConnectPath}`, cConnect.fOauth2Connect);
+router.post(`${Routes.App.OAuthCompletePath}`, cConnect.fOauth2Complete);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));

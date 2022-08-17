@@ -1,3 +1,4 @@
+import { GoogleToken } from "./google";
 import { UserProfile } from "./mattermost";
 
 export type AppManifest = {
@@ -51,8 +52,8 @@ export type AppCallValues = {
 export type AppCallType = string;
 
 export type Oauth2CurrentUser = {
-    token: string;
-    user: {
+    token: GoogleToken,
+    user?: {
         id: string;
         name: string;
         email: string;
