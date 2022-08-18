@@ -17,6 +17,7 @@ const AppPaths = {
     CallPathConnectSubmit: '/connect/login/submit',
     OAuthConnectPath: '/oauth2/connect',
     OAuthCompletePath: '/oauth2/complete',
+    CallPathDisconnectSubmit: '/connect/disconnect/submit',
 }
 
 const GooglePaths = {
