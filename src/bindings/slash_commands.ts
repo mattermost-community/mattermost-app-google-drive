@@ -4,6 +4,7 @@ import { AppBinding, AppCallRequest, AppsState, KVStoreOptions } from "../types"
 import { 
    getConfigureBinding, 
    getConnectBinding, 
+   getDisconnectBinding, 
    getHelpBinding
  } from "./bindings";
 
@@ -37,11 +38,13 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
       Commands.HELP,
       Commands.CONFIGURE,
       Commands.CONNECT,
+      Commands.DISCONNECT
    ];
 
    bindings.push(getHelpBinding());
    bindings.push(getConfigureBinding());
    bindings.push(getConnectBinding());
+   bindings.push(getDisconnectBinding());
    
    return newCommandBindings(bindings, commands);
 };

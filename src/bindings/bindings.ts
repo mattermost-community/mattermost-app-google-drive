@@ -63,3 +63,23 @@ export const getConnectBinding = (): any => {
       }
    }
 };
+
+export const getDisconnectBinding = (): any => {
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.DISCONNECT,
+      description: 'Disconnect from your Google account',
+      form: {
+         title: "Account disconnect",
+         icon: GoogleDriveIcon,
+         submit: {
+            path: Routes.App.CallPathDisconnectSubmit,
+            expand: {
+               acting_user_access_token: AppExpandLevels.EXPAND_ALL,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
+            }
+         }
+      }
+   }
+};

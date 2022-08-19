@@ -18,7 +18,7 @@ export function isUserSystemAdmin(actingUser: AppActingUser): boolean {
 }
 
 export function isConnected(oauth2user: any): boolean {
-    return !!oauth2user?.token?.access_token;
+    return !!oauth2user?.user?.token?.access_token;
 }
 
 export function errorDataMessage(error: Exception | Error | any): string {
