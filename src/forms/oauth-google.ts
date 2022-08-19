@@ -1,23 +1,19 @@
 import {
     AppCallRequest, 
     AppCallValues, 
-    Channel, 
     GoogleTokenResponse, 
     KVStoreOptions, 
-    KVStoreProps,
-    MattermostOptions,
     Oauth2App,
     Oauth2CurrentUser,
-    PostCreate,
 } from '../types';
 import { KVStoreClient } from '../clients/kvstore';
-import { ExceptionType, StoreKeys } from '../constant';
+import { ExceptionType } from '../constant';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
-import { MattermostClient } from '../clients';
 import { isConnected } from '../utils/utils';
 import { hyperlink } from '../utils/markdown';
 import { Exception } from '../utils/exception';
 import { postBotChannel } from '../utils/post-in-channel';
+import { getOAuthGoogleClient } from '../utils/google-client';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {
@@ -43,12 +39,12 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
 
     return oAuth2Client.generateAuthUrl({
         scope: scopes,
-        state: state
+        state: state,
+        access_type: 'offline'
     });
 }
 
 export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
     const accessToken: string | undefined = call.context.acting_user_access_token;
     const values: AppCallValues | undefined = call.values;
@@ -57,11 +53,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         throw new Error(values?.error_description || 'Bad Request: code param not provided');
     }
 
-    const oAuth2Client = new google.auth.OAuth2(
-        oauth2App.client_id,
-        oauth2App.client_secret,
-        oauth2App.complete_url
-    );
+    const oAuth2Client = await getOAuthGoogleClient(call);
 
     const tokenBody: GoogleTokenResponse = await oAuth2Client.getToken(values?.code);
    
