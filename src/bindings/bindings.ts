@@ -103,13 +103,13 @@ export const getNotificationBinding = (): any => {
 export const getNotificationStartBinding = (): any => {
    return {
       icon: GoogleDriveIcon,
-      label: Commands.CONNECT,
-      description: 'Connect your Google account',
+      label: Commands.START,
+      description: 'Start getting notified about Google Drive comments',
       form: {
-         title: "Google account login",
+         title: "Start notifications",
          icon: GoogleDriveIcon,
          submit: {
-            path: Routes.App.CallPathConnectSubmit,
+            path: Routes.App.CallPathStartNotifications,
             expand: {
                oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
                oauth2_user: AppExpandLevels.EXPAND_SUMMARY
@@ -122,13 +122,13 @@ export const getNotificationStartBinding = (): any => {
 export const getNotificationStopBinding = (): any => {
    return {
       icon: GoogleDriveIcon,
-      label: Commands.CONNECT,
-      description: 'Connect your Google account',
+      label: Commands.STOP,
+      description: 'Stop getting notified about Google Drive comments',
       form: {
-         title: "Google account login",
+         title: "Stop notifications",
          icon: GoogleDriveIcon,
          submit: {
-            path: Routes.App.CallPathConnectSubmit,
+            path: Routes.App.CallPathStopNotifications,
             expand: {
                oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
                oauth2_user: AppExpandLevels.EXPAND_SUMMARY

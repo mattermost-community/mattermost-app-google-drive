@@ -6,6 +6,7 @@ import * as cInstall from './install';
 import * as cHelp from './help';
 import * as cConfigure from './configure';
 import * as cConnect from './connect';
+import * as cNotifications from './notification';
 
 const router: Router = express.Router();
 
@@ -24,6 +25,10 @@ router.post(`${Routes.App.CallPathConnectSubmit}`, cConnect.getConnectGoogleURL)
 router.post(`${Routes.App.OAuthConnectPath}`, cConnect.fOauth2Connect);
 router.post(`${Routes.App.OAuthCompletePath}`, cConnect.fOauth2Complete);
 router.post(`${Routes.App.CallPathDisconnectSubmit}`, cConnect.doDisconnectGoogle);
+
+// Stop or start Google's notifications
+router.post(`${Routes.App.CallPathStartNotifications}`, cNotifications.startGoogleNotifications);
+router.post(`${Routes.App.CallPathStopNotifications}`, cNotifications.stopGoogleNotifications);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));
