@@ -4,6 +4,7 @@ import {
    Commands, 
    Routes,
 } from "../constant";
+import { AppBinding } from "../types";
 
 export const getHelpBinding = (): any => {
    return {
@@ -74,6 +75,63 @@ export const getDisconnectBinding = (): any => {
                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
                oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
                oauth2_app: AppExpandLevels.EXPAND_SUMMARY
+            }
+         }
+      }
+   }
+};
+
+export const getNotificationBinding = (): any => {
+   const subCommands: string[] = [
+      Commands.START,
+      Commands.STOP
+   ];
+
+   const bindings: AppBinding[] = [];
+   bindings.push(getNotificationStartBinding());
+   bindings.push(getNotificationStopBinding());
+
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.NOTIFICATION,
+      description: 'Stop or start getting notifications about comments',
+      hint: `[${subCommands.join(' | ')}]`,
+      bindings
+   }
+};
+
+export const getNotificationStartBinding = (): any => {
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.CONNECT,
+      description: 'Connect your Google account',
+      form: {
+         title: "Google account login",
+         icon: GoogleDriveIcon,
+         submit: {
+            path: Routes.App.CallPathConnectSubmit,
+            expand: {
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            }
+         }
+      }
+   }
+};
+
+export const getNotificationStopBinding = (): any => {
+   return {
+      icon: GoogleDriveIcon,
+      label: Commands.CONNECT,
+      description: 'Connect your Google account',
+      form: {
+         title: "Google account login",
+         icon: GoogleDriveIcon,
+         submit: {
+            path: Routes.App.CallPathConnectSubmit,
+            expand: {
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
             }
          }
       }
