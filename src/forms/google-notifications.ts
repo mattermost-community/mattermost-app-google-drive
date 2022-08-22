@@ -11,7 +11,8 @@ import { GoogleKindsAPI } from "../constant/google-kinds";
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const accessToken: string | undefined = call.context.acting_user_access_token;
-   const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
+   const oauth2Token: GoogleToken | undefined = call.context.oauth2?.user?.token as GoogleToken;
+   console.log(oauth2Token);
 
    const oauth2Client = getOAuthGoogleClient(call);
 
