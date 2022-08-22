@@ -7,6 +7,6 @@ export * from './general';
 export * from './routes';
 export * from './store-key';
 
-export const GoogleDriveIcon = 'google.png';
-export const CommandTrigger = 'google';
+export const GoogleDriveIcon = 'drive.png';
+export const CommandTrigger = 'drive';
 
