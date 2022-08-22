@@ -23,6 +23,7 @@ This application allows you to integrate Google Drive to your Mattermost instanc
 - Create a Google Drive file
 - Share a Google Drive file
 - View and reply to comments
+- Publish on Google Drive any file attached to a Mattermost post
 
 ### Manage Google Drive notifications
 - Enable or disable notifications for all files
@@ -44,6 +45,8 @@ This application allows you to integrate Google Drive to your Mattermost instanc
 
 - View and reply to comments
 
+- Publish on Google Drive any file attached to a Mattermost post
+
 **Manage Google Drive notifications**
 
 - Enable or disable notifications for all files
@@ -64,21 +67,18 @@ To install, as a super admin user role, execute command ``/apps install http GOO
 
 **Step 3:** After creating a project click on `Go to APIs overview` card from the dashboard which will take you to the API dashboard.
 
-**Step 4:** From the left menu select `Library` and activate the Google Calendar API.
+**Step 4:** From the left menu select `Library` and activate the Google Drive API, Google Docs API, Google Sheets API and Google Slides API.
 
-**Step 5:** From the left menu select `Domain verification` and verify the domain of your Mattermost installation.
+**Step 5:** From the left menu select `Credentials`.
 
-**Step 6:** From the left menu select `Credentials`.
+**Step 6:** Now click on `Create Credentials` dropdown and select `OAuth client ID` option.
 
-**Step 7:** Now click on `Create Credentials` dropdown and select `OAuth client ID` option.
+**Step 7:** While creating the Oauth credentials, enter the values of `Authorized Javascript Origins` as `<Mattermost server URL>` and the value of `Authorised redirect URIs` as `<Mattermost server URL>/plugins/com.mattermost.apps/apps/GoogleDrive/oauth2/remote/complete?state=<state>`.
 
-**Step 8:** While creating the Oauth credentials, enter the values of `Authorized Javascript Origins` as `<Mattermost server URL>` and the value of `Authorised redirect URIs` as `<Mattermost server URL>/plugins/com.mattermost.google-calendar/oauth/complete`.
+**Step 8:** After creating the Oauth client, copy the Client ID and secret.
 
-**Step 9:** After creating the Oauth client, copy the Client ID and secret.
+**Step 9:** Go back to Mattermost and execute ``/drive configure``. Paste the client id and secret in the modal.
 
-**Step 10:** Upload the plugin to Mattermost and go to `Google Calendar Plugin settings`. Paste the client id and secret.
-
-**Step 11:** Enable the plugin and you should be able to see event reminder notifications.
 
 # Admin guide
 
