@@ -1,9 +1,10 @@
 import GeneralConstants from '../constant/general';
-import { AppActingUser, AppCallResponse } from '../types';
-import { ExceptionType } from '../constant';
+import { AppActingUser, AppCallResponse, KVStoreProps } from '../types';
+import { ExceptionType, StoreKeys } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
 import config from '../config';
+import { KVStoreClient } from '../clients';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);
@@ -15,6 +16,11 @@ export function isConfigured(oauth2: any): boolean {
 
 export function isUserSystemAdmin(actingUser: AppActingUser): boolean {
     return Boolean(actingUser.roles && actingUser.roles.includes(GeneralConstants.SYSTEM_ADMIN_ROLE));
+}
+
+export async function existsKvGoogleClientConfig(kvClient: KVStoreClient): Promise<boolean> {
+    const pdConfig: KVStoreProps = await kvClient.kvGet(StoreKeys.config);
+    return Boolean(Object.keys(pdConfig).length);
 }
 
 export function isConnected(oauth2user: any): boolean {
