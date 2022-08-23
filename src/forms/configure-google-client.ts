@@ -16,8 +16,7 @@ import {
     GoogleDriveIcon, 
     modeConfiguration, 
     optConfigure, 
-    Routes, 
-    StoreKeys 
+    Routes
 } from '../constant';
 import { 
     KVStoreClient, 
@@ -55,6 +54,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             },
             {
                 type: AppFieldTypes.TEXT,
+                subtype: AppFieldSubTypes.PASSWORD,
                 name: ConfigureClientForm.CLIENT_SECRET,
                 modal_label: 'Client Secret',
                 value: clientSecret,
@@ -89,6 +89,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         case optConfigure.fAPIKey:
             extraField = {
                 type: AppFieldTypes.TEXT,
+                subtype: AppFieldSubTypes.PASSWORD,
                 name: ConfigureClientForm.API_KEY,
                 modal_label: 'API Key',
                 value: apiKey,

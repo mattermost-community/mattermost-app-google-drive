@@ -1,5 +1,5 @@
 import GeneralConstants from '../constant/general';
-import { AppActingUser, AppCallResponse, KVStoreProps } from '../types';
+import { AppActingUser, AppCallResponse, KVStoreProps, Oauth2App } from '../types';
 import { ExceptionType, StoreKeys } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
@@ -18,12 +18,11 @@ export function isUserSystemAdmin(actingUser: AppActingUser): boolean {
     return Boolean(actingUser.roles && actingUser.roles.includes(GeneralConstants.SYSTEM_ADMIN_ROLE));
 }
 
-export async function existsKvGoogleClientConfig(kvClient: KVStoreClient): Promise<boolean> {
-    const pdConfig: KVStoreProps = await kvClient.kvGet(StoreKeys.config);
-    return Boolean(Object.keys(pdConfig).length);
+export async function existsOauth2AppConfig(oauth2App: Oauth2App): Promise<boolean> {
+    return !!oauth2App.client_id && !!oauth2App.client_secret;
 }
 
-export function isConnected(oauth2user: any): boolean {
+export function isConnected(oauth2user: Oauth2App): boolean {
     return !!oauth2user?.user?.token?.access_token;
 }
 

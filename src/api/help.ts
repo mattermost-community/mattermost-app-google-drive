@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
-import { AppActingUser, AppCallRequest, AppCallResponse, ExpandedBotActingUser, KVStoreOptions } from '../types';
+import { AppActingUser, AppCallRequest, AppCallResponse, ExpandedBotActingUser, Oauth2App } from '../types';
 import { addBulletSlashCommand, h5, joinLines } from '../utils/markdown';
 import { Commands, CommandsDescriptions } from '../constant';
-import { existsKvGoogleClientConfig, isUserSystemAdmin } from '../utils/utils';
-import { KVStoreClient } from '../clients';
+import { existsOauth2AppConfig, isUserSystemAdmin } from '../utils/utils';
 
 export const getHelp = async (request: Request, response: Response) => {
     const helpText: string = [
@@ -20,17 +19,10 @@ function getHeader(): string {
 }
 
 async function getCommands(call: AppCallRequest): Promise<string> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
     const context = call.context as ExpandedBotActingUser;
     const actingUser: AppActingUser | undefined = context.acting_user;
+    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
     const commands: string[] = [];
-
-    const options: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
-    };
-    const kvClient = new KVStoreClient(options);
 
     commands.push(addBulletSlashCommand(Commands.HELP, CommandsDescriptions.HELP));
 
@@ -38,7 +30,7 @@ async function getCommands(call: AppCallRequest): Promise<string> {
         commands.push(addBulletSlashCommand(Commands.CONFIGURE, CommandsDescriptions.CONFIGURE));
     }
 
-    if (await existsKvGoogleClientConfig(kvClient)) { 
+    if (await existsOauth2AppConfig(oauth2App)) { 
         commands.push(addBulletSlashCommand(Commands.CONNECT, CommandsDescriptions.CONNECT));
         commands.push(addBulletSlashCommand(Commands.DISCONNECT, CommandsDescriptions.DISCONNECT));
     }
