@@ -132,6 +132,9 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
     const gClientSecret: string = values[ConfigureClientForm.CLIENT_SECRET];
+    const gconfigMode: AppSelectOption = values[ConfigureClientForm.MODE]?.value;
+    const gSAJson: string = values[ConfigureClientForm.SERVICE_ACCOUNT];
+    const gApiKey: string = values[ConfigureClientForm.API_KEY];
 
     const options: KVStoreOptions = {
         mattermostUrl: <string>mattermostUrl,
@@ -140,8 +143,11 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const kvStoreClient = new KVStoreClient(options);
 
     const config: KVStoreProps = {
-        google_drive_client_id: gClientID,
-        google_drive_client_secret: gClientSecret
+        [ConfigureClientForm.CLIENT_ID]: gClientID,
+        [ConfigureClientForm.CLIENT_SECRET]: gClientSecret,
+        [ConfigureClientForm.MODE]: gconfigMode,
+        [ConfigureClientForm.API_KEY]: gApiKey,
+        [ConfigureClientForm.SERVICE_ACCOUNT]: gSAJson
     };
     await kvStoreClient.kvSet(StoreKeys.config, config);
 }
