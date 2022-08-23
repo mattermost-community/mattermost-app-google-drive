@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import manifest from '../manifest.json';
 import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
-import { AppActingUser, AppCallRequest, AppCallResponse, ExpandedBotActingUser } from '../types';
+import { AppActingUser, AppCallRequest, AppCallResponse, ExpandedBotActingUser, KVStoreOptions } from '../types';
 import { addBulletSlashCommand, h5, joinLines } from '../utils/markdown';
-import { Commands } from '../constant';
+import { Commands, CommandsDescriptions } from '../constant';
+import { existsKvGoogleClientConfig, isUserSystemAdmin } from '../utils/utils';
+import { KVStoreClient } from '../clients';
 
 export const getHelp = async (request: Request, response: Response) => {
     const helpText: string = [
@@ -19,12 +20,28 @@ function getHeader(): string {
 }
 
 async function getCommands(call: AppCallRequest): Promise<string> {
-    const homepageUrl: string = manifest.homepage_url;
+    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+    const botAccessToken: string | undefined = call.context.bot_access_token;
     const context = call.context as ExpandedBotActingUser;
     const actingUser: AppActingUser | undefined = context.acting_user;
     const commands: string[] = [];
 
-    commands.push(addBulletSlashCommand(Commands.HELP, `Launch the Google Drive plugin command line help syntax, check out the [documentation](${homepageUrl}).`));
+    const options: KVStoreOptions = {
+        mattermostUrl: <string>mattermostUrl,
+        accessToken: <string>botAccessToken,
+    };
+    const kvClient = new KVStoreClient(options);
+
+    commands.push(addBulletSlashCommand(Commands.HELP, CommandsDescriptions.HELP));
+
+    if (isUserSystemAdmin(<AppActingUser>actingUser)) {
+        commands.push(addBulletSlashCommand(Commands.CONFIGURE, CommandsDescriptions.CONFIGURE));
+    }
+
+    if (await existsKvGoogleClientConfig(kvClient)) { 
+        commands.push(addBulletSlashCommand(Commands.CONNECT, CommandsDescriptions.CONNECT));
+        commands.push(addBulletSlashCommand(Commands.DISCONNECT, CommandsDescriptions.DISCONNECT));
+    }
     
     return `${joinLines(...commands)}`;
 }

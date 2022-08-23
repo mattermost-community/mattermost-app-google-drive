@@ -1,6 +1,18 @@
 import { KVStoreClient } from "../clients";
-import { AppBindingLocations, Commands, CommandTrigger, GoogleDriveIcon } from "../constant";
-import { AppBinding, AppCallRequest, AppsState, KVStoreOptions } from "../types";
+import { 
+   AppBindingLocations, 
+   Commands, 
+   CommandTrigger, 
+   GoogleDriveIcon 
+} from "../constant";
+import { 
+   AppActingUser, 
+   AppBinding, 
+   AppCallRequest, 
+   AppsState, 
+   KVStoreOptions 
+} from "../types";
+import { existsKvGoogleClientConfig, isUserSystemAdmin } from "../utils/utils";
 import { 
    getConfigureBinding, 
    getConnectBinding, 
@@ -26,6 +38,7 @@ const newCommandBindings = (bindings: AppBinding[], commands: string[]): AppsSta
 export const getCommandBindings = async (call: AppCallRequest): Promise<AppsState> => {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const botAccessToken: string | undefined = call.context.bot_access_token;
+   const actingUser: AppActingUser | undefined = call.context.acting_user;
 
    const options: KVStoreOptions = {
       mattermostUrl: <string>mattermostUrl,
@@ -33,18 +46,21 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
    };
    const kvClient = new KVStoreClient(options);
 
-   const bindings: AppBinding[] = [];
-   const commands: string[] = [
-      Commands.HELP,
-      Commands.CONFIGURE,
-      Commands.CONNECT,
-      Commands.DISCONNECT
-   ];
+   const bindings: AppBinding[] = [ getHelpBinding() ];
+   const commands: string[] = [ Commands.HELP ];
 
-   bindings.push(getHelpBinding());
-   bindings.push(getConfigureBinding());
-   bindings.push(getConnectBinding());
-   bindings.push(getDisconnectBinding());
+   if (isUserSystemAdmin(<AppActingUser>actingUser)) {
+      bindings.push(getConfigureBinding());
+      commands.push(Commands.CONFIGURE)
+   }
+
+   if (await existsKvGoogleClientConfig(kvClient)) { 
+      commands.push(Commands.CONNECT);
+      bindings.push(getConnectBinding());
+      commands.push(Commands.DISCONNECT);
+      bindings.push(getDisconnectBinding());
+   }
+   
    
    return newCommandBindings(bindings, commands);
 };
