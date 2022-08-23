@@ -12,6 +12,7 @@ const AppPaths = {
     CallPathHelp: '/help',
 
     CallPathConfigForm: '/config/form',
+    CallPathUpdateConfigForm: '/config/update/form',
     CallPathConfigSubmit: '/config/form/submit',
 
     CallPathConnectSubmit: '/connect/login/submit',

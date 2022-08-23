@@ -21,32 +21,22 @@ import { postBotChannel } from '../utils/post-in-channel';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {
-    const connectUrl: string | undefined = call.context.oauth2?.connect_url;
+    const connectUrl: string = call.context.oauth2?.connect_url as string;
     const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
     const message: string = isConnected(oauth2)
         ? `You are already logged into Google`
-        : `Follow this ${hyperlink('link', <string>connectUrl)} to connect Mattermost to your Google Account.`;
+        : `Follow this ${hyperlink('link', connectUrl)} to connect Mattermost to your Google Account.`;
     return message;
 }
 
 export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
-    const oAuth2CompleteUrl: string | undefined = call.context.oauth2?.complete_url;
-    const state: string | undefined = call.values?.state;
-    
-    const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken
-    };
-
-    const kvStoreClient = new KVStoreClient(kvOptions);
-    const kvStoreProps: KVStoreProps = await kvStoreClient.kvGet(StoreKeys.config);
+    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
+    const state: string = call.values?.state as string;
 
     const oAuth2Client = new google.auth.OAuth2(
-        kvStoreProps.google_drive_client_id,
-        kvStoreProps.google_drive_client_secret,
-        oAuth2CompleteUrl
+        oauth2App.client_id,
+        oauth2App.client_secret,
+        oauth2App?.complete_url
     );
 
     const scopes = getGoogleOAuthScopes();
@@ -58,27 +48,19 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
 }
 
 export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
+    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
     const accessToken: string | undefined = call.context.acting_user_access_token;
-    const oAuth2CompleteUrl: string | undefined = call.context.oauth2?.complete_url;
     const values: AppCallValues | undefined = call.values;
 
     if (!values?.code) {
         throw new Error(values?.error_description || 'Bad Request: code param not provided');
     }
 
-    const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken
-    };
-    const kvStoreClient = new KVStoreClient(kvOptions);
-    const kvStoreProps: KVStoreProps = await kvStoreClient.kvGet(StoreKeys.config);
-
     const oAuth2Client = new google.auth.OAuth2(
-        kvStoreProps.google_drive_client_id,
-        kvStoreProps.google_drive_client_secret,
-        oAuth2CompleteUrl
+        oauth2App.client_id,
+        oauth2App.client_secret,
+        oauth2App.complete_url
     );
 
     const tokenBody: GoogleTokenResponse = await oAuth2Client.getToken(values?.code);

@@ -1,4 +1,6 @@
+import { ConfigureClientForm } from "../constant";
 import { GoogleToken } from "./google";
+import { Oauth2Data } from "./kv-store";
 import { UserProfile } from "./mattermost";
 
 export type AppManifest = {
@@ -67,7 +69,9 @@ export type Oauth2App = {
     connect_url?: string;
     complete_url?: string;
     user?: Oauth2CurrentUser;
+    data?: Oauth2Data;
 }
+
 
 export type AppCall = {
     path: string;
@@ -228,6 +232,7 @@ export type AppForm = {
     fields: AppField[];
     call?: AppCall;
     depends_on?: string[];
+    source?: any;
 };
 
 export type AppFormValue = string | AppSelectOption | boolean | null;

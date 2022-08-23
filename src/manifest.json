@@ -4,7 +4,7 @@
    "homepage_url": "https://bitbucket.org/dominion-ancient/mattermost-app-google-drive/src/develop/README.md",
    "display_name": "Google Drive",
    "description": "Google Drive App for Mattermost",
-   "icon": "google.png",
+   "icon": "drive.png",
    "on_install": {
       "expand": {
          "app": "all",
@@ -32,5 +32,12 @@
    ],
    "http": {
       "root_url": ""
+   },
+   "remote_webhook_auth_type": "none",
+   "on_remote_webhook": {
+      "path": "/webhook",
+      "expand": {
+         "oauth2_app": "all"
+      }
    }
 }

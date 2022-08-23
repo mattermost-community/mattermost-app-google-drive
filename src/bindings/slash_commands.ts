@@ -1,4 +1,3 @@
-import { KVStoreClient } from "../clients";
 import { 
    AppBindingLocations, 
    Commands, 
@@ -10,9 +9,9 @@ import {
    AppBinding, 
    AppCallRequest, 
    AppsState, 
-   KVStoreOptions 
+   Oauth2App
 } from "../types";
-import { existsKvGoogleClientConfig, isUserSystemAdmin } from "../utils/utils";
+import { existsOauth2AppConfig, isUserSystemAdmin } from "../utils/utils";
 import { 
    getConfigureBinding, 
    getConnectBinding, 
@@ -36,15 +35,8 @@ const newCommandBindings = (bindings: AppBinding[], commands: string[]): AppsSta
 };
 
 export const getCommandBindings = async (call: AppCallRequest): Promise<AppsState> => {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const botAccessToken: string | undefined = call.context.bot_access_token;
    const actingUser: AppActingUser | undefined = call.context.acting_user;
-
-   const options: KVStoreOptions = {
-      mattermostUrl: <string>mattermostUrl,
-      accessToken: <string>botAccessToken,
-   };
-   const kvClient = new KVStoreClient(options);
+   const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
 
    const bindings: AppBinding[] = [ getHelpBinding() ];
    const commands: string[] = [ Commands.HELP ];
@@ -54,7 +46,7 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
       commands.push(Commands.CONFIGURE)
    }
 
-   if (await existsKvGoogleClientConfig(kvClient)) { 
+   if (await existsOauth2AppConfig(oauth2App)) { 
       commands.push(Commands.CONNECT);
       bindings.push(getConnectBinding());
       commands.push(Commands.DISCONNECT);

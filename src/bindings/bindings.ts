@@ -15,7 +15,8 @@ export const getHelpBinding = (): any => {
          submit: {
             path: Routes.App.CallPathHelp,
             expand: {
-               acting_user: AppExpandLevels.EXPAND_ALL
+               acting_user: AppExpandLevels.EXPAND_ALL,
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
             }
          }
       }
@@ -33,12 +34,7 @@ export const getConfigureBinding = (): any => {
          submit: {
             path: Routes.App.CallPathConfigForm,
             expand: {
-               admin_access_token: AppExpandLevels.EXPAND_SUMMARY,
-               acting_user: AppExpandLevels.EXPAND_SUMMARY,
-               acting_user_access_token: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-               app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
             }
          }
       }
