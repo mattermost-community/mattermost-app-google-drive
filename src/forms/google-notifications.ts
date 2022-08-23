@@ -9,19 +9,18 @@ import {
 import { GoogleKindsAPI } from "../constant/google-kinds";
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const accessToken: string | undefined = call.context.acting_user_access_token;
    const oauth2Token: GoogleToken | undefined = call.context.oauth2?.user?.token as GoogleToken;
-   console.log(oauth2Token);
 
-   const oauth2Client = getOAuthGoogleClient(call);
+   const oauth2Client = await getOAuthGoogleClient(call);
+   oauth2Client.setCredentials(<GoogleToken>oauth2Token);
+   await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, 'Google failed: ');
 
    return 'Google notifications are disabled!';
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   //const mattermostUrl = 'https://5425-201-160-205-66.ngrok.io'; // Change when in production
+   //const mattermostUrl = 'https://7a6a-189-203-193-1.ngrok.io'; // Change when in production
    const appPath: string | undefined = call.context.app_path;
    const whSecret: string | undefined = call.context.app?.webhook_secret;
    const actingUser: string | undefined = call.context.acting_user?.id;

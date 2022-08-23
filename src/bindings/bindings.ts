@@ -131,6 +131,7 @@ export const getNotificationStopBinding = (): any => {
          submit: {
             path: Routes.App.CallPathStopNotifications,
             expand: {
+               app: AppExpandLevels.EXPAND_SUMMARY,
                oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
                oauth2_user: AppExpandLevels.EXPAND_SUMMARY
             }
