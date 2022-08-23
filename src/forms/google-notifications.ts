@@ -1,7 +1,7 @@
-import { ExceptionType } from "../constant";
+import { ExceptionType, Routes } from "../constant";
 import { AppCallRequest, GoogleToken, Oauth2App, StartPageToken } from "../types";
 import { getOAuthGoogleClient } from "../utils/google-client";
-import { tryPromise } from "../utils/utils";
+import { generateUUID, tryPromise } from "../utils/utils";
 import {
    drive_v3,
    Auth,     
@@ -19,6 +19,12 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
+   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+   //const mattermostUrl = 'https://5425-201-160-205-66.ngrok.io'; // Change when in production
+   const appPath: string | undefined = call.context.app_path;
+   const whSecret: string | undefined = call.context.app?.webhook_secret;
+   const actingUser: string | undefined = call.context.acting_user?.id;
+
    const oauth2Token: GoogleToken | undefined = call.context.oauth2?.user?.token as GoogleToken;
 
    const oauth2Client = await getOAuthGoogleClient(call);
@@ -31,12 +37,16 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
 
    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
    
+   const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
+   urlWithParams.searchParams.append('secret', <string>whSecret);
+   urlWithParams.searchParams.append('userId', <string>actingUser);
+
    const params = {
       pageToken: <string>pageToken.startPageToken,
       requestBody: {
          kind: GoogleKindsAPI.CHANNEL,
-         id: "0f811715-3505-46ac-a014-6d478812a672",
-         address: "https://799a-201-160-205-66.ngrok.io/notifications",
+         id: generateUUID(),
+         address: urlWithParams.href,
          type: "web_hook"
       }
    }
