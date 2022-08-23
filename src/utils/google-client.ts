@@ -1,27 +1,18 @@
 import { KVStoreClient } from "../clients";
 import { StoreKeys } from "../constant";
-import { AppCallRequest, KVStoreOptions, KVStoreProps } from "../types";
+import { AppCallRequest, KVStoreOptions, KVStoreProps, Oauth2App } from "../types";
 import {
    google,
    Auth,
 } from 'googleapis';
 
 export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const botAccessToken: string | undefined = call.context.bot_access_token;
-   const oAuth2CompleteUrl: string | undefined = call.context.oauth2?.complete_url;
-   const kvOptions: KVStoreOptions = {
-      mattermostUrl: <string>mattermostUrl,
-      accessToken: <string>botAccessToken
-   };
-
-   const kvStoreClient = new KVStoreClient(kvOptions);
-   const kvStoreProps: KVStoreProps = await kvStoreClient.kvGet(StoreKeys.config);
-
+   const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
+   
    const oAuth2Client = new google.auth.OAuth2(
-      kvStoreProps.google_drive_client_id,
-      kvStoreProps.google_drive_client_secret,
-      oAuth2CompleteUrl
+      oauth2App.client_id,
+      oauth2App.client_secret,
+      oauth2App.complete_url
    );
 
    return oAuth2Client;
