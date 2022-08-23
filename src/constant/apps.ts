@@ -41,3 +41,8 @@ export const AppFieldTypes: { [name: string]: AppFieldType } = {
     USER: 'user',
     CHANNEL: 'channel',
 };
+
+export const AppFieldSubTypes: { [name: string]: AppFieldType } = {
+    TEXTAREA: 'textarea',
+    PASSWORD: 'password'
+};

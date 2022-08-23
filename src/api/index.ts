@@ -16,6 +16,7 @@ router.post(Routes.App.CallPathHelp, cHelp.getHelp);
 
 // Configure Google Client
 router.post(Routes.App.CallPathConfigForm, cConfigure.configureGoogleClient);
+router.post(Routes.App.CallPathUpdateConfigForm, cConfigure.configureGoogleClient);
 router.post(Routes.App.CallPathConfigSubmit, cConfigure.configureGoogleClientSubmit);
 
 // Connect User's Google account

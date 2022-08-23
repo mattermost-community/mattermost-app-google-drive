@@ -228,6 +228,7 @@ export type AppForm = {
     fields: AppField[];
     call?: AppCall;
     depends_on?: string[];
+    source?: any;
 };
 
 export type AppFormValue = string | AppSelectOption | boolean | null;
