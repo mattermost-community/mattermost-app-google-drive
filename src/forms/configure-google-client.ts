@@ -6,6 +6,8 @@ import {
     AppSelectOption,
     KVStoreOptions,
     KVStoreProps,
+    Oauth2App,
+    Oauth2Data,
 } from '../types';
 import { 
     AppFieldSubTypes,
@@ -25,24 +27,16 @@ import manifest from '../manifest.json';
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
     const homepageUrl: string = manifest.homepage_url;
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
     const values: KVStoreProps = call.values as KVStoreProps;
+    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
 
-    const options: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
-    };
-    const kvStoreClient = new KVStoreClient(options);
-    const config: KVStoreProps = await kvStoreClient.kvGet(StoreKeys.config);
-
-    const clientID = values?.google_drive_client_id || config?.google_drive_client_id;
-    const clientSecret = values?.google_drive_client_secret || config?.google_drive_client_secret;
+    const clientID = values?.google_drive_client_id || oauth2App?.client_id;
+    const clientSecret = values?.google_drive_client_secret || oauth2App?.client_secret;
     const modeConfig = typeof values?.google_drive_mode == 'object'
-        ? values?.google_drive_mode.value 
-        : config?.google_drive_mode;
-    const apiKey = values?.google_drive_api_key || config?.google_drive_api_key;
-    const saJson = values?.google_drive_service_account || config?.google_drive_service_account;
+        ? values?.google_drive_mode?.value 
+        : oauth2App?.data?.google_drive_mode;
+    const apiKey = values?.google_drive_api_key || oauth2App?.data?.google_drive_api_key;
+    const saJson = values?.google_drive_service_account || oauth2App?.data?.google_drive_service_account;
     
     const defValue: AppSelectOption | undefined = modeConfiguration.find(mode => mode.value === modeConfig);
 
@@ -142,12 +136,17 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     };
     const kvStoreClient = new KVStoreClient(options);
 
-    const config: KVStoreProps = {
-        [ConfigureClientForm.CLIENT_ID]: gClientID,
-        [ConfigureClientForm.CLIENT_SECRET]: gClientSecret,
+    const config: Oauth2Data = {
         [ConfigureClientForm.MODE]: gconfigMode,
         [ConfigureClientForm.API_KEY]: gApiKey,
         [ConfigureClientForm.SERVICE_ACCOUNT]: gSAJson
     };
-    await kvStoreClient.kvSet(StoreKeys.config, config);
+    const oauth2App: Oauth2App = {
+        client_id: gClientID,
+        client_secret: gClientSecret,
+        data: config
+    }
+    
+    await kvStoreClient.storeOauth2App(oauth2App);
+    
 }

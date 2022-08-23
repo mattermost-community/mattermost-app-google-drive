@@ -13,3 +13,9 @@ export interface KVStoreProps {
    [ConfigureClientForm.SERVICE_ACCOUNT]?: string;
    [ConfigureClientForm.API_KEY]?: string;
 }
+
+export interface Oauth2Data {
+   [ConfigureClientForm.MODE]: string | AppSelectOption;
+   [ConfigureClientForm.SERVICE_ACCOUNT]: string;
+   [ConfigureClientForm.API_KEY]: string;
+}
