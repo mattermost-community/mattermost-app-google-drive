@@ -1,12 +1,13 @@
 import { ExceptionType, Routes } from "../constant";
 import { AppCallRequest, GoogleToken, Oauth2App, StartPageToken } from "../types";
 import { getOAuthGoogleClient } from "../utils/google-client";
-import { generateUUID, tryPromise } from "../utils/utils";
+import { tryPromise } from "../utils/utils";
 import {
    drive_v3,
    Auth,     
 } from 'googleapis';
 import { GoogleKindsAPI } from "../constant/google-kinds";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
    const oauth2Token: GoogleToken | undefined = call.context.oauth2?.user?.token as GoogleToken;
@@ -45,7 +46,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
       pageToken: <string>pageToken.startPageToken,
       requestBody: {
          kind: GoogleKindsAPI.CHANNEL,
-         id: generateUUID(),
+         id: uuidv4(),
          address: urlWithParams.href,
          type: "web_hook"
       }
