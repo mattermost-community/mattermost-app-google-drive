@@ -1,12 +1,13 @@
 import { ExceptionType, Routes } from "../constant";
 import { AppCallRequest, GoogleToken, Oauth2App, StartPageToken } from "../types";
 import { getOAuthGoogleClient } from "../utils/google-client";
-import { generateUUID, tryPromise } from "../utils/utils";
+import { tryPromise } from "../utils/utils";
 import {
    drive_v3,
    Auth,     
 } from 'googleapis';
 import { GoogleKindsAPI } from "../constant/google-kinds";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
@@ -20,7 +21,7 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   //const mattermostUrl = 'https://5425-201-160-205-66.ngrok.io'; // Change when in production
+   //const mattermostUrl = 'https://7a6a-189-203-193-1.ngrok.io'; // Change when in production
    const appPath: string | undefined = call.context.app_path;
    const whSecret: string | undefined = call.context.app?.webhook_secret;
    const actingUser: string | undefined = call.context.acting_user?.id;
@@ -45,7 +46,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
       pageToken: <string>pageToken.startPageToken,
       requestBody: {
          kind: GoogleKindsAPI.CHANNEL,
-         id: generateUUID(),
+         id: uuidv4(),
          address: urlWithParams.href,
          type: "web_hook"
       }
