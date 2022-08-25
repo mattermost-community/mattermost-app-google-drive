@@ -1,17 +1,28 @@
-import { ChangeList, Manifest, Schema$Comment, Schema$CommentList, Schema$File, StartPageToken, WebhookRequest } from "../types";
+import { 
+   ChangeList, 
+   Schema$About, 
+   Schema$Comment, 
+   Schema$CommentList, 
+   Schema$File, 
+   Schema$User, 
+   StartPageToken, 
+   WebhookRequest 
+} from "../types";
 import { getGoogleDriveClient } from "../utils/google-client";
 import { postBotChannel } from '../utils/post-in-channel';
 import manifest from '../manifest.json';
 import { h5, hyperlink, inLineImage } from '../utils/markdown';
-import { AppExpandLevels, ExceptionType, GoogleDriveIcon, Routes } from '../constant';
+import { AppExpandLevels, ExceptionType } from '../constant';
 import {
    drive_v3,
 } from 'googleapis';
 import { tryPromise } from "../utils/utils";
 import moment from 'moment'
+import { GoogleResourceState } from "../constant/google-kinds";
+import { head } from "lodash";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
-   if (call.values.headers["X-Goog-Resource-State"] !== 'change') {
+   if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
       return;
    }
    const paramsd = new URLSearchParams(call.values.rawQuery);
@@ -31,7 +42,7 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    }
 
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
-   const file = list.changes?.[0].file as Schema$File;
+   const file = head(list.changes)?.file as Schema$File;
 
    const modifiedTime: string = moment(file.modifiedTime).subtract(1, 'second').toISOString();
 
@@ -45,18 +56,22 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (!commentRes.comments?.length) {
       return;
    }
-   const comment = commentRes.comments[0];
+   const comment = head(commentRes.comments) as Schema$Comment;
+   const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({fields: 'user'}), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
    if (moment(comment.createdTime).diff(comment.modifiedTime) === 0) {
-      await firstComment(call, file, comment);
+      await firstComment(call, file, comment, about.user);
    }
+
    return;
 }
 
-export async function firstComment(call: WebhookRequest, file: Schema$File, comment: Schema$Comment): Promise<void> {
+export async function firstComment(call: WebhookRequest, file: Schema$File, comment: Schema$Comment, user: Schema$User): Promise<void> {
    const m = manifest;
    const author = comment.author;
-   const message = h5(`${author?.displayName} commented on ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
+   const message = comment.content?.includes(<string>user.emailAddress)
+      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`)
+      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
    const props = {
       app_bindings: [
@@ -84,4 +99,5 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
       ]
    }
    await postBotChannel(call, message, props);
+   return;
 }

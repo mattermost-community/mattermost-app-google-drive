@@ -17,6 +17,10 @@ export interface StartPageToken {
    startPageToken?: string | null;
 }
 
+export interface Schema$About {
+   user: Schema$User
+}
+
 export interface Schema$User {
    displayName?: string | null;
    emailAddress?: string | null;
