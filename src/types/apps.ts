@@ -54,7 +54,7 @@ export type AppCallValues = {
 export type AppCallType = string;
 
 export type Oauth2CurrentUser = {
-    token: GoogleToken,
+    refresh_token: string,
     user?: {
         id: string;
         name: string;

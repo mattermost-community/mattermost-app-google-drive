@@ -14,6 +14,14 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== 'change') {
       return;
    }
+   const paramsd = new URLSearchParams(call.values.rawQuery);
+   const userId = paramsd.get('userId');
+
+   const acting_user = {
+      id: userId
+   }
+   call.context = { ...call.context, acting_user }
+
    const drive: drive_v3.Drive = await getGoogleDriveClient(call);
    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
    
@@ -48,14 +56,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
 export async function firstComment(call: WebhookRequest, file: Schema$File, comment: Schema$Comment): Promise<void> {
    const m = manifest;
    const author = comment.author;
-
-   const paramsd = new URLSearchParams(call.values.rawQuery);
-   const userId = paramsd.get('userId');
-
-   const acting_user = {
-      id: userId
-   }
-   call.context = { ...call.context, acting_user };
    const message = h5(`${author?.displayName} commented on ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
    const props = {

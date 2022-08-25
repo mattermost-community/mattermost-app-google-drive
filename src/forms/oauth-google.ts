@@ -46,7 +46,9 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
 
 export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+    const botAccessToken: string | undefined = call.context.bot_access_token;
     const accessToken: string | undefined = call.context.acting_user_access_token;
+    const userID: string | undefined = call.context.acting_user?.id;
     const values: AppCallValues | undefined = call.values;
 
     if (!values?.code) {
@@ -64,9 +66,17 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
 
     const storedToken: Oauth2CurrentUser = {
-        token: tokenBody.tokens
+        refresh_token: <string>tokenBody.tokens?.refresh_token
     };
     await kvStoreClientOauth.storeOauth2User(storedToken);
+
+
+    const kvOptions: KVStoreOptions = {
+        mattermostUrl: <string>mattermostUrl,
+        accessToken: <string>botAccessToken
+    };
+    const kvStoreClient = new KVStoreClient(kvOptions);
+    await kvStoreClient.kvSet(<string>userID, storedToken);
 
     const message = 'You have successfully connected your Google account!';
     await postBotChannel(call, message);
