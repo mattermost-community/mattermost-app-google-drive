@@ -64,7 +64,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
 
     const storedToken: Oauth2CurrentUser = {
-        token: tokenBody.tokens
+        refresh_token: <string>tokenBody.tokens?.refresh_token
     };
     await kvStoreClientOauth.storeOauth2User(storedToken);
 
