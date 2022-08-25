@@ -70,8 +70,8 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
    const m = manifest;
    const author = comment.author;
    const message = comment.content?.includes(<string>user.emailAddress)
-      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`)
-      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, <string>file?.iconLink)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
+      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`)
+      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
    const props = {
       app_bindings: [
