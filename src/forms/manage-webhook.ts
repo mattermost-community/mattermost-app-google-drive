@@ -11,6 +11,14 @@ import { tryPromise } from "../utils/utils";
 import moment from 'moment'
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
+   const paramsd = new URLSearchParams(call.values.rawQuery);
+   const userId = paramsd.get('userId');
+
+   const acting_user = {
+      id: userId
+   }
+   call.context = { ...call.context, acting_user }
+
    const drive: drive_v3.Drive = await getGoogleDriveClient(call);
    const m = manifest;
    
@@ -39,13 +47,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    const comment = commentRes.comments[0];
    const author = comment.author;
    
-   const paramsd = new URLSearchParams(call.values.rawQuery);
-   const userId = paramsd.get('userId');
-   
-   const acting_user = {
-      id: userId
-   }
-   call.context = { ...call.context, acting_user }
    const message = h5(`${author?.displayName} commented on ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
    const props = {
