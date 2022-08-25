@@ -31,8 +31,12 @@ export function errorDataMessage(error: Exception | Error | any): string {
     return `${errorMessage}`;
 }
 
-export function tryPromise(p: Promise<any>, exceptionType: ExceptionType, message: string) {
-    return p.catch((error) => {
+export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string) {
+    return p
+    .then(response => {
+        return <T>response.data;
+    })
+    .catch((error) => {
         const errorMessage: string = errorDataMessage(error);
         throw new Exception(exceptionType, `${message} ${errorMessage}`);
     });

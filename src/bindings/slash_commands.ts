@@ -11,12 +11,13 @@ import {
    AppsState, 
    Oauth2App
 } from "../types";
-import { existsOauth2AppConfig, isUserSystemAdmin } from "../utils/utils";
+import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from "../utils/utils";
 import { 
    getConfigureBinding, 
    getConnectBinding, 
    getDisconnectBinding, 
-   getHelpBinding
+   getHelpBinding,
+   getNotificationBinding
  } from "./bindings";
 
 const newCommandBindings = (bindings: AppBinding[], commands: string[]): AppsState => {
@@ -47,6 +48,11 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
    }
 
    if (await existsOauth2AppConfig(oauth2App)) { 
+      if (isConnected(oauth2App)) {
+         commands.push(Commands.NOTIFICATION);
+         bindings.push(getNotificationBinding());
+      }
+
       commands.push(Commands.CONNECT);
       bindings.push(getConnectBinding());
       commands.push(Commands.DISCONNECT);

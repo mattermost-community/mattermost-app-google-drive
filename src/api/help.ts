@@ -3,7 +3,7 @@ import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
 import { AppActingUser, AppCallRequest, AppCallResponse, ExpandedBotActingUser, Oauth2App } from '../types';
 import { addBulletSlashCommand, h5, joinLines } from '../utils/markdown';
 import { Commands, CommandsDescriptions } from '../constant';
-import { existsOauth2AppConfig, isUserSystemAdmin } from '../utils/utils';
+import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from '../utils/utils';
 
 export const getHelp = async (request: Request, response: Response) => {
     const helpText: string = [
@@ -31,6 +31,10 @@ async function getCommands(call: AppCallRequest): Promise<string> {
     }
 
     if (await existsOauth2AppConfig(oauth2App)) { 
+        if (isConnected(oauth2App)) { 
+            commands.push(addBulletSlashCommand(`${Commands.NOTIFICATION} [${Commands.START} | ${Commands.STOP}]`, CommandsDescriptions.NOTIFICATION));
+        }
+        
         commands.push(addBulletSlashCommand(Commands.CONNECT, CommandsDescriptions.CONNECT));
         commands.push(addBulletSlashCommand(Commands.DISCONNECT, CommandsDescriptions.DISCONNECT));
     }

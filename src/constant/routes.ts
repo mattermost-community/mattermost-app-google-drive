@@ -19,6 +19,11 @@ const AppPaths = {
     OAuthConnectPath: '/oauth2/connect',
     OAuthCompletePath: '/oauth2/complete',
     CallPathDisconnectSubmit: '/connect/disconnect/submit',
+
+    CallPathStartNotifications: '/notifications/start',
+    CallPathStopNotifications: '/notifications/stop',
+
+    CallPathIncomingWebhookPath: '/webhook'
 }
 
 const GooglePaths = {

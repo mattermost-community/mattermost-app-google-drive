@@ -1,11 +1,18 @@
 export type GoogleToken = {
-   access_token: string,
-   scope: string,
-   token_type: string,
-   expiry_date: number
+   refresh_token?: string | null;
+   expiry_date?: number | null;
+   access_token?: string | null;
+   token_type?: string | null;
+   id_token?: string | null;
+   scope?: string;
 }
 
 export type GoogleTokenResponse = {
    tokens: GoogleToken,
    res: any
+}
+
+export interface StartPageToken {
+   kind?: string | null;
+   startPageToken?: string | null;
 }

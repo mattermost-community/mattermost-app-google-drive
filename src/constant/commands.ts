@@ -6,6 +6,9 @@ export const Commands = {
    CONFIGURE: 'configure',
    CONNECT: 'connect',
    DISCONNECT: 'disconnect',
+   NOTIFICATION: 'notification',
+   START: 'start',
+   STOP: 'stop'
 }
 
 export const CommandsDescriptions = {
@@ -13,4 +16,5 @@ export const CommandsDescriptions = {
    CONFIGURE: 'Setup Google Client',
    CONNECT: 'Connect your Google account',
    DISCONNECT: 'Disconnect from your Google account',
+   NOTIFICATION: 'Stop or start getting notifications about comments',
 }
