@@ -23,3 +23,7 @@ export function bold(text: string): string {
 export function hyperlink(text: string, url: string): string {
     return `[${text}](${url})`
 }
+
+export function inLineImage(text: string, url: string): string {
+    return `![${text}](${url})`
+}
