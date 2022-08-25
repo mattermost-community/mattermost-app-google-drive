@@ -23,7 +23,7 @@ export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.O
    return oAuth2Client;
 }
 
-export const getGoogleDriveClient = async (call: AppCallRequest): Promise<any> => {
+export const getGoogleDriveClient = async (call: AppCallRequest): Promise<drive_v3.Drive> => {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const userID: string | undefined = call.context.acting_user?.id;
