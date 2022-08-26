@@ -11,7 +11,11 @@ import {
    AppsState, 
    Oauth2App
 } from "../types";
-import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from "../utils/utils";
+import { 
+   existsOauth2AppConfig, 
+   isConnected, 
+   isUserSystemAdmin 
+} from "../utils/utils";
 import { 
    getConfigureBinding, 
    getConnectBinding, 
@@ -19,12 +23,17 @@ import {
    getHelpBinding,
    getNotificationBinding
  } from "./bindings";
+import manifest from '../manifest.json';
 
 const newCommandBindings = (bindings: AppBinding[], commands: string[]): AppsState => {
+   const m = manifest;
    return {
+      app_id: m.app_id,
+      label: CommandTrigger,
       location: AppBindingLocations.COMMAND,
       bindings: [
          {
+            app_id: m.app_id,
             icon: GoogleDriveIcon,
             label: CommandTrigger,
             hint: `[${commands.join(' | ')}]`,

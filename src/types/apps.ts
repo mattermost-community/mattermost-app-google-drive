@@ -19,9 +19,12 @@ export type AppModalState = {
 export type AppsState = {
     location: string;
     bindings: AppBinding[];
+    app_id: string,
+    label: string,
 };
 
 export type AppBinding = {
+    app_id: string;
     location?: string;
     icon?: string;
 
@@ -40,11 +43,12 @@ export type AppBinding = {
     // Description is the (optional) extended help.ts text, used in modals and autocomplete
     description?: string;
 
-    // A Binding is either to a Call, or is a "container" for other locations -
-    // i.e. menu sub-items or subcommands.
-    call?: AppCall;
+
+    // A Binding is either an action (makes a call), a Form, or is a
+    // "container" for other locations - i.e. menu sub-items or subcommands.
     bindings?: AppBinding[];
     form?: AppForm;
+    submit?: AppCall;
 };
 
 export type AppCallValues = {

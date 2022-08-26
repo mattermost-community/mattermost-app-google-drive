@@ -4,6 +4,7 @@ import {
    Commands, 
    Routes,
 } from "../constant";
+import { PostMenu } from "../constant/post-menu";
 import { AppBinding } from "../types";
 
 export const getHelpBinding = (): any => {
@@ -116,4 +117,53 @@ export const getNotificationStopBinding = (): any => {
          }
       }
    }
+};
+
+
+export const getCreateDocumentBinding = (): any => {
+   return {
+      label: PostMenu.DOCUMENT,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreateDocument,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
+};
+
+export const getCreatePresentationBinding = (): any => {
+   return {
+      label: PostMenu.PRESENTATION,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreatePresentation,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
+};
+
+export const getCreateSpreadsheetBinding = (): any => {
+   return {
+      label: PostMenu.SPREADSHEET,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreateSpreadsheet,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
 };
