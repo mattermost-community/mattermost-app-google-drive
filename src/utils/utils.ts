@@ -23,7 +23,7 @@ export async function existsOauth2AppConfig(oauth2App: Oauth2App): Promise<boole
 }
 
 export function isConnected(oauth2user: Oauth2App): boolean {
-    return !!oauth2user?.user?.token?.access_token;
+    return !!oauth2user?.user?.refresh_token;
 }
 
 export function errorDataMessage(error: Exception | Error | any): string {

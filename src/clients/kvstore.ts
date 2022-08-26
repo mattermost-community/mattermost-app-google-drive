@@ -12,7 +12,7 @@ export class KVStoreClient {
         this.config = config;
     }
 
-    public kvSet(key: string, value: KVStoreProps): Promise<any> {
+    public kvSet(key: string, value: any): Promise<any> {
         const url = `${this.config.mattermostUrl}/plugins/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.PathKV}/${key}`;
         return axios.post(url, value, {
             headers: {
@@ -22,7 +22,7 @@ export class KVStoreClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public kvGet(key: string): Promise<KVStoreProps> {
+    public kvGet(key: string): Promise<any> {
         const url = `${this.config.mattermostUrl}/plugins/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.PathKV}/${key}`;
         return axios.get(url, {
             headers: {

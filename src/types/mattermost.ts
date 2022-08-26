@@ -1,3 +1,5 @@
+import { ChannelWatchHeaders } from "./google";
+
 export type UserNotifyProps = {
     channel: string;
     comments: string;
@@ -240,4 +242,17 @@ export type DialogProps = {
 export type MattermostOptions = {
     mattermostUrl: string;
     accessToken: string | null | undefined;
+}
+
+export type WebhookRequest = {
+    path: '/webhook',
+    values: GoogleWebhook,
+    context: any
+}
+
+export type GoogleWebhook = {
+    data: string,
+    headers: ChannelWatchHeaders,
+    httpMethod: 'POST' | 'GET',
+    rawQuery: string,
 }

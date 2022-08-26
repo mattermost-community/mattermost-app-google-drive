@@ -23,7 +23,8 @@ const AppPaths = {
     CallPathStartNotifications: '/notifications/start',
     CallPathStopNotifications: '/notifications/stop',
 
-    CallPathIncomingWebhookPath: '/webhook'
+    CallPathIncomingWebhookPath: '/webhook',
+    CallPathCommentReplay: '/comment/replay',
 }
 
 const GooglePaths = {
