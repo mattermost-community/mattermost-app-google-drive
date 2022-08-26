@@ -63,6 +63,11 @@ export type Oauth2CurrentUser = {
     }
 }
 
+export type ChannelNotification = {
+    channelId: string,
+    resourceId: string,
+}
+
 export type Oauth2App = {
     client_id: string;
     client_secret: string;

@@ -212,6 +212,21 @@ export interface Schema$CommentList {
    kind?: string | null;
    nextPageToken?: string | null;
 }
+
+export interface Schema$Channel {
+   address?: string | null;
+   expiration?: string | null;
+   id?: string | null;
+   kind?: string | null;
+   params?: {
+      [key: string]: string;
+   } | null;
+   payload?: boolean | null;
+   resourceId?: string | null;
+   resourceUri?: string | null;
+   token?: string | null;
+   type?: string | null;
+}
 export interface Change {
    changeType?: string | null;
    drive?: any; //Schema$Drive;

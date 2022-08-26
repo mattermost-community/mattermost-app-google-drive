@@ -17,7 +17,8 @@ export const getHelpBinding = (): any => {
             path: Routes.App.CallPathHelp,
             expand: {
                acting_user: AppExpandLevels.EXPAND_ALL,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
+               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
             }
          }
       }
