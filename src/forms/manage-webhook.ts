@@ -1,16 +1,30 @@
-import { ChangeList, Manifest, Schema$CommentList, Schema$File, StartPageToken, WebhookRequest } from "../types";
+import { 
+   ChangeList, 
+   Schema$About, 
+   Schema$Comment, 
+   Schema$CommentList, 
+   Schema$File, 
+   Schema$User, 
+   StartPageToken, 
+   WebhookRequest 
+} from "../types";
 import { getGoogleDriveClient } from "../utils/google-client";
 import { postBotChannel } from '../utils/post-in-channel';
 import manifest from '../manifest.json';
-import { h5, h6, hyperlink } from '../utils/markdown';
-import { AppExpandLevels, ExceptionType, Routes } from '../constant';
+import { h5, hyperlink, inLineImage } from '../utils/markdown';
+import { AppExpandLevels, ExceptionType } from '../constant';
 import {
    drive_v3,
 } from 'googleapis';
 import { tryPromise } from "../utils/utils";
 import moment from 'moment'
+import { GoogleResourceState } from "../constant/google-kinds";
+import { head } from "lodash";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
+   if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
+      return;
+   }
    const paramsd = new URLSearchParams(call.values.rawQuery);
    const userId = paramsd.get('userId');
 
@@ -20,8 +34,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    call.context = { ...call.context, acting_user }
 
    const drive: drive_v3.Drive = await getGoogleDriveClient(call);
-   const m = manifest;
-   
    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
    
    const params = {
@@ -30,9 +42,9 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    }
 
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
-   const file = list.changes?.[0].file as Schema$File;
+   const file = head(list.changes)?.file as Schema$File;
 
-   const modifiedTime:string = moment(file.modifiedTime).subtract('second', 1).toISOString();
+   const modifiedTime: string = moment(file.modifiedTime).subtract(1, 'second').toISOString();
 
    const commentParam = {
       fileId: <string>file.id,
@@ -44,23 +56,32 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (!commentRes.comments?.length) {
       return;
    }
-   const comment = commentRes.comments[0];
+   const comment = head(commentRes.comments) as Schema$Comment;
+   const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({fields: 'user'}), ExceptionType.TEXT_ERROR, 'Google failed: ');
+
+   if (moment(comment.createdTime).diff(comment.modifiedTime) === 0) {
+      await firstComment(call, file, comment, about.user);
+   }
+
+   return;
+}
+
+export async function firstComment(call: WebhookRequest, file: Schema$File, comment: Schema$Comment, user: Schema$User): Promise<void> {
+   const m = manifest;
    const author = comment.author;
-   
-   const message = h5(`${author?.displayName} commented on ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
+   const message = comment.content?.includes(<string>user.emailAddress)
+      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`)
+      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
    const props = {
       app_bindings: [
          {
             location: "embedded",
             app_id: m.app_id,
-            description: '',
+            description: `${comment.quotedFileContent?.value || ' '}\n ___ \n> "${comment.content}"`,
             bindings: [
                {
-                  location: 'ActionsEvents.ACKNOWLEDGED_ALERT_BUTTON_EVENT',
-                  label: 'Acknowledged',
                   submit: {
-                     path: Routes.App.CallPathCommentReplay,
                      expand: {
                         oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
                         oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
@@ -68,7 +89,7 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
                      },
                      state: {
                         comment: {
-                           id: 'AAAAdDqLmNg'
+                           id: comment.id
                         }
                      }
                   }
@@ -78,4 +99,5 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
       ]
    }
    await postBotChannel(call, message, props);
+   return;
 }
