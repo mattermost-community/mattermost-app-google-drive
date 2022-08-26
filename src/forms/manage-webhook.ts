@@ -78,7 +78,7 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
          {
             location: "embedded",
             app_id: m.app_id,
-            description: `_${comment.quotedFileContent?.value || ' '}_  \n> "${comment.content}"`,
+            description: `${comment.quotedFileContent?.value || ' '}\n ___ \n> "${comment.content}"`,
             bindings: [
                {
                   submit: {
