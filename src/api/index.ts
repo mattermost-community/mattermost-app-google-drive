@@ -8,6 +8,7 @@ import * as cConfigure from './configure';
 import * as cConnect from './connect';
 import * as cNotifications from './notification';
 import * as cWebhook from './webhook';
+import * as cGoogleFiles from './create-files';
 
 const router: Router = express.Router();
 
@@ -33,6 +34,11 @@ router.post(`${Routes.App.CallPathStopNotifications}`, cNotifications.stopGoogle
 
 // Receive notifications
 router.post(`${Routes.App.CallPathIncomingWebhookPath}`, cWebhook.filterWebhookNotification);
+
+// Create new Google Files
+router.post(`${Routes.App.CallPathCreateDocument}`, cGoogleFiles.createGoogleDoc);
+router.post(`${Routes.App.CallPathCreateSpreadsheet}`, cGoogleFiles.createGoogleSheets);
+router.post(`${Routes.App.CallPathCreatePresentation}`, cGoogleFiles.createGoogleSlides);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));

@@ -4,6 +4,7 @@ import {
    Commands, 
    Routes,
 } from "../constant";
+import { PostMenu } from "../constant/post-menu";
 import { AppBinding } from "../types";
 
 export const getHelpBinding = (): any => {
@@ -11,15 +12,12 @@ export const getHelpBinding = (): any => {
       label: Commands.HELP,
       icon: GoogleDriveIcon,
       description: 'Show Google Drive Help',
-      form: {
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathHelp,
-            expand: {
-               acting_user: AppExpandLevels.EXPAND_ALL,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathHelp,
+         expand: {
+            acting_user: AppExpandLevels.EXPAND_ALL,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    };
@@ -30,14 +28,10 @@ export const getConfigureBinding = (): any => {
       icon: GoogleDriveIcon,
       label: Commands.CONFIGURE,
       description: 'Setup Google Client',
-      form: {
-         title: "Setup Google Client",
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathConfigForm,
-            expand: {
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathConfigForm,
+         expand: {
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    }
@@ -48,15 +42,11 @@ export const getConnectBinding = (): any => {
       icon: GoogleDriveIcon,
       label: Commands.CONNECT,
       description: 'Connect your Google account',
-      form: {
-         title: "Google account login",
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathConnectSubmit,
-            expand: {
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathConnectSubmit,
+         expand: {
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    }
@@ -67,16 +57,12 @@ export const getDisconnectBinding = (): any => {
       icon: GoogleDriveIcon,
       label: Commands.DISCONNECT,
       description: 'Disconnect from your Google account',
-      form: {
-         title: "Account disconnect",
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathDisconnectSubmit,
-            expand: {
-               acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathDisconnectSubmit,
+         expand: {
+            acting_user_access_token: AppExpandLevels.EXPAND_ALL,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    }
@@ -106,16 +92,12 @@ export const getNotificationStartBinding = (): any => {
       icon: GoogleDriveIcon,
       label: Commands.START,
       description: 'Start getting notified about Google Drive comments',
-      form: {
-         title: "Start notifications",
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathStartNotifications,
-            expand: {
-               app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathStartNotifications,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    }
@@ -126,17 +108,62 @@ export const getNotificationStopBinding = (): any => {
       icon: GoogleDriveIcon,
       label: Commands.STOP,
       description: 'Stop getting notified about Google Drive comments',
-      form: {
-         title: "Stop notifications",
-         icon: GoogleDriveIcon,
-         submit: {
-            path: Routes.App.CallPathStopNotifications,
-            expand: {
-               app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-               oauth2_user: AppExpandLevels.EXPAND_SUMMARY
-            }
+      submit: {
+         path: Routes.App.CallPathStopNotifications,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
          }
       }
    }
+};
+
+
+export const getCreateDocumentBinding = (): any => {
+   return {
+      label: PostMenu.DOCUMENT,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreateDocument,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
+};
+
+export const getCreatePresentationBinding = (): any => {
+   return {
+      label: PostMenu.PRESENTATION,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreatePresentation,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
+};
+
+export const getCreateSpreadsheetBinding = (): any => {
+   return {
+      label: PostMenu.SPREADSHEET,
+      description: 'With Google Drive',
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathCreateSpreadsheet,
+         expand: {
+            app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
 };

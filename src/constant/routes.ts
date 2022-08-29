@@ -25,11 +25,11 @@ const AppPaths = {
 
     CallPathIncomingWebhookPath: '/webhook',
     CallPathCommentReplay: '/comment/replay',
+
+    CallPathCreateDocument: '/create/document',
+    CallPathCreatePresentation: '/create/presentation',
+    CallPathCreateSpreadsheet: '/create/spreadsheet'
 }
-
-const GooglePaths = {
-
-};
 
 const MattermostPaths = {
     PathKV: '/kv',
@@ -51,5 +51,4 @@ export const Routes = {
     PV: PathsVariable,
     App: AppPaths,
     MM: MattermostPaths,
-    GD: GooglePaths,
 };
