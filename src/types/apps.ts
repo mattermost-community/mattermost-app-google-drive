@@ -265,7 +265,7 @@ export type AppField = {
 
     // Present (default) value of the field
     value?: AppFormValue;
-
+    placeholder?: string,
     description?: string;
 
     label?: string;
@@ -276,7 +276,7 @@ export type AppField = {
 
     // Select props
     refresh?: boolean;
-    options?: AppSelectOption[];
+    options?: AppSelectOption[] | null;
     multiselect?: boolean;
 
     // Text props
