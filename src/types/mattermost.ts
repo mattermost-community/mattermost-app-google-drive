@@ -113,7 +113,13 @@ export type AttachmentAction = {
 export type Attachment = {
     text?: string;
     title?: string;
+    author_icon?: string;
+    author_name?: string;
     title_link?: string;
+    thumb_url?: string;
+    footer?: string;
+    footer_icon?: string;
+    ts?: number;
     fields?: {
         short: boolean;
         title: string;
@@ -129,7 +135,8 @@ export type PostCreate = {
     root_id?: string;
     file_ids?: string[];
     props?: {
-        attachments: Attachment[];
+        attachments?: Attachment[];
+        app_bindings?: any[];
     }
 }
 
