@@ -12,7 +12,7 @@ import {
 } from "../types";
 import { 
    getGoogleDriveClient 
-} from "../utils/google-client";
+} from "../clients/google-client";
 import { 
    tryPromise 
 } from "../utils/utils";

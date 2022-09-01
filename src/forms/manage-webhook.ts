@@ -8,7 +8,7 @@ import {
    StartPageToken, 
    WebhookRequest 
 } from "../types";
-import { getGoogleDriveClient } from "../utils/google-client";
+import { getGoogleDriveClient } from "../clients/google-client";
 import { postBotChannel } from '../utils/post-in-channel';
 import manifest from '../manifest.json';
 import { h5, hyperlink, inLineImage } from '../utils/markdown';
