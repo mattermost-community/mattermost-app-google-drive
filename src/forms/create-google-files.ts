@@ -25,6 +25,7 @@ import {
    Schema$Document,
    Schema$File,
    Schema$Presentation,
+   Schema$Spreadsheet,
    Schema$User,
 } from "../types";
 import { 
@@ -218,7 +219,6 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
    const actingUserID: string | undefined = call.context.acting_user?.id;
    const botUserID: string | undefined = call.context.bot_user_id;
    const values = call.values as CreateFileForm;
-   console.log('createGoogleSlidesSubmit');
 
    const mattermostOpts: MattermostOptions = {
       mattermostUrl: <string>mattermostUrl,
@@ -332,4 +332,62 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 }
 
 export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<any> {
+   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+   const userAccessToken: string | undefined = call.context.acting_user_access_token;
+   const actingUserID: string | undefined = call.context.acting_user?.id;
+   const botUserID: string | undefined = call.context.bot_user_id;
+   const values = call.values as CreateFileForm;
+
+   const mattermostOpts: MattermostOptions = {
+      mattermostUrl: <string>mattermostUrl,
+      accessToken: <string>userAccessToken
+   };
+   const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+   const sheets = await getGoogleSheetsClient(call);
+   const params = {
+      requestBody: {
+         properties: {
+            title: values.google_file_title
+         }
+      }
+   }
+   const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+
+   const drive = await getGoogleDriveClient(call);
+   const paramExport: Params$Resource$Files$Get = {
+      fileId: <string>newSheets.spreadsheetId,
+      fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime'
+   }
+
+   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const owner = head(file.owners) as Schema$User;
+
+   let channelId: string = call.context.channel?.id as string;
+   if (!values.google_file_will_share) {
+      const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
+      channelId = channel.id;
+   }
+
+   const post: PostCreate = {
+      message: <string>values.google_file_message,
+      user_id: <string>actingUserID,
+      channel_id: channelId,
+      props: {
+         attachments: [
+            {
+               author_name: `${owner.displayName}`,
+               author_icon: `${owner?.photoLink}`,
+               title: `${file.name}`,
+               title_link: `${file.webViewLink}`,
+               footer: `Google Drive for Mattermost | ${moment(file?.createdTime).format('MMM Do, YYYY')}`,
+               footer_icon: `${file.iconLink}`,
+               fields: [],
+               actions: []
+            }
+         ]
+      }
+   };
+   await mmClient.createPost(post);
+
 }

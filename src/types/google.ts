@@ -1,3 +1,5 @@
+import { Schema } from "inspector";
+
 export type GoogleToken = {
    refresh_token?: string | null;
    expiry_date?: number | null;
@@ -351,4 +353,15 @@ export interface Schema$Presentation {
    revisionId?: string | null;
    slides?: Schema$Page[];
    title?: string | null;
+}
+
+export interface Schema$Spreadsheet {
+   dataSources?: any[];
+   dataSourceSchedules?: any[];
+   developerMetadata?: any[];
+   namedRanges?: any[];
+   properties?: any;
+   sheets?: any[];
+   spreadsheetId?: string | null;
+   spreadsheetUrl?: string | null;
 }
