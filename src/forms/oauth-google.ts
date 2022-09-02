@@ -13,7 +13,7 @@ import { isConnected } from '../utils/utils';
 import { hyperlink } from '../utils/markdown';
 import { Exception } from '../utils/exception';
 import { postBotChannel } from '../utils/post-in-channel';
-import { getOAuthGoogleClient } from '../utils/google-client';
+import { getOAuthGoogleClient } from '../clients/google-client';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {

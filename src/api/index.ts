@@ -36,9 +36,17 @@ router.post(`${Routes.App.CallPathStopNotifications}`, cNotifications.stopGoogle
 router.post(`${Routes.App.CallPathIncomingWebhookPath}`, cWebhook.filterWebhookNotification);
 
 // Create new Google Files
-router.post(`${Routes.App.CallPathCreateDocument}`, cGoogleFiles.createGoogleDoc);
-router.post(`${Routes.App.CallPathCreateSpreadsheet}`, cGoogleFiles.createGoogleSheets);
-router.post(`${Routes.App.CallPathCreatePresentation}`, cGoogleFiles.createGoogleSlides);
+router.post(`${Routes.App.CallPathCreateDocument}`, cGoogleFiles.openFormGoogleDocs);
+router.post(`${Routes.App.CallPathUpdateDocumentForm}`, cGoogleFiles.openFormGoogleDocs);
+router.post(`${Routes.App.CallPathCreateDocumentSubmit}`, cGoogleFiles.executeFormGoogleDocs);
+
+router.post(`${Routes.App.CallPathCreateSpreadsheet}`, cGoogleFiles.openFormGoogleSheets);
+router.post(`${Routes.App.CallPathUpdateSpreadsheetForm}`, cGoogleFiles.openFormGoogleSheets);
+router.post(`${Routes.App.CallPathCreateSpreadsheetSubmit}`, cGoogleFiles.executeFormGoogleSheets);
+
+router.post(`${Routes.App.CallPathCreatePresentation}`, cGoogleFiles.openFormGoogleSlides);
+router.post(`${Routes.App.CallPathUpdatePresentationForm}`, cGoogleFiles.openFormGoogleSlides);
+router.post(`${Routes.App.CallPathCreatePresentationSubmit}`, cGoogleFiles.executeFormGoogleSlides);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));

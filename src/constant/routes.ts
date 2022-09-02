@@ -27,8 +27,16 @@ const AppPaths = {
     CallPathCommentReplay: '/comment/replay',
 
     CallPathCreateDocument: '/create/document',
+    CallPathUpdateDocumentForm: '/create/document/update/form',
+    CallPathCreateDocumentSubmit: '/create/document/submit',
+
     CallPathCreatePresentation: '/create/presentation',
-    CallPathCreateSpreadsheet: '/create/spreadsheet'
+    CallPathUpdatePresentationForm: '/create/presentation/update/form',
+    CallPathCreatePresentationSubmit: '/create/presentation/submit',
+    
+    CallPathCreateSpreadsheet: '/create/spreadsheet',
+    CallPathUpdateSpreadsheetForm: '/create/spreadsheet/update/form',
+    CallPathCreateSpreadsheetSubmit: '/create/spreadsheet/submit',
 }
 
 const MattermostPaths = {

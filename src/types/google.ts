@@ -1,3 +1,5 @@
+import { Schema } from "inspector";
+
 export type GoogleToken = {
    refresh_token?: string | null;
    expiry_date?: number | null;
@@ -262,4 +264,104 @@ export interface ChannelWatchHeaders {
    'X-Goog-Resource-Id': string,
    'X-Goog-Resource-State': string,
    'X-Goog-Resource-Uri': string,
+}
+
+export interface Params$Resource$Documents$Create {
+   requestBody?: Schema$Document;
+}
+
+export interface Schema$Document {
+   body?: any;
+   documentId?: string | null;
+   documentStyle?: any;
+   footers?: {
+      [key: string]: any;
+   } | null;
+   footnotes?: {
+      [key: string]: any;
+   } | null;
+   headers?: {
+      [key: string]: any;
+   } | null;
+   inlineObjects?: {
+      [key: string]: any;
+   } | null;
+   lists?: {
+      [key: string]: any;
+   } | null;
+   namedRanges?: {
+      [key: string]: any;
+   } | null;
+   namedStyles?: any;
+   positionedObjects?: {
+      [key: string]: any;
+   } | null;
+   revisionId?: string | null;
+   suggestedDocumentStyleChanges?: {
+      [key: string]: any;
+   } | null;
+   suggestedNamedStylesChanges?: {
+      [key: string]: any;
+   } | null;
+
+   suggestionsViewMode?: string | null;
+   title?: string | null;
+}
+
+export interface Params$Resource$Files$Get extends StandardParameters {
+   fileId?: string;
+}
+
+interface StandardParameters {
+   auth?: any;
+   alt?: string;
+   fields?: string;
+   key?: string;
+   oauth_token?: string;
+   prettyPrint?: boolean;
+   quotaUser?: string;
+   userIp?: string;
+}
+
+export interface Schema$Page {
+   layoutProperties?: any;
+   masterProperties?: any;
+   notesProperties?: any;
+   objectId?: string | null;
+   pageElements?: any[];
+   pageProperties?: any;
+   pageType?: string | null;
+   revisionId?: string | null;
+   slideProperties?: any;
+}
+
+export interface Schema$Dimension {
+   magnitude?: number | null;
+   unit?: string | null;
+}
+export interface Schema$Size {
+   height?: Schema$Dimension;
+   width?: Schema$Dimension;
+}
+export interface Schema$Presentation {
+   layouts?: Schema$Page[];
+   locale?: string | null;
+   masters?: Schema$Page[];
+   notesMaster?: Schema$Page;
+   pageSize?: Schema$Size;
+   presentationId?: string | null;
+   revisionId?: string | null;
+   slides?: Schema$Page[];
+   title?: string | null;
+}
+
+export interface Schema$Spreadsheet {
+   dataSources?: any[];
+   dataSourceSchedules?: any[];
+   developerMetadata?: any[];
+   namedRanges?: any[];
+   properties?: any;
+   sheets?: any[];
+   spreadsheetId?: string | null;
+   spreadsheetUrl?: string | null;
 }
