@@ -2,7 +2,9 @@ import {
    AppCallRequest,
    AppForm,
    ChangeList, 
+   MattermostOptions, 
    Params$Resource$Replies$Create, 
+   PostCreate, 
    Schema$About, 
    Schema$Comment, 
    Schema$CommentList, 
@@ -33,6 +35,7 @@ import moment from 'moment'
 import { GoogleResourceState } from "../constant/google-kinds";
 import { head } from "lodash";
 import { CommentState, ReplyCommentFormType } from "../types/forms";
+import { MattermostClient } from "../clients";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
@@ -139,6 +142,7 @@ export async function openFormReplyComment(call: AppCallRequest): Promise<AppFor
       submit: {
          path: Routes.App.CallPathCommentReplaySubmit,
          expand: {
+            acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             post: AppExpandLevels.EXPAND_SUMMARY
@@ -162,5 +166,25 @@ export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<an
       }
    }
 
-   const reply = await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, 'Google failed: ');
+
+   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+   const postId: string | undefined = call.context.post?.id;
+   const channelId: string | undefined = call.context.post?.channel_id;
+   const actingUserID: string | undefined = call.context.acting_user?.id;
+   const botAccessToken = call.context.bot_access_token as string;
+
+   const mattermostOpts: MattermostOptions = {
+      mattermostUrl: <string>mattermostUrl,
+      accessToken: <string>botAccessToken
+   };
+   const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+   const post: PostCreate = {
+      message: `You replied to this comment with: \n"${values.google_response_comment}"`,
+      user_id: <string>actingUserID,
+      channel_id: <string>channelId,
+      root_id: postId
+   };
+   await mmClient.createPost(post);
 }
