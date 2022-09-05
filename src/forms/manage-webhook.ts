@@ -1,4 +1,6 @@
 import { 
+   AppCallRequest,
+   AppForm,
    ChangeList, 
    Schema$About, 
    Schema$Comment, 
@@ -12,7 +14,16 @@ import { getGoogleDriveClient } from "../clients/google-client";
 import { postBotChannel } from '../utils/post-in-channel';
 import manifest from '../manifest.json';
 import { h5, hyperlink, inLineImage } from '../utils/markdown';
-import { AppExpandLevels, ExceptionType } from '../constant';
+import { 
+   ActionsEvents, 
+   AppExpandLevels, 
+   AppFieldSubTypes, 
+   AppFieldTypes, 
+   ExceptionType, 
+   GoogleDriveIcon, 
+   ReplyCommentForm, 
+   Routes 
+} from '../constant';
 import {
    drive_v3,
 } from 'googleapis';
@@ -81,7 +92,10 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
             description: `${comment.quotedFileContent?.value || ' '}\n ___ \n> "${comment.content}"`,
             bindings: [
                {
+                  location: ActionsEvents.REPLY_COMMENTS,
+                  label: 'Reply to comment',
                   submit: {
+                     path: Routes.App.CallPathCommentReplayForm,
                      expand: {
                         oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
                         oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
@@ -100,4 +114,37 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
    }
    await postBotChannel(call, message, props);
    return;
+}
+
+export async function openFormReplyComment(call: AppCallRequest): Promise<AppForm> {
+   const state = call.state;
+   return {
+      title: 'Reply to comment',
+      icon: GoogleDriveIcon,
+      fields: [
+         {
+            type: AppFieldTypes.TEXT,
+            name: ReplyCommentForm.RESPONSE,
+            subtype: AppFieldSubTypes.TEXTAREA,
+            modal_label: 'Message response',
+            description: 'Add a message that will be posted as thread on the selected post',
+            is_required: true,
+         }
+      ],
+      submit: {
+         path: Routes.App.CallPathCommentReplaySubmit,
+         expand: {
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            post: AppExpandLevels.EXPAND_SUMMARY
+         },
+         state
+      },
+   }
+}
+
+
+export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<any> {
+   console.log(call);
+   
 }

@@ -230,6 +230,7 @@ export type AppExpand = {
 export type AppFormSubmit = {
     path: string;
     expand: AppExpand;
+    state?: any;
 }
 
 export type AppForm = {
