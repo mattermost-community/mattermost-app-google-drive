@@ -2,6 +2,7 @@ import {
    AppCallRequest,
    AppForm,
    ChangeList, 
+   Params$Resource$Replies$Create, 
    Schema$About, 
    Schema$Comment, 
    Schema$CommentList, 
@@ -31,6 +32,7 @@ import { tryPromise } from "../utils/utils";
 import moment from 'moment'
 import { GoogleResourceState } from "../constant/google-kinds";
 import { head } from "lodash";
+import { CommentState, ReplyCommentFormType } from "../types/forms";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
@@ -104,6 +106,9 @@ export async function firstComment(call: WebhookRequest, file: Schema$File, comm
                      state: {
                         comment: {
                            id: comment.id
+                        },
+                        file: {
+                           id: file.id
                         }
                      }
                   }
@@ -143,8 +148,19 @@ export async function openFormReplyComment(call: AppCallRequest): Promise<AppFor
    }
 }
 
-
 export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<any> {
-   console.log(call);
-   
+   const drive = await getGoogleDriveClient(call);
+   const comment: CommentState = call.state as CommentState;
+   const values = call.values as ReplyCommentFormType;
+
+   const newReply: Params$Resource$Replies$Create = {
+      commentId: comment.comment.id,
+      fileId: comment.file.id,
+      fields: '*',
+      requestBody: {
+         content: values.google_response_comment
+      }
+   }
+
+   const reply = await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, 'Google failed: ');
 }
