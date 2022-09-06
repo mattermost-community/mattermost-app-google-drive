@@ -34,6 +34,8 @@ router.post(`${Routes.App.CallPathStopNotifications}`, cNotifications.stopGoogle
 
 // Receive notifications
 router.post(`${Routes.App.CallPathIncomingWebhookPath}`, cWebhook.filterWebhookNotification);
+router.post(`${Routes.App.CallPathCommentReplayForm}`, cWebhook.replyToCommentForm);
+router.post(`${Routes.App.CallPathCommentReplaySubmit}`, cWebhook.replyToCommentSubmit);
 
 // Create new Google Files
 router.post(`${Routes.App.CallPathCreateDocument}`, cGoogleFiles.openFormGoogleDocs);

@@ -365,3 +365,9 @@ export interface Schema$Spreadsheet {
    spreadsheetId?: string | null;
    spreadsheetUrl?: string | null;
 }
+
+export interface Params$Resource$Replies$Create extends StandardParameters {
+   commentId?: string;
+   fileId?: string;
+   requestBody?: Schema$Reply;
+}

@@ -24,7 +24,8 @@ const AppPaths = {
     CallPathStopNotifications: '/notifications/stop',
 
     CallPathIncomingWebhookPath: '/webhook',
-    CallPathCommentReplay: '/comment/replay',
+    CallPathCommentReplayForm: '/comment/replay/form',
+    CallPathCommentReplaySubmit: '/comment/replay/submit',
 
     CallPathCreateDocument: '/create/document',
     CallPathUpdateDocumentForm: '/create/document/update/form',

@@ -37,3 +37,7 @@ export const modeConfiguration: AppSelectOption[] = [
       value: optConfigure.fAPIKey,
    }
 ] 
+
+export const ReplyCommentForm = Object.freeze({
+   RESPONSE: 'google_response_comment',
+})

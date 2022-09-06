@@ -181,6 +181,12 @@ export type AppContext = {
     acting_user?: AppActingUser;
     acting_user_access_token?: string;
     oauth2: any;
+    post?: {
+        id: string,
+        user_id: string,
+        channel_id: string,
+        message: string
+    }
 };
 
 export type AppContextProps = {
@@ -230,6 +236,7 @@ export type AppExpand = {
 export type AppFormSubmit = {
     path: string;
     expand: AppExpand;
+    state?: any;
 }
 
 export type AppForm = {
