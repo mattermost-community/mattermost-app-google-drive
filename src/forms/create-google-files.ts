@@ -12,7 +12,9 @@ import {
    CreateGoogleDocument, 
    ExceptionType, 
    GoogleDriveIcon, 
-   Routes 
+   notShareFileOnChannel, 
+   Routes, 
+   shareFileOnChannel
 } from "../constant";
 import { 
    AppCallRequest, 
@@ -64,6 +66,15 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
    }
 
    fields.push(
+      {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         value: values?.google_file_access,
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+      },
       {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,

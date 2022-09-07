@@ -256,7 +256,7 @@ export type AppFormValues = {[name: string]: AppFormValue};
 
 export type AppSelectOption = {
     label: string;
-    value: string;
+    value: string | null;
     icon_data?: string;
 };
 
