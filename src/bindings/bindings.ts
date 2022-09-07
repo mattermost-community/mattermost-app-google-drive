@@ -4,11 +4,12 @@ import {
    Commands, 
    Routes,
 } from "../constant";
-import { PostMenu } from "../constant/post-menu";
 import { AppBinding } from "../types";
+import manifest from '../manifest.json';
 
-export const getHelpBinding = (): any => {
+export const getHelpBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       label: Commands.HELP,
       icon: GoogleDriveIcon,
       description: 'Show Google Drive Help',
@@ -23,8 +24,9 @@ export const getHelpBinding = (): any => {
    };
 };
 
-export const getConfigureBinding = (): any => {
+export const getConfigureBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.CONFIGURE,
       description: 'Setup Google Client',
@@ -37,8 +39,9 @@ export const getConfigureBinding = (): any => {
    }
 };
 
-export const getConnectBinding = (): any => {
+export const getConnectBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.CONNECT,
       description: 'Connect your Google account',
@@ -52,8 +55,9 @@ export const getConnectBinding = (): any => {
    }
 };
 
-export const getDisconnectBinding = (): any => {
+export const getDisconnectBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.DISCONNECT,
       description: 'Disconnect from your Google account',
@@ -68,7 +72,7 @@ export const getDisconnectBinding = (): any => {
    }
 };
 
-export const getNotificationBinding = (): any => {
+export const getNotificationBinding = (): AppBinding => {
    const subCommands: string[] = [
       Commands.START,
       Commands.STOP
@@ -79,6 +83,7 @@ export const getNotificationBinding = (): any => {
    bindings.push(getNotificationStopBinding());
 
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.NOTIFICATION,
       description: 'Stop or start getting notifications about comments',
@@ -87,8 +92,9 @@ export const getNotificationBinding = (): any => {
    }
 };
 
-export const getNotificationStartBinding = (): any => {
+export const getNotificationStartBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.START,
       description: 'Start getting notified about Google Drive comments',
@@ -103,8 +109,9 @@ export const getNotificationStartBinding = (): any => {
    }
 };
 
-export const getNotificationStopBinding = (): any => {
+export const getNotificationStopBinding = (): AppBinding => {
    return {
+      app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.STOP,
       description: 'Stop getting notified about Google Drive comments',
@@ -119,11 +126,33 @@ export const getNotificationStopBinding = (): any => {
    }
 };
 
+export const getCreateGoogleFilesBinding = (): AppBinding => {
+   const commands: string[] = [
+      Commands.DOCUMENT,
+      Commands.PRESENTATION,
+      Commands.SPREADSHEET,
+   ];
 
-export const getCreateDocumentBinding = (): any => {
+   const bindings: AppBinding[] = [];
+   bindings.push(getCreateDocumentBinding());
+   bindings.push(getCreatePresentationBinding());
+   bindings.push(getCreateSpreadsheetBinding());
+
    return {
-      label: PostMenu.DOCUMENT,
-      description: 'With Google Drive',
+      app_id: manifest.app_id,
+      icon: GoogleDriveIcon,
+      label: Commands.CREATE,
+      description: 'Create new files on your Google Drive',
+      hint: `[${commands.join(' | ')}]`,
+      bindings
+   }
+}
+
+export const getCreateDocumentBinding = (): AppBinding => {
+   return {
+      app_id: manifest.app_id,
+      label: Commands.DOCUMENT,
+      description: 'Create a document with Google Drive',
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreateDocument,
@@ -136,10 +165,11 @@ export const getCreateDocumentBinding = (): any => {
    };
 };
 
-export const getCreatePresentationBinding = (): any => {
+export const getCreatePresentationBinding = (): AppBinding => {
    return {
-      label: PostMenu.PRESENTATION,
-      description: 'With Google Drive',
+      app_id: manifest.app_id,
+      label: Commands.PRESENTATION,
+      description: 'Create a presentation with Google Drive',
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreatePresentation,
@@ -152,10 +182,11 @@ export const getCreatePresentationBinding = (): any => {
    };
 };
 
-export const getCreateSpreadsheetBinding = (): any => {
+export const getCreateSpreadsheetBinding = (): AppBinding => {
    return {
-      label: PostMenu.SPREADSHEET,
-      description: 'With Google Drive',
+      app_id: manifest.app_id,
+      label: Commands.SPREADSHEET,
+      description: 'Create a spreadsheet with Google Drive',
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreateSpreadsheet,
