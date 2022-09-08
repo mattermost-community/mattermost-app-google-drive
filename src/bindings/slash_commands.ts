@@ -19,6 +19,7 @@ import {
 import { 
    getConfigureBinding, 
    getConnectBinding, 
+   getCreateGoogleFilesBinding, 
    getDisconnectBinding, 
    getHelpBinding,
    getNotificationBinding
@@ -60,6 +61,8 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
       if (isConnected(oauth2App)) {
          commands.push(Commands.NOTIFICATION);
          bindings.push(getNotificationBinding());
+         commands.push(Commands.CREATE);
+         bindings.push(getCreateGoogleFilesBinding());
       }
 
       commands.push(Commands.CONNECT);
