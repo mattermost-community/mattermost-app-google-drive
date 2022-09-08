@@ -14,9 +14,6 @@ import {
  } from "../utils/utils";
 import {
    getConnectBinding,
-   getCreateDocumentBinding, 
-   getCreatePresentationBinding, 
-   getCreateSpreadsheetBinding,
 } from "./bindings";
 import manifest from '../manifest.json';
 
@@ -36,9 +33,6 @@ export const getPostMenuBindings = async (call: AppCallRequest): Promise<AppsSta
 
    if (await existsOauth2AppConfig(oauth2App)) {
       if (isConnected(oauth2App)) {
-         bindings.push(getCreateDocumentBinding());
-         bindings.push(getCreatePresentationBinding());
-         bindings.push(getCreateSpreadsheetBinding());
       } else {
          bindings.push(getConnectBinding());
       }
