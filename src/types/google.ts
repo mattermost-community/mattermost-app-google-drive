@@ -1,4 +1,5 @@
 import { Schema } from "inspector";
+import { GooglePermissionRole, GoogleTypeGrantee } from "../constant";
 
 export type GoogleToken = {
    refresh_token?: string | null;
@@ -370,4 +371,39 @@ export interface Params$Resource$Replies$Create extends StandardParameters {
    commentId?: string;
    fileId?: string;
    requestBody?: Schema$Reply;
+}
+
+export interface Params$Resource$Permissions$Create extends StandardParameters {
+   emailMessage?: string;
+   enforceSingleParent?: boolean;
+   fileId?: string;
+   moveToNewOwnersRoot?: boolean;
+   sendNotificationEmail?: boolean;
+   supportsAllDrives?: boolean;
+   supportsTeamDrives?: boolean;
+   transferOwnership?: boolean;
+   useDomainAdminAccess?: boolean;
+   requestBody?: Schema$Permission;
+}
+
+export interface Schema$Permission {
+   allowFileDiscovery?: boolean | null;
+   deleted?: boolean | null;
+   displayName?: string | null;
+   domain?: string | null;
+   emailAddress?: string | null;
+   expirationTime?: string | null;
+   id?: string | null;
+   kind?: string | null;
+   pendingOwner?: boolean | null;
+   permissionDetails?: Array<{
+      inherited?: boolean;
+      inheritedFrom?: string;
+      permissionType?: string;
+      role?: string;
+   }> | null;
+   photoLink?: string | null;
+   role?: GooglePermissionRole;
+   type?: GoogleTypeGrantee;
+   view?: string | null;
 }

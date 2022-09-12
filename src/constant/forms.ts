@@ -1,4 +1,5 @@
 import { AppSelectOption } from "../types"
+import { GooglePermissionRole } from "./google-files"
 
 export const ConfigureClientForm = Object.freeze({
    CLIENT_ID: 'google_drive_client_id',
@@ -43,8 +44,9 @@ export const optFileShare = {
    sAEdit: 'anyone_edit',
    sCView: 'channel_view',
    sCComment: 'channel_comment',
-   scEdit: 'channel_edit',
+   sCEdit: 'channel_edit',
 }
+
 export const doNotShare: AppSelectOption = 
 {
    label: 'Keep file private',
@@ -77,16 +79,12 @@ export const fileShareChannel: AppSelectOption[] = [
    },
    {
       label: 'Member of the channel can edit',
-      value: optFileShare.scEdit
+      value: optFileShare.sCEdit
    }
 ] 
 
 export const shareFileOnChannel: AppSelectOption[] = [
    doNotShare,
-   {
-      label: 'NUUUUULL',
-      value: null
-   },
    ...fileShareChannel,
    ...fileShareAnyone
 ]
@@ -99,3 +97,12 @@ export const notShareFileOnChannel: AppSelectOption[] = [
 export const ReplyCommentForm = Object.freeze({
    RESPONSE: 'google_response_comment',
 })
+
+export const GooglePermissionRoleByOption: { [x: string]: GooglePermissionRole } = {
+   [optFileShare.sCView]: 'reader',
+   [optFileShare.sCComment]: 'commenter',
+   [optFileShare.sCEdit]: 'writer',
+   [optFileShare.sAView]: 'reader',
+   [optFileShare.sAComment]: 'commenter',
+   [optFileShare.sAEdit]: 'writer',
+}
