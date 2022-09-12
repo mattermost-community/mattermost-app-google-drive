@@ -21,6 +21,7 @@ import {
    AppField, 
    AppForm,
    Channel,
+   ChannelMember,
    MattermostOptions,
    Params$Resource$Files$Get,
    PostCreate,
@@ -29,6 +30,7 @@ import {
    Schema$Presentation,
    Schema$Spreadsheet,
    Schema$User,
+   User,
 } from "../types";
 import { 
    CreateFileForm 
@@ -36,6 +38,7 @@ import {
 import { tryPromise } from "../utils/utils";
 import { head } from "lodash";
 import moment from "moment";
+import { SHARE_FILE_ACTIONS } from "./share-google-file";
 
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
@@ -70,7 +73,6 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
          type: AppFieldTypes.STATIC_SELECT,
          name: CreateGoogleDocument.FILE_ACCESS,
          modal_label: 'File Access',
-         value: values?.google_file_access,
          description: 'Select who has access to the file',
          is_required: true,
          options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
@@ -93,7 +95,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       submit: {
          path: Routes.App.CallPathCreateDocumentSubmit,
          expand: {
-            acting_user: AppExpandLevels.EXPAND_ALL,
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -112,7 +114,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
    const actingUserID: string | undefined = call.context.acting_user?.id;
    const botUserID: string | undefined = call.context.bot_user_id;
    const values = call.values as CreateFileForm; 
-
+   
    const mattermostOpts: MattermostOptions = {
       mattermostUrl: <string>mattermostUrl,
       accessToken: <string>userAccessToken
@@ -162,7 +164,11 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
       }
    };
    await mmClient.createPost(post);
-   
+
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
 
 export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
