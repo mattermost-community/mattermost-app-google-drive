@@ -44,6 +44,9 @@ import { SHARE_FILE_ACTIONS } from "./share-google-file";
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -54,7 +57,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -75,7 +78,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
          modal_label: 'File Access',
          description: 'Select who has access to the file',
          is_required: true,
-         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
       },
       {
          modal_label: ' ',
@@ -84,7 +87,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare
       }
    );
 
@@ -174,6 +177,10 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
 export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
+
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -184,7 +191,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -205,7 +212,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
          modal_label: 'File Access',
          description: 'Select who has access to the file',
          is_required: true,
-         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
       },
       {
          modal_label: ' ',
@@ -214,7 +221,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare,
       }
    );
 
@@ -303,6 +310,10 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
 export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
+
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -313,7 +324,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -334,7 +345,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
          modal_label: 'File Access',
          description: 'Select who has access to the file',
          is_required: true,
-         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
       },
       {
          modal_label: ' ',
@@ -343,7 +354,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare
       }
    );
 

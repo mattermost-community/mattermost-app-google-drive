@@ -72,6 +72,9 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
    const users: User[] = await mmClient.getUsersById(userIDs);
    
    return users.map(async (user) => {
+      if(user.is_bot) 
+         return;
+
       const body = {
          fileId: <string>file.id,
          requestBody: {
