@@ -51,9 +51,11 @@ const MattermostPaths = {
     UserPath: `/users/${PathsVariable.Identifier}`,
     ChannelPath: `/channels/${PathsVariable.Identifier}`,
     ChannelDirectPath: `/channels/direct`,
+    MembersPath: `/members`,
     DialogsOpenPath: '/actions/dialogs/open',
     ApiVersionV4: '/api/v4',
     ApiVersionV1: '/api/v1',
+    UsersIdPath: '/users/ids',
 }
 
 export const Routes = {
