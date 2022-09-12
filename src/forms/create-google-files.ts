@@ -200,6 +200,14 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 
    fields.push(
       {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+      },
+      {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
@@ -225,7 +233,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
          }
       },
       source: {
-         path: Routes.App.CallPathUpdateDocumentForm,
+         path: Routes.App.CallPathUpdatePresentationForm,
       }
    } as AppForm;
 }
@@ -286,7 +294,10 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
       }
    };
    await mmClient.createPost(post);
-
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
 
 export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
@@ -318,6 +329,14 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 
    fields.push(
       {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: values?.google_file_will_share ? shareFileOnChannel : notShareFileOnChannel
+      },
+      {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
@@ -343,7 +362,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
          }
       },
       source: {
-         path: Routes.App.CallPathUpdateDocumentForm,
+         path: Routes.App.CallPathUpdateSpreadsheetForm,
       }
    } as AppForm;
 }
@@ -407,4 +426,8 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
    };
    await mmClient.createPost(post);
 
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
