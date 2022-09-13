@@ -35,11 +35,11 @@ export const SHARE_FILE_ACTIONS: { [key: string]: Function } = {
    [optFileShare.sCEdit]: shareWithChannel,
 };
 
-async function actNotShare(call: AppCallRequest, file: Schema$File, channelId: string,) {
+async function actNotShare(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
    return;
 }
 
-async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelId: string,) {
+async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
    const values = call.values as CreateFileForm;
    const role = GooglePermissionRoleByOption[values.google_file_access.value];
    const drive = await getGoogleDriveClient(call);
@@ -54,7 +54,7 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
    return await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, 'Google failed: ');
 }
 
-async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,) {
+async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const userAccessToken: string | undefined = call.context.acting_user_access_token;
    const values = call.values as CreateFileForm;
@@ -70,9 +70,9 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
    const membersOfChannel: ChannelMember[] = await mmClient.getChannelMembers(channelId);
    const userIDs = membersOfChannel.map(user => user.user_id);
    const users: User[] = await mmClient.getUsersById(userIDs);
-   
-   return users.map(async (user) => {
-      if(user.is_bot) 
+   for (let index = 0; index < users.length; index++) {
+      const user = users[index];
+      if (user.is_bot)
          return;
 
       const body = {
@@ -83,7 +83,9 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
             emailAddress: user.email
          }
       }
-      await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, 'Google failed: ');
-   });
+      await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, 'Google failed: ');   
+   }
+
+   return;
 }
 
