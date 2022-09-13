@@ -92,6 +92,29 @@ export type Channel = {
     creator_id: string;
 };
 
+export type ChannelMember = {
+    channel_id: string,
+    user_id: string,
+    roles: string,
+    last_viewed_at: number,
+    msg_count: number,
+    mention_count: number,
+    mention_count_root: number,
+    msg_count_root: number,
+    notify_props: {
+        desktop: string,
+        email: string
+        ignore_channel_mentions: string
+        mark_unread: string
+        push: string
+    },
+    last_update_at: number,
+    scheme_guest: boolean,
+    scheme_user: boolean,
+    scheme_admin: boolean,
+    explicit_roles: string
+}
+
 export type AttachmentOption = {
     text: string;
     value: string;

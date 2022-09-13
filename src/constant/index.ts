@@ -4,6 +4,7 @@ export * from './commands';
 export * from './exception-type';
 export * from './forms';
 export * from './general';
+export * from './google-files';
 export * from './google-kinds';
 export * from './google-scopes';
 export * from './post-menu';

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import {
     Channel,
+    ChannelMember,
     DialogProps,
     MattermostOptions,
     PostCreate,
@@ -107,6 +108,24 @@ export class MattermostClient {
     public createDirectChannel(ids: string[]): Promise<any> {
         const url: string = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ChannelDirectPath}`;
         return axios.post(url, ids, {
+            headers: {
+                Authorization: `Bearer ${this.config.accessToken}`
+            }
+        }).then((response: AxiosResponse<any>) => response.data);
+    }
+
+    public getChannelMembers(channelId: string): Promise<ChannelMember[]> {
+        const url: string = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ChannelPath}${Routes.MM.MembersPath}`;
+        return axios.get(replace(url, Routes.PV.Identifier, channelId), {
+            headers: {
+                Authorization: `Bearer ${this.config.accessToken}`
+            }
+        }).then((response: AxiosResponse<any>) => response.data);
+    }
+
+    public getUsersById(usersIDs: string[]): Promise<User[]> {
+        const url: string = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.UsersIdPath}`;
+        return axios.post(url, usersIDs, {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`
             }

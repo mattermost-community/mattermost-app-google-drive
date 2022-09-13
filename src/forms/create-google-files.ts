@@ -12,13 +12,16 @@ import {
    CreateGoogleDocument, 
    ExceptionType, 
    GoogleDriveIcon, 
-   Routes 
+   notShareFileOnChannel, 
+   Routes, 
+   shareFileOnChannel
 } from "../constant";
 import { 
    AppCallRequest, 
    AppField, 
    AppForm,
    Channel,
+   ChannelMember,
    MattermostOptions,
    Params$Resource$Files$Get,
    PostCreate,
@@ -27,6 +30,7 @@ import {
    Schema$Presentation,
    Schema$Spreadsheet,
    Schema$User,
+   User,
 } from "../types";
 import { 
    CreateFileForm 
@@ -34,11 +38,15 @@ import {
 import { tryPromise } from "../utils/utils";
 import { head } from "lodash";
 import moment from "moment";
+import { SHARE_FILE_ACTIONS } from "./share-google-file";
 
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -49,7 +57,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -65,13 +73,21 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
 
    fields.push(
       {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+      },
+      {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare
       }
    );
 
@@ -82,7 +98,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       submit: {
          path: Routes.App.CallPathCreateDocumentSubmit,
          expand: {
-            acting_user: AppExpandLevels.EXPAND_ALL,
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -101,7 +117,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
    const actingUserID: string | undefined = call.context.acting_user?.id;
    const botUserID: string | undefined = call.context.bot_user_id;
    const values = call.values as CreateFileForm; 
-
+   
    const mattermostOpts: MattermostOptions = {
       mattermostUrl: <string>mattermostUrl,
       accessToken: <string>userAccessToken
@@ -151,12 +167,20 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
       }
    };
    await mmClient.createPost(post);
-   
+
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
 
 export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
+
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -167,7 +191,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -183,13 +207,21 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 
    fields.push(
       {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+      },
+      {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare,
       }
    );
 
@@ -208,7 +240,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
          }
       },
       source: {
-         path: Routes.App.CallPathUpdateDocumentForm,
+         path: Routes.App.CallPathUpdatePresentationForm,
       }
    } as AppForm;
 }
@@ -269,12 +301,19 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
       }
    };
    await mmClient.createPost(post);
-
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
 
 export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
 
    const values = call.values as CreateFileForm;
+   const willShare = values?.google_file_will_share != undefined
+      ? values?.google_file_will_share
+      : true;
+
    const fields: AppField[] = [
       {
          type: AppFieldTypes.TEXT,
@@ -285,7 +324,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
       },
    ];
 
-   if (!!values?.google_file_will_share) {
+   if (!!willShare) {
       fields.push(
          {
             type: AppFieldTypes.TEXT,
@@ -301,13 +340,21 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 
    fields.push(
       {
+         type: AppFieldTypes.STATIC_SELECT,
+         name: CreateGoogleDocument.FILE_ACCESS,
+         modal_label: 'File Access',
+         description: 'Select who has access to the file',
+         is_required: true,
+         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+      },
+      {
          modal_label: ' ',
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
          hint: 'Share on this channel',
-         value: values?.google_file_will_share,
+         value: willShare
       }
    );
 
@@ -326,7 +373,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
          }
       },
       source: {
-         path: Routes.App.CallPathUpdateDocumentForm,
+         path: Routes.App.CallPathUpdateSpreadsheetForm,
       }
    } as AppForm;
 }
@@ -390,4 +437,8 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
    };
    await mmClient.createPost(post);
 
+   const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+   if (shareFile) {
+      await shareFile(call, file, channelId);
+   }
 }
