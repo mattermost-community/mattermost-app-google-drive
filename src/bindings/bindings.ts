@@ -3,6 +3,7 @@ import {
    GoogleDriveIcon, 
    Commands, 
    Routes,
+   PostMenu,
 } from "../constant";
 import { AppBinding } from "../types";
 import manifest from '../manifest.json';
@@ -194,6 +195,21 @@ export const getCreateSpreadsheetBinding = (): AppBinding => {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         }
+      },
+   };
+};
+
+export const saveFileOnDriveBinding = (): AppBinding => {
+   return {
+      app_id: manifest.app_id,
+      label: PostMenu.SAVE_FILE,
+      icon: GoogleDriveIcon,
+      submit: {
+         path: Routes.App.CallPathSaveFileCall,
+         expand: {
+            acting_user_access_token: AppExpandLevels.EXPAND_ALL,
+            post: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
    };

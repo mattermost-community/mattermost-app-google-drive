@@ -38,6 +38,9 @@ const AppPaths = {
     CallPathCreateSpreadsheet: '/create/spreadsheet',
     CallPathUpdateSpreadsheetForm: '/create/spreadsheet/update/form',
     CallPathCreateSpreadsheetSubmit: '/create/spreadsheet/submit',
+
+    CallPathSaveFileCall: '/save/file/call',
+    CallPathSaveFileSubmit: '/save/file/submit',
 }
 
 const MattermostPaths = {
@@ -56,6 +59,7 @@ const MattermostPaths = {
     ApiVersionV4: '/api/v4',
     ApiVersionV1: '/api/v1',
     UsersIdPath: '/users/ids',
+    FilePath: `/files/${PathsVariable.Identifier}`,
 }
 
 export const Routes = {

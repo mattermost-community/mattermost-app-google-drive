@@ -1,5 +1,3 @@
 export const PostMenu = {
-   DOCUMENT: 'Create a document',
-   PRESENTATION: 'Create a presentation',
-   SPREADSHEET: 'Create a spreadsheet'
+   SAVE_FILE: 'Save file on Drive',
 }

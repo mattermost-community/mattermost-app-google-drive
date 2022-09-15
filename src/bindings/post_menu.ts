@@ -14,6 +14,7 @@ import {
  } from "../utils/utils";
 import {
    getConnectBinding,
+   saveFileOnDriveBinding
 } from "./bindings";
 import manifest from '../manifest.json';
 
@@ -33,11 +34,11 @@ export const getPostMenuBindings = async (call: AppCallRequest): Promise<AppsSta
 
    if (await existsOauth2AppConfig(oauth2App)) {
       if (isConnected(oauth2App)) {
+         bindings.push(saveFileOnDriveBinding());
       } else {
          bindings.push(getConnectBinding());
       }
    }
-
 
    return newPostMenuBindings(bindings);
 };

@@ -9,6 +9,7 @@ import * as cConnect from './connect';
 import * as cNotifications from './notification';
 import * as cWebhook from './webhook';
 import * as cGoogleFiles from './create-files';
+import * as cUploadFile from './upload-file';
 
 const router: Router = express.Router();
 
@@ -49,6 +50,10 @@ router.post(`${Routes.App.CallPathCreateSpreadsheetSubmit}`, cGoogleFiles.execut
 router.post(`${Routes.App.CallPathCreatePresentation}`, cGoogleFiles.openFormGoogleSlides);
 router.post(`${Routes.App.CallPathUpdatePresentationForm}`, cGoogleFiles.openFormGoogleSlides);
 router.post(`${Routes.App.CallPathCreatePresentationSubmit}`, cGoogleFiles.executeFormGoogleSlides);
+
+// Upload files to Drive
+router.post(`${Routes.App.CallPathSaveFileCall}`, cUploadFile.uploadFileToDriveCall);
+router.post(`${Routes.App.CallPathSaveFileSubmit}`, cUploadFile.uploadFileToDriveSubmit);
 
 const staticRouter = express.Router();
 staticRouter.use(express.static('static'));

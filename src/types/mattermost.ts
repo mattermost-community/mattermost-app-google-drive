@@ -133,6 +133,23 @@ export type AttachmentAction = {
     options?: AttachmentOption[];
 }
 
+export type Metadata_File = {
+    id: string,
+    user_id: string,
+    post_id: string,
+    channel_id: string,
+    create_at: number,
+    update_at: number,
+    delete_at: number,
+    name: string,
+    extension: string,
+    size: number,
+    mime_type: string,
+    mini_preview: any,
+    remote_id: string,
+    archived: boolean
+}
+
 export type Attachment = {
     text?: string;
     title?: string;
@@ -180,7 +197,17 @@ export type PostResponse = {
     root_id: string,
     original_id: string,
     message: string,
-    props: { attachments: Attachment[]; }
+    props: { attachments: Attachment[]; },
+    type: string,
+    hashtags: string,
+    file_ids: string[],
+    pending_post_id: string,
+    reply_count: number,
+    last_reply_at: number,
+    participants: any,
+    metadata: {
+        files: Metadata_File[]
+    }
 }
 
 export type PostUpdate = {

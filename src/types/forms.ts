@@ -1,4 +1,4 @@
-import { CreateGoogleDocument, ReplyCommentForm } from "../constant";
+import { CreateGoogleDocument, FilesToUpload, ReplyCommentForm } from "../constant";
 import { AppSelectOption } from "./apps";
 
 export interface CreateFileForm {
@@ -6,6 +6,10 @@ export interface CreateFileForm {
    [CreateGoogleDocument.MESSAGE]: string | null;
    [CreateGoogleDocument.WILL_SHARE]: boolean;
    [CreateGoogleDocument.FILE_ACCESS]: AppSelectOption;
+}
+
+export interface SelectedUploadFilesForm {
+   [FilesToUpload.FILES]: AppSelectOption[];
 }
 
 export interface ReplyCommentFormType {
