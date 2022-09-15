@@ -42,6 +42,10 @@ export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, mes
     });
 }
 
+export function throwException(exceptionType: ExceptionType, message: string) {
+    throw new Exception(exceptionType, `${message}`);
+}
+
 export function showMessageToMattermost(exception: Exception | Error): AppCallResponse {
     if (!(exception instanceof Exception)) {
         return newErrorCallResponseWithMessage(exception.message);

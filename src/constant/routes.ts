@@ -38,6 +38,9 @@ const AppPaths = {
     CallPathCreateSpreadsheet: '/create/spreadsheet',
     CallPathUpdateSpreadsheetForm: '/create/spreadsheet/update/form',
     CallPathCreateSpreadsheetSubmit: '/create/spreadsheet/submit',
+
+    CallPathSaveFileCall: '/save/file/call',
+    CallPathSaveFileSubmit: '/save/file/submit',
 }
 
 const MattermostPaths = {

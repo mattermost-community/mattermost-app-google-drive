@@ -180,7 +180,15 @@ export type PostResponse = {
     root_id: string,
     original_id: string,
     message: string,
-    props: { attachments: Attachment[]; }
+    props: { attachments: Attachment[]; },
+    type: string,
+    hashtags: string,
+    file_ids: string[],
+    pending_post_id: string,
+    reply_count: number,
+    last_reply_at: number,
+    participants: any,
+    metadata: any
 }
 
 export type PostUpdate = {
