@@ -59,6 +59,7 @@ const MattermostPaths = {
     ApiVersionV4: '/api/v4',
     ApiVersionV1: '/api/v1',
     UsersIdPath: '/users/ids',
+    FilePath: `/files/${PathsVariable.Identifier}`,
 }
 
 export const Routes = {
