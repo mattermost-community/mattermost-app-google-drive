@@ -271,7 +271,7 @@ export type AppField = {
     readonly?: boolean;
 
     // Present (default) value of the field
-    value?: AppFormValue;
+    value?: AppFormValue | AppSelectOption[];
     placeholder?: string,
     description?: string;
 

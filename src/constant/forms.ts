@@ -22,6 +22,10 @@ export const optConfigure = {
    fNone: ''
 }
 
+export const FilesToUpload = Object.freeze({
+   FILES: 'upload_file_google_drive'
+});
+
 export const modeConfiguration: AppSelectOption[] = [
    {
       label: 'Do not use a Service Account',
