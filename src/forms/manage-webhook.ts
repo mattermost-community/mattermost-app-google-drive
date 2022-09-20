@@ -1,32 +1,17 @@
 import { 
-   AppCallRequest,
-   AppForm,
    ChangeList, 
-   MattermostOptions, 
-   Params$Resource$Replies$Create, 
-   PostCreate, 
-   Schema$About, 
-   Schema$Comment, 
-   Schema$CommentList, 
    Schema$File, 
    GA$QueryDriveActivityResponse, 
-   Schema$User, 
    StartPageToken, 
-   WebhookRequest 
+   WebhookRequest, 
+   GA$DriveActivity
 } from "../types";
-import { getGoogleDriveActivityClient, getGoogleDriveClient } from "../clients/google-client";
-import { postBotChannel } from '../utils/post-in-channel';
-import manifest from '../manifest.json';
-import { h5, hyperlink, inLineImage } from '../utils/markdown';
 import { 
-   ActionsEvents, 
-   AppExpandLevels, 
-   AppFieldSubTypes, 
-   AppFieldTypes, 
+   getGoogleDriveActivityClient, 
+   getGoogleDriveClient 
+} from "../clients/google-client";
+import { 
    ExceptionType, 
-   GoogleDriveIcon, 
-   ReplyCommentForm, 
-   Routes 
 } from '../constant';
 import {
    drive_v3,
@@ -35,8 +20,8 @@ import { tryPromise } from "../utils/utils";
 import moment from 'moment'
 import { GoogleResourceState } from "../constant/google-kinds";
 import { head } from "lodash";
-import { CommentState, ReplyCommentFormType } from "../types/forms";
-import { MattermostClient } from "../clients";
+import { manageCommentOnFile } from "./webhook-notifications/comments";
+import { sharedAFile } from "./webhook-notifications/shared-file";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
@@ -57,76 +42,27 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
       fields: '*'
    }
 
-   const activity = await getGoogleDriveActivityClient(call);
-   const paramsActivity = {
-      pageSize: 1,
-   };
-   const res = await tryPromise<GA$QueryDriveActivityResponse>(activity.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
-   
-
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const file = head(list.changes)?.file as Schema$File;
-
    const modifiedTime: string = moment(file.modifiedTime).subtract(1, 'second').toISOString();
 
-   const commentParam = {
-      fileId: <string>file.id,
-      startModifiedTime: modifiedTime,
-      pageToken: (Number(pageToken?.startPageToken) - 1).toString(),
-      fields: '*'
-   }
-   const commentRes = await tryPromise<Schema$CommentList>(drive.comments.list(commentParam), ExceptionType.TEXT_ERROR, 'Google failed: ');
-   if (!commentRes.comments?.length) {
+   const activityClient = await getGoogleDriveActivityClient(call);
+   const paramsActivity = {
+      pageSize: 1,
+      filter: `time >= \"${modifiedTime}\" AND time < \"${file.modifiedTime}\"`
+   };
+
+   const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   if (!Object.keys(activityRes).length) {
+      await sharedAFile(call, file);
       return;
    }
-   const comment = head(commentRes.comments) as Schema$Comment;
-   const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({fields: 'user'}), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
-   if (moment(comment.createdTime).diff(comment.modifiedTime) === 0) {
-      await firstComment(call, file, comment, about.user);
+   const activity = head(activityRes?.activities) as GA$DriveActivity;
+   if (!!activity.primaryActionDetail?.comment) {
+      await manageCommentOnFile(call, file, activity);
+      return;
    }
-
-   return;
 }
 
-export async function firstComment(call: WebhookRequest, file: Schema$File, comment: Schema$Comment, user: Schema$User): Promise<void> {
-   const m = manifest;
-   const author = comment.author;
-   const message = comment.content?.includes(<string>user.emailAddress)
-      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`)
-      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>file?.webViewLink)}`);
 
-   const props = {
-      app_bindings: [
-         {
-            location: "embedded",
-            app_id: m.app_id,
-            description: `${comment.quotedFileContent?.value || ' '}\n ___ \n> "${comment.content}"`,
-            bindings: [
-               {
-                  location: ActionsEvents.REPLY_COMMENTS,
-                  label: 'Reply to comment',
-                  submit: {
-                     path: Routes.App.CallPathCommentReplayForm,
-                     expand: {
-                        oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-                        oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-                        post: AppExpandLevels.EXPAND_SUMMARY
-                     },
-                     state: {
-                        comment: {
-                           id: comment.id
-                        },
-                        file: {
-                           id: file.id
-                        }
-                     }
-                  }
-               }
-            ]
-         }
-      ]
-   }
-   await postBotChannel(call, message, props);
-   return;
-}

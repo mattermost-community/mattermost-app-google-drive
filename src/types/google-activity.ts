@@ -1,3 +1,4 @@
+import { GoogleCommentSubtypeEnum } from "../constant/google-activity-comment";
 
 export interface GA$QueryDriveActivityResponse {
    activities?: GA$DriveActivity[];
@@ -57,7 +58,7 @@ export interface GA$ActionDetail {
 export interface GA$Target {
    drive?: any;
    driveItem?: any;
-   fileComment?: any;
+   fileComment?: GA$FileComment;
    teamDrive?: any;
 }
 
@@ -80,7 +81,7 @@ export interface GA$Comment {
    assignment?: GA$Assignment;
    mentionedUsers?: GA$User[];
    post?: {
-      subtype?: string | null;
+      subtype?: GA$CommentSubtype;
    },
    suggestion?: {
       subtype?: string | null;
@@ -91,3 +92,35 @@ export interface GA$Assignment {
    assignedUser?: GA$User;
    subtype?: string | null;
 }
+
+export interface GA$FileComment {
+   legacyCommentId?: string | null;
+   legacyDiscussionId?: string | null;
+   linkToDiscussion?: string | null;
+   parent?: Schema$DriveItem;
+}
+
+export interface Schema$DriveItem {
+   driveFile?: any;
+   driveFolder?: GA$DriveFolder;
+   file?: any;
+   folder?: any;
+   mimeType?: string | null;
+   name?: string | null;
+   owner?: any;
+   title?: string | null;
+}
+
+export interface GA$DriveFolder {
+   type?: string | null;
+}
+
+export type GA$CommentSubtype = 
+   'SUBTYPE_UNSPECIFIED' |	//Subtype not available.
+   'ADDED' |	//A post was added.
+   'DELETED' |	// A post was deleted.
+   'REPLY_ADDED' |	// A reply was added.
+   'REPLY_DELETED' |	// A reply was deleted.
+   'RESOLVED' |	// A posted comment was resolved.
+   'REOPENED'; // A posted comment was reopened.
+
