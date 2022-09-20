@@ -2,6 +2,7 @@ import { head, last } from "lodash";
 import { getGoogleDriveClient } from "../../clients/google-client";
 import { ActionsEvents, AppExpandLevels, ExceptionType, Routes } from "../../constant";
 import { 
+   GA$Actor,
    GA$CommentSubtype, 
    GA$DriveActivity, 
    GA$Target, 
@@ -34,9 +35,9 @@ export async function manageCommentOnFile(call: WebhookRequest, file: Schema$Fil
 const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: Function } = {
    SUBTYPE_UNSPECIFIED: funCommentSubtypeUnspecified,
    ADDED: funCommentAdded,
-   DELETED: funCommentSubtypeUnspecified,
+   DELETED: funCommentDeleted,
    REPLY_ADDED: funCommentReplyAdded,
-   REPLY_DELETED: funCommentSubtypeUnspecified,
+   REPLY_DELETED: funCommentReplyDeleted,
    RESOLVED: funCommentResolved,
    REOPENED: funCommentReOpened,
 };
@@ -173,6 +174,23 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 
 }
 
+async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+   const target = head(activity.targets) as GA$Target;
+   const urlToComment = target.fileComment?.linkToDiscussion as string;
+
+   const message = h5(`A comment was deleted in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+   await postBotChannel(call, message, {});
+   return;
+}
+
+async function funCommentReplyDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+   const target = head(activity.targets) as GA$Target;
+   const urlToComment = target.fileComment?.linkToDiscussion as string;
+
+   const message = h5(`A comment reply was deleted in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+   await postBotChannel(call, message, {});
+   return;
+}
 
 export async function postNewCommentOnMattermost(call: WebhookRequest, postData: PostBasicData, state: StateCommentPost): Promise<void> {
    const props = {
