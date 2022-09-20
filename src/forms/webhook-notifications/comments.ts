@@ -1,4 +1,4 @@
-import { head } from "lodash";
+import { head, last } from "lodash";
 import { getGoogleDriveClient } from "../../clients/google-client";
 import { ActionsEvents, AppExpandLevels, ExceptionType, Routes } from "../../constant";
 import { 
@@ -10,6 +10,7 @@ import {
    Schema$Comment, 
    Schema$CommentList, 
    Schema$File, 
+   Schema$Reply, 
    Schema$User, 
    StateCommentPost, 
    WebhookRequest 
@@ -34,7 +35,7 @@ const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: Function } = {
    SUBTYPE_UNSPECIFIED: funCommentSubtypeUnspecified,
    ADDED: funCommentAdded,
    DELETED: funCommentSubtypeUnspecified,
-   REPLY_ADDED: funCommentSubtypeUnspecified,
+   REPLY_ADDED: funCommentReplyAdded,
    REPLY_DELETED: funCommentSubtypeUnspecified,
    RESOLVED: funCommentSubtypeUnspecified,
    REOPENED: funCommentSubtypeUnspecified,
@@ -63,7 +64,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
       ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
       : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`);
 
-   const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> "${comment.content}"`;
+   const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> ${comment.content}`;
 
    const postData: PostBasicData = {
       message: message,
@@ -81,6 +82,38 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 }
 
 async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+   const drive = await getGoogleDriveClient(call);
+   const target = head(activity.targets) as GA$Target;
+   const urlToComment = target.fileComment?.linkToDiscussion as string;
+
+   const commentParam = {
+      fileId: <string>file.id,
+      commentId: <string>target.fileComment?.legacyDiscussionId,
+      fields: '*'
+   }
+
+   const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const lastReply = last(comment.replies) as Schema$Reply;
+   const author = lastReply.author;
+   
+   const message = h5(`${author?.displayName} replied to a comment in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+
+   const description = `\n> ${lastReply.content}`;
+
+   const postData: PostBasicData = {
+      message: message,
+      description: description
+   }
+   const state: StateCommentPost = {
+      comment: {
+         id: <string>target.fileComment?.legacyDiscussionId,
+      },
+      file: {
+         id: <string>file.id,
+      }
+   }
+   await postNewCommentOnMattermost(call, postData, state);
+
 }
 
 
