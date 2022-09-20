@@ -8,6 +8,7 @@ import * as cConfigure from './configure';
 import * as cConnect from './connect';
 import * as cNotifications from './notification';
 import * as cWebhook from './webhook';
+import * as cReplyComments from './reply-comments';
 import * as cGoogleFiles from './create-files';
 import * as cUploadFile from './upload-file';
 
@@ -35,8 +36,10 @@ router.post(`${Routes.App.CallPathStopNotifications}`, cNotifications.stopGoogle
 
 // Receive notifications
 router.post(`${Routes.App.CallPathIncomingWebhookPath}`, cWebhook.filterWebhookNotification);
-router.post(`${Routes.App.CallPathCommentReplayForm}`, cWebhook.replyToCommentForm);
-router.post(`${Routes.App.CallPathCommentReplaySubmit}`, cWebhook.replyToCommentSubmit);
+
+// Reply to comments
+router.post(`${Routes.App.CallPathCommentReplayForm}`, cReplyComments.replyToCommentForm);
+router.post(`${Routes.App.CallPathCommentReplaySubmit}`, cReplyComments.replyToCommentSubmit);
 
 // Create new Google Files
 router.post(`${Routes.App.CallPathCreateDocument}`, cGoogleFiles.openFormGoogleDocs);
