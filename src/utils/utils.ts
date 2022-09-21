@@ -1,10 +1,9 @@
 import GeneralConstants from '../constant/general';
-import { AppActingUser, AppCallResponse, KVStoreProps, Oauth2App } from '../types';
-import { ExceptionType, StoreKeys } from '../constant';
+import { AppActingUser, AppCallResponse, Oauth2App } from '../types';
+import { ExceptionType } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
 import config from '../config';
-import { KVStoreClient } from '../clients';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);

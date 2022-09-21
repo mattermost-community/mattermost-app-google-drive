@@ -23,6 +23,7 @@ import {
 } from '../clients/kvstore';
 import { hyperlink } from '../utils/markdown';
 import manifest from '../manifest.json';
+import GeneralConstants from '../constant/general';
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
     const homepageUrl: string = manifest.homepage_url;
@@ -101,7 +102,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             extraField = {
                 type: AppFieldTypes.TEXT,
                 subtype: AppFieldSubTypes.TEXTAREA,
-                max_length: 32 * 1024,
+                max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
                 name: ConfigureClientForm.SERVICE_ACCOUNT,
                 modal_label: 'Service Account (JSON)',
                 value: saJson,
