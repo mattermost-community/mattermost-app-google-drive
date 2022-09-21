@@ -50,8 +50,8 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
-   //const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const mattermostUrl = 'https://d0ea-201-160-205-130.ngrok.io'; // Change when in production
+   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+   //const mattermostUrl = 'https://d0ea-201-160-205-130.ngrok.io'; // Change when in production
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const appPath: string | undefined = call.context.app_path;
    const whSecret: string | undefined = call.context.app?.webhook_secret;
