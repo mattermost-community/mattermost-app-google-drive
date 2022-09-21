@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { 
    KVStoreClient 
 } from "../clients";
+require('dotenv').config('../');
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
@@ -50,11 +51,12 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   //const mattermostUrl = 'https://d0ea-201-160-205-130.ngrok.io'; // Change when in production
+   const mattermostUrl: string | undefined = process.env.LOCAL == 'TRUE' ?
+      process.env.MATTERMOST_URL as string :
+      call.context.mattermost_site_url;
+
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const appPath: string | undefined = call.context.app_path;
-   const whSecret: string | undefined = call.context.app?.webhook_secret;
    const actingUser: string | undefined = call.context.acting_user?.id;
 
    const drive = await getGoogleDriveClient(call);
@@ -62,7 +64,6 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
    
    const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
-   urlWithParams.searchParams.append('secret', <string>whSecret);
    urlWithParams.searchParams.append('userId', <string>actingUser);
 
    const params = {
@@ -74,7 +75,6 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
          address: urlWithParams.href,
          type: "web_hook",
          payload: true,
-         ttl: 3600,
          params: {
             userId: <string>actingUser
          }
