@@ -14,6 +14,7 @@ import {
    slides_v1,
    sheets_v4,
    Auth,
+   driveactivity_v2,
 } from 'googleapis';
 
 
@@ -30,7 +31,7 @@ export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.O
    return oAuth2Client;
 }
 
-export const getGoogleDriveClient = async (call: AppCallRequest): Promise<drive_v3.Drive> => {
+export const getGoogleOAuth = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const userID: string | undefined = call.context.acting_user?.id;
@@ -48,84 +49,51 @@ export const getGoogleDriveClient = async (call: AppCallRequest): Promise<drive_
    const oauth2Client = await getOAuthGoogleClient(call);
    oauth2Client.setCredentials(oauth2Token);
    await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, 'Google failed: ');
+   return oauth2Client;
+}
+
+export const getGoogleDriveClient = async (call: AppCallRequest): Promise<drive_v3.Drive> => {
+   const auth = await getGoogleOAuth(call);
 
    return google.drive({
       version: 'v3',
-      auth: oauth2Client,
+      auth: auth,
    });
 }
 
+export const getGoogleDriveActivityClient = async (call: AppCallRequest): Promise<driveactivity_v2.Driveactivity> => {
+   const auth = await getGoogleOAuth(call);
+
+   return google.driveactivity({
+      version: 'v2',
+      auth: auth,
+   });
+}
+
+
 export const getGoogleDocsClient = async (call: AppCallRequest): Promise<docs_v1.Docs> => {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const botAccessToken: string | undefined = call.context.bot_access_token;
-   const userID: string | undefined = call.context.acting_user?.id;
-   let oauth2Token = call.context.oauth2?.user as Oauth2CurrentUser;
-
-   if (!oauth2Token?.refresh_token) {
-      const kvOptions: KVStoreOptions = {
-         mattermostUrl: <string>mattermostUrl,
-         accessToken: <string>botAccessToken
-      };
-      const kvStoreClient = new KVStoreClient(kvOptions);
-      oauth2Token = await kvStoreClient.kvGet(<string>userID);
-   }
-
-   const oauth2Client = await getOAuthGoogleClient(call);
-   oauth2Client.setCredentials(oauth2Token);
-   await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, 'Google failed: ');
+   const auth = await getGoogleOAuth(call);
 
    return google.docs({
       version: 'v1',
-      auth: oauth2Client,
+      auth: auth,
    })
 }
 
 export const getGoogleSlidesClient = async (call: AppCallRequest): Promise<slides_v1.Slides> => {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const botAccessToken: string | undefined = call.context.bot_access_token;
-   const userID: string | undefined = call.context.acting_user?.id;
-   let oauth2Token = call.context.oauth2?.user as Oauth2CurrentUser;
-
-   if (!oauth2Token?.refresh_token) {
-      const kvOptions: KVStoreOptions = {
-         mattermostUrl: <string>mattermostUrl,
-         accessToken: <string>botAccessToken
-      };
-      const kvStoreClient = new KVStoreClient(kvOptions);
-      oauth2Token = await kvStoreClient.kvGet(<string>userID);
-   }
-
-   const oauth2Client = await getOAuthGoogleClient(call);
-   oauth2Client.setCredentials(oauth2Token);
-   await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, 'Google failed: ');
+   const auth = await getGoogleOAuth(call);
 
    return google.slides({
       version: 'v1',
-      auth: oauth2Client,
+      auth: auth,
    })
 }
 
 export const getGoogleSheetsClient = async (call: AppCallRequest): Promise<sheets_v4.Sheets> => {
-   const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-   const botAccessToken: string | undefined = call.context.bot_access_token;
-   const userID: string | undefined = call.context.acting_user?.id;
-   let oauth2Token = call.context.oauth2?.user as Oauth2CurrentUser;
-
-   if (!oauth2Token?.refresh_token) {
-      const kvOptions: KVStoreOptions = {
-         mattermostUrl: <string>mattermostUrl,
-         accessToken: <string>botAccessToken
-      };
-      const kvStoreClient = new KVStoreClient(kvOptions);
-      oauth2Token = await kvStoreClient.kvGet(<string>userID);
-   }
-
-   const oauth2Client = await getOAuthGoogleClient(call);
-   oauth2Client.setCredentials(oauth2Token);
-   await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, 'Google failed: ');
-
+   const auth = await getGoogleOAuth(call);
+   
    return google.sheets({
       version: 'v4',
-      auth: oauth2Client,
+      auth: auth,
    })
 }

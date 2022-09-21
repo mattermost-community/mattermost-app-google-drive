@@ -11,8 +11,8 @@ export const Commands = {
    START: 'start',
    STOP: 'stop',
    DOCUMENT: 'document',
-   PRESENTATION: 'presentation',
-   SPREADSHEET: 'spreadsheet'
+   PRESENTATION: 'slide',
+   SPREADSHEET: 'sheet'
 }
 
 export const CommandsDescriptions = {

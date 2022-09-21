@@ -313,3 +313,15 @@ export type GoogleWebhook = {
     httpMethod: 'POST' | 'GET',
     rawQuery: string,
 }
+export type ObjectId = {
+    id: string
+}
+export type PostBasicData = { 
+    message: string, 
+    description: string 
+}
+
+export type StateCommentPost = {
+    comment: ObjectId,
+    file: ObjectId
+}
