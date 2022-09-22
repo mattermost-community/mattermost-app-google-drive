@@ -18,7 +18,7 @@ import {
    drive_v3,
 } from 'googleapis';
 import { tryPromise } from "../utils/utils";
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 import { GoogleResourceState } from "../constant/google-kinds";
 import { head } from "lodash";
 import { manageCommentOnFile } from "./webhook-notifications/comments";
@@ -48,22 +48,24 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const lastChange = head(list.changes) as Change;
    const file = lastChange?.file as Schema$File;
-   const changeTime: string = moment(lastChange.time).toISOString();
-   const fileModified: string = moment(file.modifiedTime).toISOString();
+   const changeTime: Moment = moment(lastChange.time);
+   const fileModified: Moment = moment(file.modifiedTime);
    
-   if (moment(changeTime).diff(moment(fileModified)) > GeneralConstants.SECOND_AND_HALF) {
+   if (!!file.lastModifyingUser?.me || moment(changeTime).diff(moment(fileModified)) > GeneralConstants.SECOND_AND_HALF) {
       return;
    }
 
-   const modifiedTime: string = moment(file.modifiedTime).subtract(GeneralConstants.REMOVE_ONE, 'second').toISOString();
+   const modifiedTime: Moment = moment(file.modifiedTime).subtract(GeneralConstants.REMOVE_ONE, 'second');
 
    const activityClient = await getGoogleDriveActivityClient(call);
    const paramsActivity = {
       pageSize: GeneralConstants.PAGE_ONE,
-      filter: `time >= \"${modifiedTime}\" AND time < \"${fileModified}\"`
+      filter: `time >= \"${ modifiedTime.toISOString() }\" AND time < \"${ fileModified.toISOString() }\"`,
+      itemName: `items/${file.id}`
    };
 
    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
+
    if (!Object.keys(activityRes).length) {
       await sharedAFile(call, file);
       return;
