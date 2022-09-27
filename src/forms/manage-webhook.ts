@@ -18,17 +18,17 @@ import {
    drive_v3,
 } from 'googleapis';
 import { tryPromise } from "../utils/utils";
-import moment, { Moment } from 'moment'
 import { GoogleResourceState } from "../constant/google-kinds";
 import { head } from "lodash";
 import { manageCommentOnFile } from "./webhook-notifications/comments";
-import { sharedAFile } from "./webhook-notifications/shared-file";
+import { permissionsChanged } from "./webhook-notifications/permissions-change";
 import GeneralConstants from '../constant/general';
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
       return;
    }
+   
    const paramsd = new URLSearchParams(call.values.rawQuery);
    const userId = paramsd.get('userId');
 
@@ -37,7 +37,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    }
    call.context = { ...call.context, acting_user }
 
-   
    const drive: drive_v3.Drive = await getGoogleDriveClient(call);
    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const params = {
@@ -48,30 +47,25 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const lastChange = head(list.changes) as Change;
    const file = lastChange?.file as Schema$File;
-   const changeTime: Moment = moment(lastChange.time);
-   const fileModified: Moment = moment(file.modifiedTime);
    
-   if (!!file.lastModifyingUser?.me || moment(changeTime).diff(moment(fileModified)) > GeneralConstants.SECOND_AND_HALF) {
+   if (!!file.lastModifyingUser?.me) {
       return;
    }
-
-   const modifiedTime: Moment = moment(file.modifiedTime).subtract(GeneralConstants.REMOVE_ONE, 'second');
 
    const activityClient = await getGoogleDriveActivityClient(call);
    const paramsActivity = {
       pageSize: GeneralConstants.PAGE_ONE,
-      filter: `time >= \"${ modifiedTime.toISOString() }\" AND time < \"${ fileModified.toISOString() }\"`,
       itemName: `items/${file.id}`
    };
 
    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
-
-   if (!Object.keys(activityRes).length) {
-      await sharedAFile(call, file);
+   const activity = head(activityRes?.activities) as GA$DriveActivity;
+   
+   if (!!activity.primaryActionDetail?.permissionChange) {
+      await permissionsChanged(call, file, activity);
       return;
    }
 
-   const activity = head(activityRes?.activities) as GA$DriveActivity;
    if (!!activity.primaryActionDetail?.comment) {
       await manageCommentOnFile(call, file, activity);
       return;

@@ -1,4 +1,3 @@
-import { GoogleCommentSubtypeEnum } from "../constant/google-activity-comment";
 
 export interface GA$QueryDriveActivityResponse {
    activities?: GA$DriveActivity[];
@@ -48,7 +47,7 @@ export interface GA$ActionDetail {
    dlpChange?: any;
    edit?: any;
    move?: any;
-   permissionChange?: any;
+   permissionChange?: GA$PermissionDetails;
    reference?: any;
    rename?: any;
    restore?: any;
@@ -88,6 +87,22 @@ export interface GA$Comment {
    }
 }
 
+export interface GA$PermissionDetails {
+   addedPermissions?: GA$Permission[];
+   removedPermissions?: GA$Permission[];
+}
+
+export interface GA$Permission {
+   role: GA$PermissionChangeType,
+   allowDiscovery: boolean,
+
+   // Union field scope can be only one of the following:
+   user: any,
+   group: any,
+   domain: any,
+   anyone: any,
+}
+
 export interface GA$Assignment {
    assignedUser?: GA$User;
    subtype?: string | null;
@@ -124,3 +139,12 @@ export type GA$CommentSubtype =
    'RESOLVED' |	// A posted comment was resolved.
    'REOPENED'; // A posted comment was reopened.
 
+export type GA$PermissionChangeType = 
+   'ROLE_UNSPECIFIED' |	// The role is not available.
+   'OWNER' |	// A role granting full access.
+   'ORGANIZER' | // A role granting the ability to manage people and settings.
+   'FILE_ORGANIZER' |	// A role granting the ability to contribute and manage content.
+   'EDITOR' | // A role granting the ability to contribute content.This role is sometimes also known as "writer".
+   'COMMENTER' | // A role granting the ability to view and comment on content.
+   'VIEWER' | // A role granting the ability to view content.This role is sometimes also known as "reader".
+   'PUBLISHED_VIEWER'; // A role granting the ability to view content only after it has been published to the web
