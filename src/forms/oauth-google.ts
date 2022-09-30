@@ -58,7 +58,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const oAuth2Client = await getOAuthGoogleClient(call);
 
     const tokenBody: GoogleTokenResponse = await oAuth2Client.getToken(values?.code);
-   
+    
     const kvOptionsOauth: KVStoreOptions = {
         mattermostUrl: <string>mattermostUrl,
         accessToken: <string>accessToken
@@ -85,6 +85,8 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
 export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
     const accessToken: string | undefined = call.context.acting_user_access_token;
+    const botAccessToken: string | undefined = call.context.bot_access_token;
+    const userID: string | undefined = call.context.acting_user?.id;
     const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
     
     if (!isConnected(oauth2)) {
@@ -97,6 +99,13 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     };
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
     await kvStoreClientOauth.storeOauth2User({});
+
+    const kvOptions: KVStoreOptions = {
+        mattermostUrl: <string>mattermostUrl,
+        accessToken: <string>botAccessToken
+    };
+    const kvStoreClient = new KVStoreClient(kvOptions);
+    await kvStoreClient.kvSet(<string>userID, {});
 
     const message = 'You have successfully disconnected your Google account!';
     await postBotChannel(call, message);
