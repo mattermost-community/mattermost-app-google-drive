@@ -17,6 +17,8 @@ import { hyperlink } from '../utils/markdown';
 import { Exception } from '../utils/exception';
 import { postBotChannel } from '../utils/post-in-channel';
 import { getGoogleDriveClient, getOAuthGoogleClient } from '../clients/google-client';
+import { head } from 'lodash';
+import GeneralConstants from '../constant/general';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {
@@ -76,7 +78,6 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
         user_email: <string>aboutUser.user.emailAddress
     };
-    console.log(storedToken);
 
     const kvOptionsOauth: KVStoreOptions = {
         mattermostUrl: <string>mattermostUrl,
@@ -129,9 +130,9 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const kvStoreClient = new KVStoreClient(kvOptions);
 
     const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
-    const remove = googleData.userData.findIndex(user => Object.keys(user)[0] === <string>userID);
-    if (remove >= 0) {
-        googleData.userData.splice(remove, 1);
+    const remove = googleData.userData.findIndex(user => head(Object.keys(user)) === <string>userID);
+    if (remove >= GeneralConstants.HAS_VALUE) {
+        googleData.userData.splice(remove, GeneralConstants.REMOVE_ONE);
     }
     await kvStoreClient.kvSet('google_data', googleData);
 
