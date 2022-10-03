@@ -20,6 +20,7 @@ import manifest from '../../manifest.json';
 import { tryPromise } from "../../utils/utils";
 import { bold, h5, hyperlink, inLineImage } from "../../utils/markdown";
 import { postBotChannel } from "../../utils/post-in-channel";
+import { getMattermostUsername } from "./get-mm-username";
 
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
@@ -49,6 +50,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
    const drive = await getGoogleDriveClient(call);
    const target = head(activity.targets) as GA$Target;
    const urlToComment = target.fileComment?.linkToDiscussion as string;
+   const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
    const commentParam = {
       fileId: <string>file.id,
@@ -59,11 +61,18 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
    const author = comment.author;
-   const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const actorEmail = <string>file.lastModifyingUser?.emailAddress;
+   
+   let userDisplay = `${author?.displayName} (${actorEmail})`;
+
+   const mmUser = await getMattermostUsername(call, actorEmail);
+   if (!!mmUser) {
+      userDisplay = `@${mmUser.username}`;
+   }
 
    const message = comment.content?.includes(<string>about.user.emailAddress)
-      ? h5(`${author?.displayName} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
-      : h5(`${author?.displayName} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`);
+      ? h5(`${userDisplay} mentioned you in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+      : h5(`${userDisplay} commented on ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`);
 
    const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> ${comment.content}`;
 
@@ -97,8 +106,15 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
    const lastReply = last(comment.replies) as Schema$Reply;
    const oneBeforeLast = (comment.replies as Schema$Reply[]).at(-2) as Schema$Reply;
    const author = lastReply.author;
-   
-   const message = h5(`${author?.displayName} replied to a comment in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+   const actorEmail = <string>file.lastModifyingUser?.emailAddress;
+
+   let userDisplay = `${author?.displayName} (${actorEmail})`;
+
+   const mmUser = await getMattermostUsername(call, actorEmail);
+   if (!!mmUser) {
+      userDisplay = `@${mmUser.username}`;
+   }
+   const message = h5(`${userDisplay} replied to a comment in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
 
    const description = `${bold('Previous reply:')}\n ${oneBeforeLast.content || ' '}\n ___ \n> ${lastReply.content}`;
 
@@ -131,9 +147,16 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const author = comment.author;
+   const actorEmail = <string>file.lastModifyingUser?.emailAddress;
+
+   let userDisplay = `${author?.displayName} (${actorEmail})`;
+
+   const mmUser = await getMattermostUsername(call, actorEmail);
+   if (!!mmUser) {
+      userDisplay = `@${mmUser.username}`;
+   }
    
-   const message = h5(`${author?.displayName} marked a thread as resolved in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
-   const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> ${comment.content}`;
+   const message = h5(`${userDisplay} marked a thread as resolved in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
 
    await postBotChannel(call, message, {});
    return;
@@ -153,8 +176,16 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const lastReply = last(comment.replies) as Schema$Reply;
    const author = lastReply.author;
+   const actorEmail = <string>file.lastModifyingUser?.emailAddress;
 
-   const message = h5(`${author?.displayName} reopened a thread in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+   let userDisplay = `${author?.displayName} (${actorEmail})`;
+
+   const mmUser = await getMattermostUsername(call, actorEmail);
+   if (!!mmUser) {
+      userDisplay = `@${mmUser.username}`;
+   }
+
+   const message = h5(`${userDisplay} reopened a thread in ${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
 
    const description = `${bold('Original comment:')}\n ${comment.content || ' '}\n ___ \n> ${lastReply.content}`;
 

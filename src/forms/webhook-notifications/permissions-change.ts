@@ -1,6 +1,5 @@
 import {
    GA$DriveActivity,
-   GA$Permission,
    Schema$File,
    Schema$User,
    WebhookRequest
@@ -12,13 +11,21 @@ import manifest from '../../manifest.json';
 import { 
    h5, 
    hyperlink, 
-   inLineImage 
+   inLineImage,
 } from "../../utils/markdown";
+import { getMattermostUsername } from "./get-mm-username";
 
 export async function permissionsChanged(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
    const author = file.sharingUser as Schema$User;
+   const actorEmail = <string>author.emailAddress;
+   let userDisplay = `${author?.displayName} (${actorEmail})`;
+   const mmUser = await getMattermostUsername(call, actorEmail);
 
-   const message = h5(`${author.displayName} shared an item with you`)
+   if (!!mmUser) {
+      userDisplay = `@${mmUser.username}`;
+   }
+
+   const message = h5(`${userDisplay} shared an item with you`);
    const description = `${inLineImage(`File icon`, `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, `${file?.webViewLink}`)}`;
 
    const props = {
