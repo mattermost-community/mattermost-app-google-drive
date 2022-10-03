@@ -10,7 +10,7 @@ import {
     Schema$About,
 } from '../types';
 import { KVStoreClient } from '../clients/kvstore';
-import { ExceptionType } from '../constant';
+import { ExceptionType, Routes } from '../constant';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
 import { isConnected, tryPromise } from '../utils/utils';
 import { hyperlink } from '../utils/markdown';
@@ -19,6 +19,7 @@ import { postBotChannel } from '../utils/post-in-channel';
 import { getGoogleDriveClient, getOAuthGoogleClient } from '../clients/google-client';
 import { head } from 'lodash';
 import GeneralConstants from '../constant/general';
+import { callBindingByApp } from '../utils/call-binding';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {
@@ -103,6 +104,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
 
     const message = 'You have successfully connected your Google account!';
     await postBotChannel(call, message);
+    await callBindingByApp(call, Routes.App.CallPathStartNotifications);
 }
 
 export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
