@@ -2,6 +2,8 @@ import {
     AppCallRequest, 
     AppCallValues, 
     GoogleTokenResponse, 
+    KVGoogleData, 
+    KVGoogleUser, 
     KVStoreOptions, 
     Oauth2App,
     Oauth2CurrentUser,
@@ -61,7 +63,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const oauth2Token: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
     }
-    
+
     call.context.oauth2.user = oauth2Token;
 
     const drive = await getGoogleDriveClient(call);
@@ -74,6 +76,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
         user_email: <string>aboutUser.user.emailAddress
     };
+    console.log(storedToken);
 
     const kvOptionsOauth: KVStoreOptions = {
         mattermostUrl: <string>mattermostUrl,
@@ -87,7 +90,15 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         accessToken: <string>botAccessToken
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
-    await kvStoreClient.kvSet(<string>userID, storedToken);
+    const kvGoogleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    const googleUser: KVGoogleUser = {
+        [<string>userID]: storedToken
+    }
+    const googleData: KVGoogleData = {
+        userData: !!kvGoogleData?.userData?.length ? kvGoogleData.userData : []
+    }
+    googleData.userData.push(googleUser);
+    await kvStoreClient.kvSet('google_data', googleData);
 
     const message = 'You have successfully connected your Google account!';
     await postBotChannel(call, message);
@@ -116,7 +127,13 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
         accessToken: <string>botAccessToken
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
-    await kvStoreClient.kvSet(<string>userID, {});
+
+    const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    const remove = googleData.userData.findIndex(user => Object.keys(user)[0] === <string>userID);
+    if (remove >= 0) {
+        googleData.userData.splice(remove, 1);
+    }
+    await kvStoreClient.kvSet('google_data', googleData);
 
     const message = 'You have successfully disconnected your Google account!';
     await postBotChannel(call, message);
