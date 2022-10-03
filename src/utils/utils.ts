@@ -1,9 +1,10 @@
 import GeneralConstants from '../constant/general';
-import { AppActingUser, AppCallResponse, Oauth2App } from '../types';
+import { AppActingUser, AppCallRequest, AppCallResponse, KVGoogleData, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
 import { ExceptionType } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
 import config from '../config';
+import { KVStoreClient } from '../clients/kvstore';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);
@@ -66,4 +67,17 @@ export function getHTTPPath(): string {
     }
 
     return config.APP.HOST;
+}
+
+export async function getKVGoogleData(call: AppCallRequest): Promise<KVGoogleData> {
+    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
+    const botAccessToken: string | undefined = call.context.bot_access_token;
+
+    const kvOptions: KVStoreOptions = {
+        mattermostUrl: <string>mattermostUrl,
+        accessToken: <string>botAccessToken
+    };
+    const kvStoreClient = new KVStoreClient(kvOptions);
+    const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    return googleData;
 }
