@@ -39,6 +39,7 @@ import { tryPromise } from "../utils/utils";
 import { head } from "lodash";
 import moment from "moment";
 import { SHARE_FILE_ACTIONS } from "./share-google-file";
+import GeneralConstants from '../constant/general';
 
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
@@ -62,7 +63,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
          {
             type: AppFieldTypes.TEXT,
             subtype: AppFieldSubTypes.TEXTAREA,
-            max_length: 32 * 1024,
+            max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
             modal_label: 'Message (optional)',
             placeholder: `Add a message, if you'd like.`,
@@ -196,7 +197,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
          {
             type: AppFieldTypes.TEXT,
             subtype: AppFieldSubTypes.TEXTAREA,
-            max_length: 32 * 1024,
+            max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
             modal_label: 'Message (optional)',
             placeholder: `Add a message, if you'd like.`,
@@ -329,7 +330,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
          {
             type: AppFieldTypes.TEXT,
             subtype: AppFieldSubTypes.TEXTAREA,
-            max_length: 32 * 1024,
+            max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
             modal_label: 'Message (optional)',
             placeholder: `Add a message, if you'd like.`,

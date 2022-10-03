@@ -70,4 +70,8 @@ export default {
     DEFAULT_OFF: 'default_off',
     ALWAYS_ON: 'always_on',
     DEFAULT_GROUP: 'board',
+    TEXTAREA_MAX_LENGTH: 60,
+    REMOVE_ONE: 1,
+    PAGE_ONE: 1,
+    SECOND_AND_HALF: 1500
 };
