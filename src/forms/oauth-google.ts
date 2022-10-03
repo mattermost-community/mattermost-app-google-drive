@@ -61,19 +61,19 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const oauth2Token: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
     }
-    //call.context.oauth2.user = oauth2Token;
+    
+    call.context.oauth2.user = oauth2Token;
+
     const drive = await getGoogleDriveClient(call);
     const aboutParams = {
         fields: 'user'
     }
     const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
-    console.log(aboutUser);
     const storedToken: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
-        //user_email: <string>
+        user_email: <string>aboutUser.user.emailAddress
     };
-
 
     const kvOptionsOauth: KVStoreOptions = {
         mattermostUrl: <string>mattermostUrl,
