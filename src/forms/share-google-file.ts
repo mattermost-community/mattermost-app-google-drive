@@ -80,7 +80,8 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
          requestBody: {
             role: role,
             type: 'user',
-            emailAddress: user.email
+            emailAddress: user.email, 
+            sendNotificationEmail: true
          }
       }
       await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, 'Google failed: ');   

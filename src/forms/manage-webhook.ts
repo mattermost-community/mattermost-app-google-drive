@@ -48,11 +48,19 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const lastChange = head(list.changes) as Change;
    const file = lastChange?.file as Schema$File;
+   if (!!file.lastModifyingUser?.me) {
+      return;
+   }
+
    const modifiedTime = moment(file?.modifiedTime);
    const viewedByMeTime = moment(file?.viewedByMeTime);
-   
-   if (!!file.lastModifyingUser?.me || viewedByMeTime.diff(modifiedTime) >= GeneralConstants.HAS_VALUE) {
-      return;
+   const sharedWithMeTime = moment(file?.sharedWithMeTime);
+
+   if (modifiedTime.diff(sharedWithMeTime) >= GeneralConstants.HAS_VALUE) {
+      if (!!file?.viewedByMeTime && modifiedTime.diff(viewedByMeTime) < GeneralConstants.HAS_VALUE) {
+         return;
+      }
+         
    }
 
    const activityClient = await getGoogleDriveActivityClient(call);
@@ -63,7 +71,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
 
    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const activity = head(activityRes?.activities) as GA$DriveActivity;
-   
    if (!!activity.primaryActionDetail?.permissionChange) {
       await permissionsChanged(call, file, activity);
       return;
