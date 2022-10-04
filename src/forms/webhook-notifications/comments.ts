@@ -1,8 +1,7 @@
 import { head, last } from "lodash";
 import { getGoogleDriveClient } from "../../clients/google-client";
-import { ActionsEvents, AppExpandLevels, ExceptionType, Routes } from "../../constant";
+import { ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes } from "../../constant";
 import { 
-   GA$Actor,
    GA$CommentSubtype, 
    GA$DriveActivity, 
    GA$Target, 
@@ -12,7 +11,6 @@ import {
    Schema$CommentList, 
    Schema$File, 
    Schema$Reply, 
-   Schema$User, 
    StateCommentPost, 
    WebhookRequest 
 } from "../../types";
@@ -227,7 +225,7 @@ export async function postNewCommentOnMattermost(call: WebhookRequest, postData:
    const props = {
       app_bindings: [
          {
-            location: "embedded",
+            location: AppBindingLocations.EMBEDDED,
             app_id: manifest.app_id,
             description: postData.description,
             bindings: [

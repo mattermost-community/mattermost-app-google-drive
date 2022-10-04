@@ -14,6 +14,7 @@ import {
    inLineImage,
 } from "../../utils/markdown";
 import { getMattermostUsername } from "./get-mm-username";
+import { AppBindingLocations } from "../../constant/apps";
 
 export async function permissionsChanged(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
    const author = file.sharingUser as Schema$User;
@@ -31,7 +32,7 @@ export async function permissionsChanged(call: WebhookRequest, file: Schema$File
    const props = {
       app_bindings: [
          {
-            location: "embedded",
+            location: AppBindingLocations.EMBEDDED,
             app_id: manifest.app_id,
             description: description
          }
