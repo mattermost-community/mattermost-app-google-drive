@@ -46,7 +46,8 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
     return oAuth2Client.generateAuthUrl({
         scope: scopes,
         state: state,
-        access_type: 'offline'
+        access_type: 'offline',
+        prompt: 'consent'
     });
 }
 
@@ -66,8 +67,11 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const oauth2Token: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
     }
-
-    call.context.oauth2.user = oauth2Token;
+    
+    call.context.oauth2 = {
+        ...call.context.oauth2,
+        user: oauth2Token
+    }
 
     const drive = await getGoogleDriveClient(call);
     const aboutParams = {
@@ -115,7 +119,7 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
     
     if (!isConnected(oauth2)) {
-        throw new Exception(ExceptionType.MARKDOWN, 'Impossible to disconnet. There is no active session');
+        throw new Exception(ExceptionType.MARKDOWN, 'Impossible to disconnect. There is no active session');
     }
 
     const kvOptionsOauth: KVStoreOptions = {
@@ -132,7 +136,7 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const kvStoreClient = new KVStoreClient(kvOptions);
 
     const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
-    const remove = googleData.userData.findIndex(user => head(Object.keys(user)) === <string>userID);
+    const remove = googleData?.userData?.findIndex(user => head(Object.keys(user)) === <string>userID);
     if (remove >= GeneralConstants.HAS_VALUE) {
         googleData.userData.splice(remove, GeneralConstants.REMOVE_ONE);
     }
