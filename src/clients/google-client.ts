@@ -1,5 +1,5 @@
 import { KVStoreClient } from ".";
-import { ExceptionType } from "../constant";
+import { ExceptionType, KVStoreGoogleData } from "../constant";
 import { tryPromise } from "../utils/utils";
 import { 
    AppCallRequest, 
@@ -45,7 +45,7 @@ export const getGoogleOAuth = async (call: AppCallRequest): Promise<Auth.OAuth2C
          accessToken: <string>botAccessToken
       };
       const kvStoreClient = new KVStoreClient(kvOptions);
-      const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+      const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
       const kvGUser: KVGoogleUser | undefined = googleData?.userData?.find(user => head(Object.keys(user)) === <string>userID);
       if (!!kvGUser) {
          oauth2Token = head(Object.values(kvGUser)) as Oauth2CurrentUser;

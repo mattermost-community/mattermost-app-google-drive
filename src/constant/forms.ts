@@ -110,3 +110,7 @@ export const GooglePermissionRoleByOption: { [x: string]: GooglePermissionRole }
    [optFileShare.sAComment]: 'commenter',
    [optFileShare.sAEdit]: 'writer',
 }
+
+export const KVStoreGoogleData = Object.freeze({
+   GOOGLE_DATA: 'google_data'
+})

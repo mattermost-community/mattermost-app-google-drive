@@ -1,6 +1,6 @@
 import GeneralConstants from '../constant/general';
 import { AppActingUser, AppCallRequest, AppCallResponse, KVGoogleData, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
-import { ExceptionType } from '../constant';
+import { ExceptionType, KVStoreGoogleData } from '../constant';
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
 import config from '../config';
@@ -78,6 +78,6 @@ export async function getKVGoogleData(call: AppCallRequest): Promise<KVGoogleDat
         accessToken: <string>botAccessToken
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
-    const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     return googleData;
 }
