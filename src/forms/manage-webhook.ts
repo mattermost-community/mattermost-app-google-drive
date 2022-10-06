@@ -23,6 +23,7 @@ import { head } from "lodash";
 import { manageCommentOnFile } from "./webhook-notifications/comments";
 import { permissionsChanged } from "./webhook-notifications/permissions-change";
 import GeneralConstants from '../constant/general';
+import moment from "moment";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {
@@ -47,8 +48,10 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
    const lastChange = head(list.changes) as Change;
    const file = lastChange?.file as Schema$File;
+   const modifiedTime = moment(file?.modifiedTime);
+   const viewedByMeTime = moment(file?.viewedByMeTime);
    
-   if (!!file.lastModifyingUser?.me) {
+   if (!!file.lastModifyingUser?.me || viewedByMeTime.diff(modifiedTime) >= GeneralConstants.HAS_VALUE) {
       return;
    }
 

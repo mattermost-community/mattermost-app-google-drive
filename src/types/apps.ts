@@ -59,12 +59,7 @@ export type AppCallType = string;
 
 export type Oauth2CurrentUser = {
     refresh_token: string,
-    user?: {
-        id: string;
-        name: string;
-        email: string;
-        role: string;
-    }
+    user_email?: string;
 }
 
 export type ChannelNotification = {

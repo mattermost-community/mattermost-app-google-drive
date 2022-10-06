@@ -5,6 +5,7 @@ export const AppBindingLocations = {
     CHANNEL_HEADER_ICON: '/channel_header',
     COMMAND: '/command',
     IN_POST: '/in_post',
+    EMBEDDED: 'embedded'
 };
 
 export const AppBindingPresentations = {
