@@ -33,6 +33,7 @@ async function getCommands(call: AppCallRequest): Promise<string> {
     if (await existsOauth2AppConfig(oauth2App)) { 
         if (isConnected(oauth2App)) { 
             commands.push(addBulletSlashCommand(`${Commands.NOTIFICATION} [${Commands.START} | ${Commands.STOP}]`, CommandsDescriptions.NOTIFICATION));
+            commands.push(addBulletSlashCommand(`${Commands.CREATE} [${Commands.DOCUMENT} | ${Commands.PRESENTATION} | ${Commands.SPREADSHEET}]`, CommandsDescriptions.CREATE));
         }
         
         commands.push(addBulletSlashCommand(Commands.CONNECT, CommandsDescriptions.CONNECT));
