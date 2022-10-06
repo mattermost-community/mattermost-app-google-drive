@@ -9,5 +9,6 @@ export const GoogleResourceState = {
 
 export const GoogleConstants = {
    USER: 'user',
-   OFFLINE: 'offline'
+   OFFLINE: 'offline',
+   CONSENT: 'consent'
 }

@@ -11,7 +11,7 @@ import { MattermostClient } from "../../clients";
 
 export async function getMattermostUsername(call: WebhookRequest, authorEmail: string): Promise<User | null> {
    const kvGoogleData: KVGoogleData = await getKVGoogleData(call);
-   const kvGUser: KVGoogleUser | undefined = kvGoogleData?.userData.find(user => head(Object.values(user))?.user_email === authorEmail);
+   const kvGUser: KVGoogleUser | undefined = kvGoogleData?.userData?.find(user => head(Object.values(user))?.user_email === authorEmail);
 
    if (!!kvGUser) {
       const userId: string | undefined = head(Object.keys(kvGUser));

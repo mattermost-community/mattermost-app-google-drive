@@ -24,7 +24,6 @@ import { head } from "lodash";
 
 export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {
    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
-   
    const oAuth2Client = new google.auth.OAuth2(
       oauth2App.client_id,
       oauth2App.client_secret,
@@ -47,7 +46,7 @@ export const getGoogleOAuth = async (call: AppCallRequest): Promise<Auth.OAuth2C
       };
       const kvStoreClient = new KVStoreClient(kvOptions);
       const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-      const kvGUser: KVGoogleUser | undefined = googleData.userData.find(user => head(Object.keys(user)) === <string>userID);
+      const kvGUser: KVGoogleUser | undefined = googleData?.userData?.find(user => head(Object.keys(user)) === <string>userID);
       if (!!kvGUser) {
          oauth2Token = head(Object.values(kvGUser)) as Oauth2CurrentUser;
       }  

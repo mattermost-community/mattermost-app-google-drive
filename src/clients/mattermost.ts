@@ -10,7 +10,7 @@ import {
     PostUpdate,
     User
 } from '../types';
-import { Routes } from '../constant';
+import { AppsPluginName, Routes } from '../constant';
 import { replace } from '../utils/utils';
 
 
@@ -140,5 +140,15 @@ export class MattermostClient {
             },
             responseType: 'stream'
         }).then((response: AxiosResponse<any>) => response.data); 
+    }
+
+    public callBinding(call: any): Promise<PostResponse> {
+        const url: string = `${this.config.mattermostUrl}${Routes.MM.PluginsPath}/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.CallPath}`;
+
+        return axios.post(url, call, {
+            headers: {
+                Authorization: `Bearer ${this.config.accessToken}`
+            }
+        }).then((response: AxiosResponse<any>) => response.data);
     }
 }
