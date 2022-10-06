@@ -313,7 +313,7 @@ export interface Params$Resource$Files$Get extends StandardParameters {
    fileId?: string;
 }
 
-interface StandardParameters {
+export interface StandardParameters {
    auth?: any;
    alt?: string;
    fields?: string;

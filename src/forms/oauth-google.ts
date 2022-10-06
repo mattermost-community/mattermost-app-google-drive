@@ -8,9 +8,10 @@ import {
     Oauth2App,
     Oauth2CurrentUser,
     Schema$About,
+    StandardParameters,
 } from '../types';
 import { KVStoreClient } from '../clients/kvstore';
-import { ExceptionType } from '../constant';
+import { ExceptionType, GoogleConstants, KVStoreGoogleData } from '../constant';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
 import { isConnected, tryPromise } from '../utils/utils';
 import { hyperlink } from '../utils/markdown';
@@ -45,7 +46,7 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
     return oAuth2Client.generateAuthUrl({
         scope: scopes,
         state: state,
-        access_type: 'offline'
+        access_type: GoogleConstants.OFFLINE
     });
 }
 
@@ -69,8 +70,8 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     call.context.oauth2.user = oauth2Token;
 
     const drive = await getGoogleDriveClient(call);
-    const aboutParams = {
-        fields: 'user'
+    const aboutParams: StandardParameters = {
+        fields: `${GoogleConstants.USER}`
     }
     const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, 'Google failed: ');
 
@@ -91,7 +92,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         accessToken: <string>botAccessToken
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
-    const kvGoogleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    const kvGoogleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     const googleUser: KVGoogleUser = {
         [<string>userID]: storedToken
     }
@@ -99,7 +100,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
         userData: !!kvGoogleData?.userData?.length ? kvGoogleData.userData : []
     }
     googleData.userData.push(googleUser);
-    await kvStoreClient.kvSet('google_data', googleData);
+    await kvStoreClient.kvSet(KVStoreGoogleData.GOOGLE_DATA, googleData);
 
     const message = 'You have successfully connected your Google account!';
     await postBotChannel(call, message);
@@ -129,12 +130,12 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
 
-    const googleData: KVGoogleData = await kvStoreClient.kvGet('google_data');
+    const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     const remove = googleData.userData.findIndex(user => head(Object.keys(user)) === <string>userID);
     if (remove >= GeneralConstants.HAS_VALUE) {
         googleData.userData.splice(remove, GeneralConstants.REMOVE_ONE);
     }
-    await kvStoreClient.kvSet('google_data', googleData);
+    await kvStoreClient.kvSet(KVStoreGoogleData.GOOGLE_DATA, googleData);
 
     const message = 'You have successfully disconnected your Google account!';
     await postBotChannel(call, message);
