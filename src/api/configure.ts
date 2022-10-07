@@ -24,8 +24,8 @@ export const configureGoogleClientSubmit: CallResponseHandler = async (req: Requ
     let callResponse: AppCallResponse;
 
     try {
-        await googleClientConfigFormSubmit(req.body);
-        callResponse = newOKCallResponseWithMarkdown('Successfully updated Google Client configuration!');
+        const message = await googleClientConfigFormSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

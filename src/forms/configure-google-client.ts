@@ -10,6 +10,7 @@ import {
     Oauth2Data,
 } from '../types';
 import { 
+    AppExpandLevels,
     AppFieldSubTypes,
     AppFieldTypes, 
     ConfigureClientForm, 
@@ -24,8 +25,13 @@ import {
 import { hyperlink } from '../utils/markdown';
 import manifest from '../manifest.json';
 import GeneralConstants from '../constant/general';
+import { configureI18n } from '../utils/translations';
+
+
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
+    const i18nObj = configureI18n(call.context);
+
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
@@ -38,47 +44,54 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     const apiKey = values?.google_drive_api_key || oauth2App?.data?.google_drive_api_key;
     const saJson = values?.google_drive_service_account || oauth2App?.data?.google_drive_service_account;
     
-    const defValue: AppSelectOption | undefined = modeConfiguration.find(mode => mode.value === modeConfig);
+    const defValue: AppSelectOption | undefined = modeConfiguration(call.context).find(mode => mode.value === modeConfig);
 
     const form: AppForm = {
-        title: 'Configure Google Drive Client',
-        header: `Create a new ${hyperlink('Google Drive', `${homepageUrl}#configuration`)} Client.`,
+        title: i18nObj.__('configure-binding.form.title'),
+        header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
         fields: [
             {
                 type: AppFieldTypes.TEXT,
                 name: ConfigureClientForm.CLIENT_ID,
-                modal_label: 'Client ID',
+                modal_label: i18nObj.__('configure-binding.form.fields.clientID.title'),
                 value: clientID,
-                description: 'API integration Google Client ID',
+                description: i18nObj.__('configure-binding.form.fields.clientID.description'),
                 is_required: true,
             },
             {
                 type: AppFieldTypes.TEXT,
                 subtype: AppFieldSubTypes.PASSWORD,
                 name: ConfigureClientForm.CLIENT_SECRET,
-                modal_label: 'Client Secret',
+                modal_label: i18nObj.__('configure-binding.form.fields.clientSecret.title'),
                 value: clientSecret,
-                description: 'API integration Google Client Secret',
+                description: i18nObj.__('configure-binding.form.fields.clientSecret.description'),
                 is_required: true,
             },
             {
                 type: AppFieldTypes.STATIC_SELECT,
                 name: ConfigureClientForm.MODE,
-                modal_label: 'Service Account',
+                modal_label: i18nObj.__('configure-binding.form.fields.serviceAccount.title'),
                 value: defValue,
-                description: 'What kind of Google service account to use to process incoming change notifications',
+                description: i18nObj.__('configure-binding.form.fields.serviceAccount.description'),
                 is_required: true,
                 refresh: true,
-                options: modeConfiguration
+                options: modeConfiguration(call.context)
             }
         ],
         submit: {
             path: Routes.App.CallPathConfigSubmit,
-            expand: {}
+            expand: {
+                locale: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user: AppExpandLevels.EXPAND_SUMMARY,
+            }
         },
         source: {
             path: Routes.App.CallPathUpdateConfigForm,
+            expand: {
+                locale: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user: AppExpandLevels.EXPAND_SUMMARY,
+            }
         }
     };
 
@@ -92,9 +105,9 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
                 type: AppFieldTypes.TEXT,
                 subtype: AppFieldSubTypes.PASSWORD,
                 name: ConfigureClientForm.API_KEY,
-                modal_label: 'API Key',
+                modal_label: i18nObj.__('configure-binding.form.fields.apiKey.title'),
                 value: apiKey,
-                description: 'Google API Key for the Mattermost App, no need if using the serv.',
+                description: i18nObj.__('configure-binding.form.fields.apiKey.description'),
                 is_required: true,
             };
             break;
@@ -104,9 +117,9 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
                 subtype: AppFieldSubTypes.TEXTAREA,
                 max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
                 name: ConfigureClientForm.SERVICE_ACCOUNT,
-                modal_label: 'Service Account (JSON)',
+                modal_label: i18nObj.__('configure-binding.form.fields.serviceAccountJSON.title'),
                 value: saJson,
-                description: 'Google Service Account for the Mattermost App. Please open the downloaded credentials JSON file, and paste its contents here.',
+                description: i18nObj.__('configure-binding.form.fields.serviceAccountJSON.description'),
                 is_required: true,
             };
             break;
@@ -121,7 +134,9 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     return form;
 }
 
-export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<void> {
+export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
+    const i18nObj = configureI18n(call.context);
+
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
     const botAccessToken: string | undefined = call.context.bot_access_token;
     const values: AppCallValues = <any>call.values;
@@ -150,5 +165,5 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     }
     
     await kvStoreClient.storeOauth2App(oauth2App);
-    
+    return i18nObj.__('configure-binding.response.success');
 }

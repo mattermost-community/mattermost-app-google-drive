@@ -8,11 +8,8 @@ import { AppBinding, AppContext } from "../types";
 import manifest from '../manifest.json';
 import { configureI18n } from "../utils/translations";
 
-const [_, i18nObj] = configureI18n(false);
-
 export const getHelpBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
    
    return {
       app_id: manifest.app_id,
@@ -22,7 +19,7 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathHelp,
          expand: {
-            acting_user: AppExpandLevels.EXPAND_ALL,
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             locale: AppExpandLevels.EXPAND_SUMMARY,
@@ -32,8 +29,7 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
 };
 
 export const getConfigureBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -43,6 +39,7 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathConfigForm,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             locale: AppExpandLevels.EXPAND_SUMMARY,
          }
@@ -51,8 +48,7 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
 };
 
 export const getConnectBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -62,6 +58,7 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathConnectSubmit,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             locale: AppExpandLevels.EXPAND_SUMMARY,
@@ -71,8 +68,7 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
 };
 
 export const getDisconnectBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -82,6 +78,7 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathDisconnectSubmit,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
@@ -92,8 +89,7 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
 };
 
 export const getNotificationBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    const subCommands: string[] = [
       Commands.START,
@@ -115,8 +111,7 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
 };
 
 export const getNotificationStartBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -126,6 +121,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
       submit: {
          path: Routes.App.CallPathStartNotifications,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -136,8 +132,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
 };
 
 export const getNotificationStopBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -147,6 +142,7 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathStopNotifications,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -157,8 +153,7 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
 };
 
 export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    const commands: string[] = [
       Commands.DOCUMENT,
@@ -182,8 +177,7 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
 }
 
 export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -193,6 +187,7 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathCreateDocument,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -203,8 +198,7 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
 };
 
 export const getCreatePresentationBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -214,6 +208,7 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
       submit: {
          path: Routes.App.CallPathCreatePresentation,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -224,8 +219,7 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
 };
 
 export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -235,6 +229,7 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
       submit: {
          path: Routes.App.CallPathCreateSpreadsheet,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
@@ -245,8 +240,7 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
 };
 
 export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -255,6 +249,7 @@ export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
       submit: {
          path: Routes.App.CallPathSaveFileCall,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             post: AppExpandLevels.EXPAND_SUMMARY,
             locale: AppExpandLevels.EXPAND_SUMMARY,

@@ -28,12 +28,10 @@ import {
 import manifest from '../manifest.json'; 
 import { configureI18n } from "../utils/translations";
 
-const [_, i18nObj] = configureI18n(false);
 
 const newCommandBindings = (context: AppContext, bindings: AppBinding[], commands: string[]): AppsState => {
    const m = manifest;
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: m.app_id,

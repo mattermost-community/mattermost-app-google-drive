@@ -1,23 +1,27 @@
+import { I18n } from "i18n";
 import path from "path";
+import { LOCALES } from "../constant/locales";
+import { AppContext } from "../types";
 const i18n = require("i18n");
 
-export const configureI18n = (isGlobal: boolean) => {
-   let i18nObj: any = { };
+export const configureI18n = (context?: AppContext) => {
+   const locale = context?.locale || LOCALES.ENGLISH;
 
-   i18n.configure({
-      locales: ["es", "es"],
-      register: isGlobal ? global : i18nObj,
+   const i18n = new I18n({
+      locales: [
+         LOCALES.ENGLISH,
+         LOCALES.SPANISH
+      ],
       directory: path.join(__dirname, "../locales"),
-      defaultLocale: "en",
-      autoReload: true,
       objectNotation: true,
-      updateFiles: false,
+      defaultLocale: locale
    });
 
-   return [i18n, i18nObj];
+   return i18n;
 };
 
-// USAGE
-// import { configureI18n } from '../utils/translations';
-// const [_, i18nObj] = configureI18n(false);
-// i18nObj.setLocale('es');
+// USAGE 
+/*
+   const i18nObj = configureI18n(context);
+   i18nObj.__('configure-binding.form.fields.serviceAccount.description'),
+*/

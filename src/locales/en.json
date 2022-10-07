@@ -1,28 +1,64 @@
 {
-   "bindings-descriptions": {
-      "bindings": "Manage Google Drive",
-      "help": "Show Google Drive Help",
-      "configure": "Setup Google Client",
-      "connect": "Connect your Google account",
-      "disconnect":"Disconnect from your Google account",
-      "notification": "Stop or start getting notifications about comments",
-      "notification-start": "Start getting notified about Google Drive comments",
-      "notification-stop": "Stop getting notified about Google Drive comments",
-      "create": "Create and share with the channel new Google Drive files",
-      "create-document": "Create a document with Google Drive",
-      "create-slide": "Create a presentation with Google Drive",
-      "create-sheet": "Create a spreadsheet with Google Drive",
-      "save-file": "Upload file to Drive"
-   },
-   "help-binding": {
-      "title": "Mattermost Google Drive Plugin - Help",
-      "descriptions": {
-         "help": "Launch the Google Drive plugin command line help syntax, check out the [documentation]({{homepageUrl}})",
-         "configure": "Setup Google Client",
-         "connect": "Connect your Google account",
-         "disconnect": "Disconnect from your Google account",
-         "notification": "Stop or start getting notifications about comments",
-         "create": "Create and share with the channel new Google Drive files"
-      }
-   }
+	"bindings-descriptions": {
+		"bindings": "Manage Google Drive",
+		"help": "Show Google Drive Help",
+		"configure": "Setup Google Client",
+		"connect": "Connect your Google account",
+		"disconnect": "Disconnect from your Google account",
+		"notification": "Stop or start getting notifications about comments",
+		"notification-start": "Start getting notified about Google Drive comments",
+		"notification-stop": "Stop getting notified about Google Drive comments",
+		"create": "Create and share with the channel new Google Drive files",
+		"create-document": "Create a document with Google Drive",
+		"create-slide": "Create a presentation with Google Drive",
+		"create-sheet": "Create a spreadsheet with Google Drive",
+		"save-file": "Upload file to Drive"
+	},
+	"help-binding": {
+		"title": "Mattermost Google Drive Plugin - Help",
+		"descriptions": {
+			"help": "Launch the Google Drive plugin command line help syntax, check out the [documentation]({{homepageUrl}})",
+			"configure": "Setup Google Client",
+			"connect": "Connect your Google account",
+			"disconnect": "Disconnect from your Google account",
+			"notification": "Stop or start getting notifications about comments",
+			"create": "Create and share with the channel new Google Drive files"
+		}
+	},
+	"configure-binding": {
+		"form": {
+			"title": "Configure Google Drive Client",
+			"header": "Create a new [Google Drive]({{homepageUrl}}#configuration) Client.",
+			"fields": {
+				"clientID": {
+					"title": "Client ID",
+					"description": "API integration Google Client ID"
+				},
+				"clientSecret": {
+					"title": "Client Secret",
+					"description": "API integration Google Client Secret"
+				},
+				"serviceAccount": {
+					"title": "Service Account",
+					"description": "What kind of Google service account to use to process incoming change notifications",
+					"values": {
+						"doNotUse": "Do not use a Service Account",
+						"useServiceAccount": "Use a Google Service Account",
+						"useAPIKey": "Use a Google API Key"
+					}
+				},
+				"apiKey": {
+					"title": "API Key",
+					"description": "Google API Key for the Mattermost App, no need if using the serv."
+				},
+				"serviceAccountJSON": {
+					"title": "Service Account (JSON)",
+					"description": "Google Service Account for the Mattermost App. Please open the downloaded credentials JSON file, and paste its contents here."
+				}
+			}
+		},
+		"response": {
+			"success": "Successfully updated Google Client configuration!"
+		}
+	}
 }

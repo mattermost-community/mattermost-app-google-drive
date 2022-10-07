@@ -38,6 +38,7 @@ export async function openFormReplyComment(call: AppCallRequest): Promise<AppFor
       submit: {
          path: Routes.App.CallPathCommentReplaySubmit,
          expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
