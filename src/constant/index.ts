@@ -7,7 +7,6 @@ export * from './general';
 export * from './google-files';
 export * from './google-kinds';
 export * from './google-scopes';
-export * from './post-menu';
 export * from './routes';
 export * from './store-key';
 

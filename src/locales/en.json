@@ -1,0 +1,28 @@
+{
+   "bindings-descriptions": {
+      "bindings": "Manage Google Drive",
+      "help": "Show Google Drive Help",
+      "configure": "Setup Google Client",
+      "connect": "Connect your Google account",
+      "disconnect":"Disconnect from your Google account",
+      "notification": "Stop or start getting notifications about comments",
+      "notification-start": "Start getting notified about Google Drive comments",
+      "notification-stop": "Stop getting notified about Google Drive comments",
+      "create": "Create and share with the channel new Google Drive files",
+      "create-document": "Create a document with Google Drive",
+      "create-slide": "Create a presentation with Google Drive",
+      "create-sheet": "Create a spreadsheet with Google Drive",
+      "save-file": "Upload file to Drive"
+   },
+   "help-binding": {
+      "title": "Mattermost Google Drive Plugin - Help",
+      "descriptions": {
+         "help": "Launch the Google Drive plugin command line help syntax, check out the [documentation]({{homepageUrl}})",
+         "configure": "Setup Google Client",
+         "connect": "Connect your Google account",
+         "disconnect": "Disconnect from your Google account",
+         "notification": "Stop or start getting notifications about comments",
+         "create": "Create and share with the channel new Google Drive files"
+      }
+   }
+}

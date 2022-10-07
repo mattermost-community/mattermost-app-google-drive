@@ -1,0 +1,28 @@
+{
+   "bindings-descriptions": {
+      "bindings": "Administrar Google Drive",
+      "help": "Mostrar ayuda sobre la App",
+      "configure": "Configurar el Cliente de Google",
+      "connect": "Conectar con tu cuenta de Google",
+      "disconnect": "Desconectar tu cuenta de Google",
+      "notification": "Detener o encender las notificaciones sobre los comentarios",
+      "notification-start": "Encender las notificaciones sobre los comentarios",
+      "notification-stop": "Detener las notificaciones sobre los comentarios",
+      "create": "Crear y compartir con el canal un nuevo archivo Google Drive",
+      "create-document": "Crear nuevo Google Docs en Drive",
+      "create-slide": "Crear nuevo Google Slide en Drive",
+      "create-sheet":"Crear nuevo Google Sheets en Drive",
+      "save-file": "Subir archivos a Drive"
+   },
+   "help-binding": {
+      "title": "Plugin Mattermost Google Drive - Ayuda",
+      "descriptions": {
+         "help": "Ejecutar el comando de ayuda de la Google Drive App, checa el resto de la [documentación]({{homepageUrl}})",
+         "configure": "Configurar el Cliente de Google",
+         "connect": "Conectar con tu cuenta de Google",
+         "disconnect": "Desconectar tu cuenta de Google",
+         "notification": "Detener o encender las notificaciones sobre los comentarios",
+         "create": "Crear y compartir con el canal un nuevo archivo Google Drive"
+      }
+   }
+}

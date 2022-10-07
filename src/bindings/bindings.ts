@@ -3,131 +3,163 @@ import {
    GoogleDriveIcon, 
    Commands, 
    Routes,
-   PostMenu,
 } from "../constant";
-import { AppBinding } from "../types";
+import { AppBinding, AppContext } from "../types";
 import manifest from '../manifest.json';
+import { configureI18n } from "../utils/translations";
 
-export const getHelpBinding = (): AppBinding => {
+const [_, i18nObj] = configureI18n(false);
+
+export const getHelpBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+   
    return {
       app_id: manifest.app_id,
       label: Commands.HELP,
       icon: GoogleDriveIcon,
-      description: 'Show Google Drive Help',
+      description: i18nObj.__('bindings-descriptions.help'),
       submit: {
          path: Routes.App.CallPathHelp,
          expand: {
             acting_user: AppExpandLevels.EXPAND_ALL,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    };
 };
 
-export const getConfigureBinding = (): AppBinding => {
+export const getConfigureBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.CONFIGURE,
-      description: 'Setup Google Client',
+      description: i18nObj.__('bindings-descriptions.configure'),
       submit: {
          path: Routes.App.CallPathConfigForm,
          expand: {
-            oauth2_app: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    }
 };
 
-export const getConnectBinding = (): AppBinding => {
+export const getConnectBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.CONNECT,
-      description: 'Connect your Google account',
+      description: i18nObj.__('bindings-descriptions.connect'),
       submit: {
          path: Routes.App.CallPathConnectSubmit,
          expand: {
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    }
 };
 
-export const getDisconnectBinding = (): AppBinding => {
+export const getDisconnectBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.DISCONNECT,
-      description: 'Disconnect from your Google account',
+      description: i18nObj.__('bindings-descriptions.disconnect'),
       submit: {
          path: Routes.App.CallPathDisconnectSubmit,
          expand: {
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_app: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    }
 };
 
-export const getNotificationBinding = (): AppBinding => {
+export const getNotificationBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    const subCommands: string[] = [
       Commands.START,
       Commands.STOP
    ];
 
    const bindings: AppBinding[] = [];
-   bindings.push(getNotificationStartBinding());
-   bindings.push(getNotificationStopBinding());
+   bindings.push(getNotificationStartBinding(context));
+   bindings.push(getNotificationStopBinding(context));
 
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.NOTIFICATION,
-      description: 'Stop or start getting notifications about comments',
+      description: i18nObj.__('bindings-descriptions.notification'),
       hint: `[${subCommands.join(' | ')}]`,
       bindings
    }
 };
 
-export const getNotificationStartBinding = (): AppBinding => {
+export const getNotificationStartBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.START,
-      description: 'Start getting notified about Google Drive comments',
+      description: i18nObj.__('bindings-descriptions.notification-start'),
       submit: {
          path: Routes.App.CallPathStartNotifications,
          expand: {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    }
 };
 
-export const getNotificationStopBinding = (): AppBinding => {
+export const getNotificationStopBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.STOP,
-      description: 'Stop getting notified about Google Drive comments',
+      description: i18nObj.__('bindings-descriptions.notification-stop'),
       submit: {
          path: Routes.App.CallPathStopNotifications,
          expand: {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       }
    }
 };
 
-export const getCreateGoogleFilesBinding = (): AppBinding => {
+export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    const commands: string[] = [
       Commands.DOCUMENT,
       Commands.PRESENTATION,
@@ -135,81 +167,97 @@ export const getCreateGoogleFilesBinding = (): AppBinding => {
    ];
 
    const bindings: AppBinding[] = [];
-   bindings.push(getCreateDocumentBinding());
-   bindings.push(getCreatePresentationBinding());
-   bindings.push(getCreateSpreadsheetBinding());
+   bindings.push(getCreateDocumentBinding(context));
+   bindings.push(getCreatePresentationBinding(context));
+   bindings.push(getCreateSpreadsheetBinding(context));
 
    return {
       app_id: manifest.app_id,
       icon: GoogleDriveIcon,
       label: Commands.CREATE,
-      description: 'Create new files on your Google Drive',
+      description: i18nObj.__('bindings-descriptions.create'),
       hint: `[${commands.join(' | ')}]`,
       bindings
    }
 }
 
-export const getCreateDocumentBinding = (): AppBinding => {
+export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       label: Commands.DOCUMENT,
-      description: 'Create a document with Google Drive',
+      description: i18nObj.__('bindings-descriptions.create-document'),
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreateDocument,
          expand: {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
    };
 };
 
-export const getCreatePresentationBinding = (): AppBinding => {
+export const getCreatePresentationBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       label: Commands.PRESENTATION,
-      description: 'Create a presentation with Google Drive',
+      description: i18nObj.__('bindings-descriptions.create-slide'),
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreatePresentation,
          expand: {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
    };
 };
 
-export const getCreateSpreadsheetBinding = (): AppBinding => {
+export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
       label: Commands.SPREADSHEET,
-      description: 'Create a spreadsheet with Google Drive',
+      description: i18nObj.__('bindings-descriptions.create-sheet'),
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathCreateSpreadsheet,
          expand: {
             app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-            oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+            oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
    };
 };
 
-export const saveFileOnDriveBinding = (): AppBinding => {
+export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+
    return {
       app_id: manifest.app_id,
-      label: PostMenu.SAVE_FILE,
+      label: i18nObj.__('bindings-descriptions.save-file'),
       icon: GoogleDriveIcon,
       submit: {
          path: Routes.App.CallPathSaveFileCall,
          expand: {
             acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             post: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
    };

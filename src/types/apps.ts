@@ -181,7 +181,8 @@ export type AppContext = {
         user_id: string,
         channel_id: string,
         message: string
-    }
+    },
+    locale: string
 };
 
 export type AppContextProps = {

@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import config from './config';
 import morgan from 'morgan';
 import apiRoutes from './api';
+import { configureI18n } from './utils/translations';
+
 
 const app: Express = express();
 
@@ -12,6 +14,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(morgan('tiny'))
 app.use('/', apiRoutes);
+
+const [i18n, _] = configureI18n(true);
+app.use(i18n.init);
 
 const port: number = config.APP.PORT;
 app.listen(port, () => console.log('Listening on ' + port));
