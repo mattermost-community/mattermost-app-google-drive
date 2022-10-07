@@ -5,6 +5,7 @@ import {
 import {
    AppBinding,
    AppCallRequest,
+   AppContext,
    AppsState,
    Oauth2App
 } from "../types";
@@ -31,12 +32,13 @@ const newPostMenuBindings = (bindings: AppBinding[]): AppsState => {
 export const getPostMenuBindings = async (call: AppCallRequest): Promise<AppsState> => {
    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
    const bindings: AppBinding[] = [];
+   const context = call.context as AppContext;
 
    if (await existsOauth2AppConfig(oauth2App)) {
       if (isConnected(oauth2App)) {
-         bindings.push(saveFileOnDriveBinding());
+         bindings.push(saveFileOnDriveBinding(context));
       } else {
-         bindings.push(getConnectBinding());
+         bindings.push(getConnectBinding(context));
       }
    }
 
