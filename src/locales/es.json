@@ -1,4 +1,7 @@
 {
+	"general": {
+		"google-error": "Google falló: "
+	},
 	"bindings-descriptions": {
 		"bindings": "Administrar Google Drive",
 		"help": "Mostrar ayuda sobre la App",
@@ -59,6 +62,20 @@
 		},
 		"response": {
 			"success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+		}
+	},
+	"connect-binding": {
+		"response": {
+			"generateLink": "Sigue este {{ link }} para conectar tu Mattermost con tu cuenta de Google.",
+			"alreadyLoggedIn": "Error. Ya se encuentra con una sesión activa.",
+			"codeNotProvided": "Mala petición. El parámetro code no viene en la respuesta",
+			"success": "¡Se ha conectado correctamente a tu cuenta de Google!"
+		}
+	},
+	"disconnect-binding": {
+		"response": {
+			"noSession": "Imposible de desconectar. No se encuentra sesión activa.",
+			"success": "¡Se ha desconectado correctamente a tu cuenta de Google!"
 		}
 	}
 }

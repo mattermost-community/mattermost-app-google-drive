@@ -1,4 +1,7 @@
 {
+	"general": {
+		"google-error": "Google failed: "
+	},
 	"bindings-descriptions": {
 		"bindings": "Manage Google Drive",
 		"help": "Show Google Drive Help",
@@ -59,6 +62,20 @@
 		},
 		"response": {
 			"success": "Successfully updated Google Client configuration!"
+		}
+	},
+	"connect-binding": {
+		"response": {
+			"generateLink": "Follow this {{ link }} to connect Mattermost to your Google Account.",
+			"alreadyLoggedIn": "You are already logged into Google",
+			"codeNotProvided": "Bad Request: code param not provided",
+			"success": "You have successfully connected your Google account!"
+		}
+	},
+	"disconnect-binding": {
+		"response": {
+			"noSession": "Impossible to disconnect. There is no active session",
+			"success": "You have successfully disconnected your Google account!"
 		}
 	}
 }
