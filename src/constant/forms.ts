@@ -1,5 +1,8 @@
-import { AppSelectOption } from "../types"
+import { AppContext, AppSelectOption } from "../types"
 import { GooglePermissionRole } from "./google-files"
+import { configureI18n } from '../utils/translations';
+
+const [_, i18nObj] = configureI18n(false);
 
 export const ConfigureClientForm = Object.freeze({
    CLIENT_ID: 'google_drive_client_id',
@@ -26,20 +29,25 @@ export const FilesToUpload = Object.freeze({
    FILES: 'upload_file_google_drive'
 });
 
-export const modeConfiguration: AppSelectOption[] = [
-   {
-      label: 'Do not use a Service Account',
-      value: optConfigure.fNone,
-   },
-   {
-      label: 'Use a Google Service Account',
-      value: optConfigure.fAccountJSON,
-   },
-   {
-      label: 'Use a Google API Key',
-      value: optConfigure.fAPIKey,
-   }
-] 
+export const modeConfiguration = (context: AppContext): AppSelectOption[] => {
+   const locale = context.locale;
+   i18nObj.setLocale(locale);
+   
+   return [
+      {
+         label: i18nObj.__('configure-binding.form.fields.serviceAccount.values.doNotUse'),
+         value: optConfigure.fNone,
+      },
+      {
+         label: i18nObj.__('configure-binding.form.fields.serviceAccount.values.useServiceAccount'),
+         value: optConfigure.fAccountJSON,
+      },
+      {
+         label: i18nObj.__('configure-binding.form.fields.serviceAccount.values.useAPIKey'),
+         value: optConfigure.fAPIKey,
+      }
+   ]
+}
 
 export const optFileShare = {
    notShare: 'not_share',

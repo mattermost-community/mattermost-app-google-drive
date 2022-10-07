@@ -24,5 +24,41 @@
          "notification": "Detener o encender las notificaciones sobre los comentarios",
          "create": "Crear y compartir con el canal un nuevo archivo Google Drive"
       }
+   },
+   "configure-binding": {
+      "form": {
+         "title": "Configurar el cliente de Google Drive",
+         "header": "¿Cómo crear un nuevo cliente en la consola de [Google Drive]({{homepageUrl}}#configuration)?",
+         "fields": {
+            "clientID": {
+               "title": "Client ID",
+               "description": "Integración con el Client ID de Google"
+            },
+            "clientSecret": {
+               "title": "Client Secret",
+               "description": "Integración con el Client Secret de Google"
+            },
+            "serviceAccount": {
+               "title": "Configuración de webhook",
+               "description": "Qué tipo de autenticación se utilizará al momento de manejar las notificaciones",
+               "values": {
+                  "doNotUse": "No usar una cuenta de servicio",
+                  "useServiceAccount": "Sí usar una cuenta de servicio",
+                  "useAPIKey": "Usar API Key"
+               }
+            },
+            "apiKey": {
+               "title": "API Key",
+               "description": "API Key de Google para Mattermost, no hay necesidad si se hace uso del servicio"
+            },
+            "serviceAccountJSON": {
+               "title": "Service Account (JSON)",
+               "description": "Uso de una cuenta de servicio para la App. Por favor, abrir el archivo JSON descargado con las credenciales y pegarlo en la siguiente casilla"
+            }
+         }
+      },
+      "response": {
+         "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+      }
    }
 }

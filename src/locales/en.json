@@ -24,5 +24,41 @@
          "notification": "Stop or start getting notifications about comments",
          "create": "Create and share with the channel new Google Drive files"
       }
+   },
+   "configure-binding": {
+      "form": {
+         "title": "Configure Google Drive Client",
+         "header": "Create a new [Google Drive]({{homepageUrl}}#configuration) Client.",
+         "fields": {
+            "clientID": {
+               "title": "Client ID",
+               "description": "API integration Google Client ID"
+            },
+            "clientSecret": {
+               "title": "Client Secret",
+               "description": "API integration Google Client Secret"
+            },
+            "serviceAccount": {
+               "title": "Service Account",
+               "description": "What kind of Google service account to use to process incoming change notifications",
+               "values": {
+                  "doNotUse": "Do not use a Service Account",
+                  "useServiceAccount": "Use a Google Service Account",
+                  "useAPIKey": "Use a Google API Key"
+               }
+            },
+            "apiKey": {
+               "title": "API Key",
+               "description": "Google API Key for the Mattermost App, no need if using the serv."
+            },
+            "serviceAccountJSON": {
+               "title": "Service Account (JSON)",
+               "description": "Google Service Account for the Mattermost App. Please open the downloaded credentials JSON file, and paste its contents here."
+            }
+         }
+      },
+      "response": {
+         "success": "Successfully updated Google Client configuration!"
+      }
    }
 }
