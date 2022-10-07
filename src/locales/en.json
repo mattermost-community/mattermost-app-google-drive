@@ -60,18 +60,5 @@
 		"response": {
 			"success": "Successfully updated Google Client configuration!"
 		}
-	},
-	"bindings-descriptions.help": "bindings-descriptions.help",
-	"bindings-descriptions.configure": "bindings-descriptions.configure",
-	"bindings-descriptions.notification-start": "bindings-descriptions.notification-start",
-	"bindings-descriptions.notification-stop": "bindings-descriptions.notification-stop",
-	"bindings-descriptions.notification": "bindings-descriptions.notification",
-	"bindings-descriptions.create-document": "bindings-descriptions.create-document",
-	"bindings-descriptions.create-slide": "bindings-descriptions.create-slide",
-	"bindings-descriptions.create-sheet": "bindings-descriptions.create-sheet",
-	"bindings-descriptions.create": "bindings-descriptions.create",
-	"bindings-descriptions.connect": "bindings-descriptions.connect",
-	"bindings-descriptions.disconnect": "bindings-descriptions.disconnect",
-	"bindings-descriptions.bindings": "bindings-descriptions.bindings",
-	"bindings-descriptions.save-file": "bindings-descriptions.save-file"
+	}
 }

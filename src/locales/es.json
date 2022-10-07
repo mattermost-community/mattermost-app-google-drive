@@ -60,23 +60,5 @@
 		"response": {
 			"success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
 		}
-	},
-	"bindings-descriptions.help": "bindings-descriptions.help",
-	"bindings-descriptions.notification-start": "bindings-descriptions.notification-start",
-	"bindings-descriptions.notification-stop": "bindings-descriptions.notification-stop",
-	"bindings-descriptions.notification": "bindings-descriptions.notification",
-	"bindings-descriptions.create-document": "bindings-descriptions.create-document",
-	"bindings-descriptions.create-slide": "bindings-descriptions.create-slide",
-	"bindings-descriptions.create-sheet": "bindings-descriptions.create-sheet",
-	"bindings-descriptions.create": "bindings-descriptions.create",
-	"bindings-descriptions.connect": "bindings-descriptions.connect",
-	"bindings-descriptions.disconnect": "bindings-descriptions.disconnect",
-	"bindings-descriptions.bindings": "bindings-descriptions.bindings",
-	"bindings-descriptions.save-file": "bindings-descriptions.save-file",
-	"help-binding.title": "help-binding.title",
-	"help-binding.descriptions.help": "help-binding.descriptions.help",
-	"help-binding.descriptions.notification": "help-binding.descriptions.notification",
-	"help-binding.descriptions.create": "help-binding.descriptions.create",
-	"help-binding.descriptions.connect": "help-binding.descriptions.connect",
-	"help-binding.descriptions.disconnect": "help-binding.descriptions.disconnect"
+	}
 }
