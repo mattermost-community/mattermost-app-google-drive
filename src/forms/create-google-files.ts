@@ -18,6 +18,7 @@ import {
 } from "../constant";
 import { 
    AppCallRequest, 
+   AppContext, 
    AppField, 
    AppForm,
    Channel,
@@ -30,7 +31,6 @@ import {
    Schema$Presentation,
    Schema$Spreadsheet,
    Schema$User,
-   User,
 } from "../types";
 import { 
    CreateFileForm 
@@ -40,10 +40,13 @@ import { head } from "lodash";
 import moment from "moment";
 import { SHARE_FILE_ACTIONS } from "./share-google-file";
 import GeneralConstants from '../constant/general';
+import { configureI18n } from "../utils/translations";
 
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
+   const i18nObj = configureI18n(call.context);
 
+   const context = call.context as AppContext;
    const values = call.values as CreateFileForm;
    const willShare = values?.google_file_will_share != undefined
       ? values?.google_file_will_share
@@ -52,7 +55,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       {
          type: AppFieldTypes.TEXT,
          name: CreateGoogleDocument.TITLE,
-         modal_label: `Title (optional)`,
+         modal_label: i18nObj.__('create-binding.form.fields.title.title'),
          is_required: false,
          value: values?.google_file_title,
       },
@@ -65,8 +68,8 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
             subtype: AppFieldSubTypes.TEXTAREA,
             max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
-            modal_label: 'Message (optional)',
-            placeholder: `Add a message, if you'd like.`,
+            modal_label: i18nObj.__('create-binding.form.fields.message.title'),
+            placeholder: i18nObj.__('create-binding.form.fields.message.placeholder'),
             is_required: false,
          }
       );
@@ -76,24 +79,24 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
       {
          type: AppFieldTypes.STATIC_SELECT,
          name: CreateGoogleDocument.FILE_ACCESS,
-         modal_label: 'File Access',
-         description: 'Select who has access to the file',
+         modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
+         description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
          is_required: true,
-         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context)
       },
       {
-         modal_label: ' ',
+         modal_label: i18nObj.__('create-binding.form.fields.share.title'),
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
-         hint: 'Share on this channel',
+         description: i18nObj.__('create-binding.form.fields.share.hint'),
          value: willShare
       }
    );
 
    return {
-      title: 'Create a Google Document',
+      title: i18nObj.__('create-binding.docs.title'),
       icon: GoogleDriveIcon,
       fields: fields,
       submit: {
@@ -104,15 +107,21 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             channel: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
       source: {
          path: Routes.App.CallPathUpdateDocumentForm,
+         expand: {
+            acting_user: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
+         }
       }
    } as AppForm;
 }
 
 export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> {
+   const i18nObj = configureI18n(call.context);
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const userAccessToken: string | undefined = call.context.acting_user_access_token;
    const actingUserID: string | undefined = call.context.acting_user?.id;
@@ -131,7 +140,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
          title: values.google_file_title
       }
    }
-   const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    
    const drive = await getGoogleDriveClient(call);
    const paramExport: Params$Resource$Files$Get = {
@@ -139,7 +148,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
       fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime'
    }
    
-   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    const owner = head(file.owners) as Schema$User;
 
    let channelId: string = call.context.channel?.id as string;
@@ -147,6 +156,8 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
       const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
       channelId = channel.id;
    }
+
+   const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
    const post: PostCreate = {
       message: <string>values.google_file_message,
@@ -159,7 +170,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
                author_icon: `${owner?.photoLink}`,
                title: `${file.name}`,
                title_link: `${file.webViewLink}`,
-               footer: `Google Drive for Mattermost | ${moment(file?.createdTime).format('MMM Do, YYYY')}`,
+               footer: i18nObj.__('create-binding.response.footer', { date }),
                footer_icon: `${file.iconLink}`,
                fields: [],
                actions: []
@@ -176,7 +187,9 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
 }
 
 export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
+   const i18nObj = configureI18n(call.context);
 
+   const context = call.context as AppContext;
    const values = call.values as CreateFileForm;
    const willShare = values?.google_file_will_share != undefined
       ? values?.google_file_will_share
@@ -186,7 +199,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
       {
          type: AppFieldTypes.TEXT,
          name: CreateGoogleDocument.TITLE,
-         modal_label: `Title (optional)`,
+         modal_label: i18nObj.__('create-binding.form.fields.title.title'),
          is_required: false,
          value: values?.google_file_title,
       },
@@ -199,8 +212,8 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
             subtype: AppFieldSubTypes.TEXTAREA,
             max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
-            modal_label: 'Message (optional)',
-            placeholder: `Add a message, if you'd like.`,
+            modal_label: i18nObj.__('create-binding.form.fields.message.title'),
+            placeholder: i18nObj.__('create-binding.form.fields.message.placeholder'),
             is_required: false,
          }
       );
@@ -210,24 +223,24 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
       {
          type: AppFieldTypes.STATIC_SELECT,
          name: CreateGoogleDocument.FILE_ACCESS,
-         modal_label: 'File Access',
-         description: 'Select who has access to the file',
+         modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
+         description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
          is_required: true,
-         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context)
       },
       {
-         modal_label: ' ',
+         modal_label: i18nObj.__('create-binding.form.fields.share.title'),
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
-         hint: 'Share on this channel',
+         description: i18nObj.__('create-binding.form.fields.share.hint'),
          value: willShare,
       }
    );
 
    return {
-      title: 'Create a Google Presentation',
+      title: i18nObj.__('create-binding.slides.title'),
       icon: GoogleDriveIcon,
       fields: fields,
       submit: {
@@ -238,15 +251,21 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             channel: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
       source: {
-         path: Routes.App.CallPathUpdatePresentationForm,
+         path: Routes.App.CallPathUpdatePresentationForm, 
+         expand: {
+            acting_user: AppExpandLevels.EXPAND_ALL,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
+         }
       }
    } as AppForm;
 }
 
 export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<any> {
+   const i18nObj = configureI18n(call.context);
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const userAccessToken: string | undefined = call.context.acting_user_access_token;
    const actingUserID: string | undefined = call.context.acting_user?.id;
@@ -265,7 +284,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
          title: values.google_file_title
       }
    }
-   const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
    const drive = await getGoogleDriveClient(call);
    const paramExport: Params$Resource$Files$Get = {
@@ -273,7 +292,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
       fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime'
    }
 
-   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    const owner = head(file.owners) as Schema$User;
 
    let channelId: string = call.context.channel?.id as string;
@@ -281,6 +300,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
       const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
       channelId = channel.id;
    }
+   const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
    const post: PostCreate = {
       message: <string>values.google_file_message,
@@ -293,7 +313,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
                author_icon: `${owner?.photoLink}`,
                title: `${file.name}`,
                title_link: `${file.webViewLink}`,
-               footer: `Google Drive for Mattermost | ${moment(file?.createdTime).format('MMM Do, YYYY')}`,
+               footer: i18nObj.__('create-binding.response.footer', { date }),
                footer_icon: `${file.iconLink}`,
                fields: [],
                actions: []
@@ -309,7 +329,9 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
 }
 
 export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
+   const i18nObj = configureI18n(call.context);
 
+   const context = call.context as AppContext;
    const values = call.values as CreateFileForm;
    const willShare = values?.google_file_will_share != undefined
       ? values?.google_file_will_share
@@ -319,7 +341,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
       {
          type: AppFieldTypes.TEXT,
          name: CreateGoogleDocument.TITLE,
-         modal_label: `Title (optional)`,
+         modal_label: i18nObj.__('create-binding.form.fields.title.title'),
          is_required: false,
          value: values?.google_file_title,
       },
@@ -332,8 +354,8 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
             subtype: AppFieldSubTypes.TEXTAREA,
             max_length: GeneralConstants.TEXTAREA_MAX_LENGTH,
             name: CreateGoogleDocument.MESSAGE,
-            modal_label: 'Message (optional)',
-            placeholder: `Add a message, if you'd like.`,
+            modal_label: i18nObj.__('create-binding.form.fields.message.title'),
+            placeholder: i18nObj.__('create-binding.form.fields.message.placeholder'),
             is_required: false,
          }
       );
@@ -343,24 +365,24 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
       {
          type: AppFieldTypes.STATIC_SELECT,
          name: CreateGoogleDocument.FILE_ACCESS,
-         modal_label: 'File Access',
-         description: 'Select who has access to the file',
+         modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
+         description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
          is_required: true,
-         options: willShare ? shareFileOnChannel : notShareFileOnChannel
+         options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context)
       },
       {
-         modal_label: ' ',
+         modal_label: i18nObj.__('create-binding.form.fields.share.title'),
          type: AppFieldTypes.BOOL,
          name: CreateGoogleDocument.WILL_SHARE,
          is_required: false,
          refresh: true,
-         hint: 'Share on this channel',
+         description: i18nObj.__('create-binding.form.fields.share.hint'),
          value: willShare
       }
    );
 
    return {
-      title: 'Create a Google Spreadsheet',
+      title: i18nObj.__('create-binding.sheets.title'),
       icon: GoogleDriveIcon,
       fields: fields,
       submit: {
@@ -371,15 +393,21 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
             oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
             oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
             channel: AppExpandLevels.EXPAND_SUMMARY,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
          }
       },
       source: {
          path: Routes.App.CallPathUpdateSpreadsheetForm,
+         expand: {
+            acting_user: AppExpandLevels.EXPAND_ALL,
+            locale: AppExpandLevels.EXPAND_SUMMARY,
+         }
       }
    } as AppForm;
 }
 
 export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<any> {
+   const i18nObj = configureI18n(call.context);
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const userAccessToken: string | undefined = call.context.acting_user_access_token;
    const actingUserID: string | undefined = call.context.acting_user?.id;
@@ -400,7 +428,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
          }
       }
    }
-   const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
    const drive = await getGoogleDriveClient(call);
    const paramExport: Params$Resource$Files$Get = {
@@ -408,7 +436,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
       fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime'
    }
 
-   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    const owner = head(file.owners) as Schema$User;
 
    let channelId: string = call.context.channel?.id as string;
@@ -416,6 +444,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
       const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
       channelId = channel.id;
    }
+   const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
    const post: PostCreate = {
       message: <string>values.google_file_message,
@@ -428,7 +457,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
                author_icon: `${owner?.photoLink}`,
                title: `${file.name}`,
                title_link: `${file.webViewLink}`,
-               footer: `Google Drive for Mattermost | ${moment(file?.createdTime).format('MMM Do, YYYY')}`,
+               footer: i18nObj.__('create-binding.response.footer', { date }),
                footer_icon: `${file.iconLink}`,
                fields: [],
                actions: []

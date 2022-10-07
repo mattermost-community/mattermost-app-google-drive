@@ -83,5 +83,51 @@
 			"disabled": "Las notificaciones de Google se han detenido",
 			"enabled": "Las notificaciones de Google se han encendido"
 		}
+	},
+	"create-binding": {
+		"form": {
+			"title": "Crear un Documento en Google",
+			"fields": {
+				"title": {
+					"title": "Título (optional)"
+				},
+				"message": {
+					"title": "Mensaje (optional)",
+					"placeholder": "Agrega un mensaje que se mostrará al compartit el archivo"
+				},
+				"fileAccess": {
+					"title": "Acceso al archivo",
+					"description": "Selecciona quién podrá acceder al archivo",
+					"options": {
+						"notShare": "Mantener privado",
+						"sAView": "Cualquiera con el link puede ver",
+						"sAComment": "Cualquiera con el link puede comentar",
+						"sAEdit": "Cualquiera con el link puede editar",
+						"sCView": "Miembros del canal pueden ver",
+						"sCComment": "Miembros del canal pueden comentar",
+						"sCEdit": "Miembros del canal pueden editar"
+					}
+				},
+				"share": {
+					"title": " ",
+					"hint": "Compartir en este canal"
+				}
+			}
+		},
+		"response": {
+			"footer": "Google Drive para Mattermost | {{ date }}"
+		},
+		"docs": {
+			"title": "Crear un Documento en Google"
+		},
+		"slides": {
+			"title": "Crear una Presentación en Google"
+		},
+		"sheets": {
+			"title": "Crear una Hoja de Cálculo en Google",
+			"response": {
+				"footer": "create-binding.sheets.response.footer"
+			}
+		}
 	}
 }

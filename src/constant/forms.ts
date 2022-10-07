@@ -56,52 +56,65 @@ export const optFileShare = {
    sCEdit: 'channel_edit',
 }
 
-export const doNotShare: AppSelectOption = 
+export const doNotShare = (context: AppContext): AppSelectOption => 
 {
-   label: 'Keep file private',
-   value: optFileShare.notShare
+   const i18nObj = configureI18n(context);
+   return {
+      label: i18nObj.__('create-binding.form.fields.fileAccess.options.notShare'),
+      value: optFileShare.notShare
+   }
 }
 
-export const fileShareAnyone: AppSelectOption[] = [
-   {
-      label: 'Anyone with the link can view',
-      value: optFileShare.sAView
-   },
-   {
-      label: 'Anyone with the link can comment',
-      value: optFileShare.sAComment
-   },
-   {
-      label: 'Anyone with the link can edit',
-      value: optFileShare.sAEdit
-   }
-] 
+export const fileShareAnyone = (context: AppContext): AppSelectOption[] => {
+   const i18nObj = configureI18n(context);
+   return [
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sAView'),
+         value: optFileShare.sAView
+      },
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sAComment'),
+         value: optFileShare.sAComment
+      },
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sAEdit'),
+         value: optFileShare.sAEdit
+      }
+   ]
+}
 
-export const fileShareChannel: AppSelectOption[] = [
-   {
-      label: 'Member of the channel can view',
-      value: optFileShare.sCView
-   },
-   {
-      label: 'Member of the channel can comment',
-      value: optFileShare.sCComment
-   },
-   {
-      label: 'Member of the channel can edit',
-      value: optFileShare.sCEdit
-   }
-] 
+export const fileShareChannel = (context: AppContext): AppSelectOption[] => {
+   const i18nObj = configureI18n(context);
+   return [
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sCView'),
+         value: optFileShare.sCView
+      },
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sCComment'),
+         value: optFileShare.sCComment
+      },
+      {
+         label: i18nObj.__('create-binding.form.fields.fileAccess.options.sCEdit'),
+         value: optFileShare.sCEdit
+      }
+   ]
+}
 
-export const shareFileOnChannel: AppSelectOption[] = [
-   doNotShare,
-   ...fileShareChannel,
-   ...fileShareAnyone
-]
+export const shareFileOnChannel = (context: AppContext): AppSelectOption[] => {
+   return [
+      doNotShare(context),
+      ...fileShareChannel(context),
+      ...fileShareAnyone(context)
+   ]
+}
 
-export const notShareFileOnChannel: AppSelectOption[] = [
-   doNotShare,
-   ...fileShareAnyone
-]
+export const notShareFileOnChannel = (context: AppContext): AppSelectOption[] => {
+   return [
+      doNotShare(context),
+      ...fileShareAnyone(context)
+   ]
+}
 
 export const ReplyCommentForm = Object.freeze({
    RESPONSE: 'google_response_comment',
