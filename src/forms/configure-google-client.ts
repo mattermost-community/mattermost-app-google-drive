@@ -83,12 +83,14 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             path: Routes.App.CallPathConfigSubmit,
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user: AppExpandLevels.EXPAND_SUMMARY,
             }
         },
         source: {
             path: Routes.App.CallPathUpdateConfigForm,
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user: AppExpandLevels.EXPAND_SUMMARY,
             }
         }
     };
