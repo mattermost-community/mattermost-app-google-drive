@@ -8,11 +8,8 @@ import { AppBinding, AppContext } from "../types";
 import manifest from '../manifest.json';
 import { configureI18n } from "../utils/translations";
 
-const [_, i18nObj] = configureI18n(false);
-
 export const getHelpBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
    
    return {
       app_id: manifest.app_id,
@@ -32,8 +29,7 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
 };
 
 export const getConfigureBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -51,8 +47,7 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
 };
 
 export const getConnectBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -71,8 +66,7 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
 };
 
 export const getDisconnectBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -92,8 +86,7 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
 };
 
 export const getNotificationBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    const subCommands: string[] = [
       Commands.START,
@@ -115,8 +108,7 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
 };
 
 export const getNotificationStartBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -136,8 +128,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
 };
 
 export const getNotificationStopBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -157,8 +148,7 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
 };
 
 export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    const commands: string[] = [
       Commands.DOCUMENT,
@@ -182,8 +172,7 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
 }
 
 export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -203,8 +192,7 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
 };
 
 export const getCreatePresentationBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -224,8 +212,7 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
 };
 
 export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,
@@ -245,8 +232,7 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
 };
 
 export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
 
    return {
       app_id: manifest.app_id,

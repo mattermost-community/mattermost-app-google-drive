@@ -2,8 +2,6 @@ import { AppContext, AppSelectOption } from "../types"
 import { GooglePermissionRole } from "./google-files"
 import { configureI18n } from '../utils/translations';
 
-const [_, i18nObj] = configureI18n(false);
-
 export const ConfigureClientForm = Object.freeze({
    CLIENT_ID: 'google_drive_client_id',
    CLIENT_SECRET: 'google_drive_client_secret',
@@ -30,8 +28,7 @@ export const FilesToUpload = Object.freeze({
 });
 
 export const modeConfiguration = (context: AppContext): AppSelectOption[] => {
-   const locale = context.locale;
-   i18nObj.setLocale(locale);
+   const i18nObj = configureI18n(context);
    
    return [
       {

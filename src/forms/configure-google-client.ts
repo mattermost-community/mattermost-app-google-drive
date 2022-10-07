@@ -27,12 +27,10 @@ import manifest from '../manifest.json';
 import GeneralConstants from '../constant/general';
 import { configureI18n } from '../utils/translations';
 
-const [_, i18nObj] = configureI18n(false);
 
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
-    const locale = call.context.locale;
-    i18nObj.setLocale(locale);
+    const i18nObj = configureI18n(call.context);
 
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
@@ -135,8 +133,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
 }
 
 export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
-    const locale = call.context.locale;
-    i18nObj.setLocale(locale);
+    const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
     const botAccessToken: string | undefined = call.context.bot_access_token;

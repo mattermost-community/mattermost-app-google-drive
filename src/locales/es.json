@@ -1,64 +1,82 @@
 {
-   "bindings-descriptions": {
-      "bindings": "Administrar Google Drive",
-      "help": "Mostrar ayuda sobre la App",
-      "configure": "Configurar el Cliente de Google",
-      "connect": "Conectar con tu cuenta de Google",
-      "disconnect": "Desconectar tu cuenta de Google",
-      "notification": "Detener o encender las notificaciones sobre los comentarios",
-      "notification-start": "Encender las notificaciones sobre los comentarios",
-      "notification-stop": "Detener las notificaciones sobre los comentarios",
-      "create": "Crear y compartir con el canal un nuevo archivo Google Drive",
-      "create-document": "Crear nuevo Google Docs en Drive",
-      "create-slide": "Crear nuevo Google Slide en Drive",
-      "create-sheet":"Crear nuevo Google Sheets en Drive",
-      "save-file": "Subir archivos a Drive"
-   },
-   "help-binding": {
-      "title": "Plugin Mattermost Google Drive - Ayuda",
-      "descriptions": {
-         "help": "Ejecutar el comando de ayuda de la Google Drive App, checa el resto de la [documentación]({{homepageUrl}})",
-         "configure": "Configurar el Cliente de Google",
-         "connect": "Conectar con tu cuenta de Google",
-         "disconnect": "Desconectar tu cuenta de Google",
-         "notification": "Detener o encender las notificaciones sobre los comentarios",
-         "create": "Crear y compartir con el canal un nuevo archivo Google Drive"
-      }
-   },
-   "configure-binding": {
-      "form": {
-         "title": "Configurar el cliente de Google Drive",
-         "header": "¿Cómo crear un nuevo cliente en la consola de [Google Drive]({{homepageUrl}}#configuration)?",
-         "fields": {
-            "clientID": {
-               "title": "Client ID",
-               "description": "Integración con el Client ID de Google"
-            },
-            "clientSecret": {
-               "title": "Client Secret",
-               "description": "Integración con el Client Secret de Google"
-            },
-            "serviceAccount": {
-               "title": "Configuración de webhook",
-               "description": "Qué tipo de autenticación se utilizará al momento de manejar las notificaciones",
-               "values": {
-                  "doNotUse": "No usar una cuenta de servicio",
-                  "useServiceAccount": "Sí usar una cuenta de servicio",
-                  "useAPIKey": "Usar API Key"
-               }
-            },
-            "apiKey": {
-               "title": "API Key",
-               "description": "API Key de Google para Mattermost, no hay necesidad si se hace uso del servicio"
-            },
-            "serviceAccountJSON": {
-               "title": "Service Account (JSON)",
-               "description": "Uso de una cuenta de servicio para la App. Por favor, abrir el archivo JSON descargado con las credenciales y pegarlo en la siguiente casilla"
-            }
-         }
-      },
-      "response": {
-         "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
-      }
-   }
+	"bindings-descriptions": {
+		"bindings": "Administrar Google Drive",
+		"help": "Mostrar ayuda sobre la App",
+		"configure": "Configurar el Cliente de Google",
+		"connect": "Conectar con tu cuenta de Google",
+		"disconnect": "Desconectar tu cuenta de Google",
+		"notification": "Detener o encender las notificaciones sobre los comentarios",
+		"notification-start": "Encender las notificaciones sobre los comentarios",
+		"notification-stop": "Detener las notificaciones sobre los comentarios",
+		"create": "Crear y compartir con el canal un nuevo archivo Google Drive",
+		"create-document": "Crear nuevo Google Docs en Drive",
+		"create-slide": "Crear nuevo Google Slide en Drive",
+		"create-sheet": "Crear nuevo Google Sheets en Drive",
+		"save-file": "Subir archivos a Drive"
+	},
+	"help-binding": {
+		"title": "Plugin Mattermost Google Drive - Ayuda",
+		"descriptions": {
+			"help": "Ejecutar el comando de ayuda de la Google Drive App, checa el resto de la [documentación]({{homepageUrl}})",
+			"configure": "Configurar el Cliente de Google",
+			"connect": "Conectar con tu cuenta de Google",
+			"disconnect": "Desconectar tu cuenta de Google",
+			"notification": "Detener o encender las notificaciones sobre los comentarios",
+			"create": "Crear y compartir con el canal un nuevo archivo Google Drive"
+		}
+	},
+	"configure-binding": {
+		"form": {
+			"title": "Configurar el cliente de Google Drive",
+			"header": "¿Cómo crear un nuevo cliente en la consola de [Google Drive]({{homepageUrl}}#configuration)?",
+			"fields": {
+				"clientID": {
+					"title": "Client ID",
+					"description": "Integración con el Client ID de Google"
+				},
+				"clientSecret": {
+					"title": "Client Secret",
+					"description": "Integración con el Client Secret de Google"
+				},
+				"serviceAccount": {
+					"title": "Configuración de webhook",
+					"description": "Qué tipo de autenticación se utilizará al momento de manejar las notificaciones",
+					"values": {
+						"doNotUse": "No usar una cuenta de servicio",
+						"useServiceAccount": "Sí usar una cuenta de servicio",
+						"useAPIKey": "Usar API Key"
+					}
+				},
+				"apiKey": {
+					"title": "API Key",
+					"description": "API Key de Google para Mattermost, no hay necesidad si se hace uso del servicio"
+				},
+				"serviceAccountJSON": {
+					"title": "Service Account (JSON)",
+					"description": "Uso de una cuenta de servicio para la App. Por favor, abrir el archivo JSON descargado con las credenciales y pegarlo en la siguiente casilla"
+				}
+			}
+		},
+		"response": {
+			"success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+		}
+	},
+	"bindings-descriptions.help": "bindings-descriptions.help",
+	"bindings-descriptions.notification-start": "bindings-descriptions.notification-start",
+	"bindings-descriptions.notification-stop": "bindings-descriptions.notification-stop",
+	"bindings-descriptions.notification": "bindings-descriptions.notification",
+	"bindings-descriptions.create-document": "bindings-descriptions.create-document",
+	"bindings-descriptions.create-slide": "bindings-descriptions.create-slide",
+	"bindings-descriptions.create-sheet": "bindings-descriptions.create-sheet",
+	"bindings-descriptions.create": "bindings-descriptions.create",
+	"bindings-descriptions.connect": "bindings-descriptions.connect",
+	"bindings-descriptions.disconnect": "bindings-descriptions.disconnect",
+	"bindings-descriptions.bindings": "bindings-descriptions.bindings",
+	"bindings-descriptions.save-file": "bindings-descriptions.save-file",
+	"help-binding.title": "help-binding.title",
+	"help-binding.descriptions.help": "help-binding.descriptions.help",
+	"help-binding.descriptions.notification": "help-binding.descriptions.notification",
+	"help-binding.descriptions.create": "help-binding.descriptions.create",
+	"help-binding.descriptions.connect": "help-binding.descriptions.connect",
+	"help-binding.descriptions.disconnect": "help-binding.descriptions.disconnect"
 }

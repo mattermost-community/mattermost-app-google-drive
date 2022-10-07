@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 app.use(morgan('tiny'))
 app.use('/', apiRoutes);
 
-const [i18n, _] = configureI18n(true);
+const i18n = configureI18n();
 app.use(i18n.init);
 
 const port: number = config.APP.PORT;
