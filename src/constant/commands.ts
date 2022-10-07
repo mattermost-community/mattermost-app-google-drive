@@ -14,12 +14,3 @@ export const Commands = {
    PRESENTATION: 'slide',
    SPREADSHEET: 'sheet'
 }
-
-export const CommandsDescriptions = {
-   HELP: `Launch the Google Drive plugin command line help syntax, check out the [documentation](${homepageUrl}).`,
-   CONFIGURE: 'Setup Google Client',
-   CONNECT: 'Connect your Google account',
-   DISCONNECT: 'Disconnect from your Google account',
-   NOTIFICATION: 'Stop or start getting notifications about comments',
-   CREATE: 'Create and share with the channel new Google Drive files'
-}

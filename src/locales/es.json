@@ -1,3 +1,13 @@
 {
-   "hello": "HOLA EN ESPAÑOL"
+   "help-binding": {
+      "title": "Plugin Mattermost Google Drive - Ayuda",
+      "descriptions": {
+         "help": "Ejecutar el comando de ayuda de la Google Drive App, checa el resto de la [documentación]({{homepageUrl}})",
+         "configure": "Configurar el Cliente de Google",
+         "connect": "Conectar con tu cuenta de Google",
+         "disconnect": "Desconectar tu cuenta de Google",
+         "notification": "Detener o encender las notificaciones sobre los comentarios",
+         "create": "Crear y compartir con el canal un nuevo archivo Google Drive"
+      }
+   }
 }

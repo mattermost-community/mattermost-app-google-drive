@@ -1,3 +1,13 @@
 {
-   "hello": "HELLO EN INGLÉS"
+   "help-binding": {
+      "title": "Mattermost Google Drive Plugin - Help",
+      "descriptions": {
+         "help": "Launch the Google Drive plugin command line help syntax, check out the [documentation]({{homepageUrl}})",
+         "configure": "Setup Google Client",
+         "connect": "Connect your Google account",
+         "disconnect": "Disconnect from your Google account",
+         "notification": "Stop or start getting notifications about comments",
+         "create": "Create and share with the channel new Google Drive files"
+      }
+   }
 }
