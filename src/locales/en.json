@@ -77,5 +77,11 @@
 			"noSession": "Impossible to disconnect. There is no active session",
 			"success": "You have successfully disconnected your Google account!"
 		}
+	},
+	"notifications-binding": {
+		"response": {
+			"disabled": "Google notifications are disabled!",
+			"enabled": "Google notifications are enabled!"
+		}
 	}
 }

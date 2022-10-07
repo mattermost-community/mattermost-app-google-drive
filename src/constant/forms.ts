@@ -117,5 +117,6 @@ export const GooglePermissionRoleByOption: { [x: string]: GooglePermissionRole }
 }
 
 export const KVStoreGoogleData = Object.freeze({
-   GOOGLE_DATA: 'google_data'
+   GOOGLE_DATA: 'google_data',
+   USER_ID: 'userId'
 })

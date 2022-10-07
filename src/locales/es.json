@@ -77,5 +77,11 @@
 			"noSession": "Imposible de desconectar. No se encuentra sesión activa.",
 			"success": "¡Se ha desconectado correctamente a tu cuenta de Google!"
 		}
+	},
+	"notifications-binding": {
+		"response": {
+			"disabled": "Las notificaciones de Google se han detenido",
+			"enabled": "Las notificaciones de Google se han encendido"
+		}
 	}
 }
