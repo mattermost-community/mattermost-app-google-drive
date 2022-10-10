@@ -1,4 +1,7 @@
 {
+	"general": {
+		"google-error": "Google failed: "
+	},
 	"bindings-descriptions": {
 		"bindings": "Manage Google Drive",
 		"help": "Show Google Drive Help",
@@ -59,6 +62,68 @@
 		},
 		"response": {
 			"success": "Successfully updated Google Client configuration!"
+		}
+	},
+	"connect-binding": {
+		"response": {
+			"generateLink": "Follow this {{ link }} to connect Mattermost to your Google Account.",
+			"alreadyLoggedIn": "You are already logged into Google",
+			"codeNotProvided": "Bad Request: code param not provided",
+			"success": "You have successfully connected your Google account!"
+		}
+	},
+	"disconnect-binding": {
+		"response": {
+			"noSession": "Impossible to disconnect. There is no active session",
+			"success": "You have successfully disconnected your Google account!"
+		}
+	},
+	"notifications-binding": {
+		"response": {
+			"disabled": "Google notifications are disabled!",
+			"enabled": "Google notifications are enabled!"
+		}
+	},
+	"create-binding": {
+		"form": {
+			"fields": {
+				"title": {
+					"title": "Title (optional)"
+				},
+				"message": {
+					"title": "Message (optional)",
+					"placeholder": "Add a message, if you'd like."
+				},
+				"fileAccess": {
+					"title": "File Access",
+					"description": "Select who has access to the file",
+					"options": {
+						"notShare": "Keep file private",
+						"sAView": "Anyone with the link can view",
+						"sAComment": "Anyone with the link can comment",
+						"sAEdit": "Anyone with the link can edit",
+						"sCView": "Member of the channel can view",
+						"sCComment": "Member of the channel can comment",
+						"sCEdit": "Member of the channel can edit"
+					}
+				},
+				"share": {
+					"title": " ",
+					"hint": "Share on this channel"
+				}
+			}
+		},
+		"response": {
+			"footer": "Google Drive for Mattermost | {{ date }}"
+		},
+		"docs": {
+			"title": "Create a Google Document"
+		},
+		"slides": {
+			"title": "Create a Google Presentation"
+		},
+		"sheets": {
+			"title": "Create a Google Spreadsheet"
 		}
 	}
 }

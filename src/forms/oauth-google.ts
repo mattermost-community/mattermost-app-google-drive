@@ -21,14 +21,18 @@ import { getGoogleDriveClient, getOAuthGoogleClient } from '../clients/google-cl
 import { head } from 'lodash';
 import GeneralConstants from '../constant/general';
 import { callBindingByApp } from '../utils/call-binding';
+import { configureI18n } from '../utils/translations';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: AppCallRequest): Promise<string> {
     const connectUrl: string = call.context.oauth2?.connect_url as string;
     const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
+    const i18nObj = configureI18n(call.context);
+    const link = hyperlink('link', connectUrl);
+    
     const message: string = isConnected(oauth2)
-        ? `You are already logged into Google`
-        : `Follow this ${hyperlink('link', connectUrl)} to connect Mattermost to your Google Account.`;
+        ? i18nObj.__('connect-binding.response.alreadyLoggedIn')
+        : i18nObj.__('connect-binding.response.generateLink', { link })
     return message;
 }
 
@@ -58,9 +62,10 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const accessToken: string | undefined = call.context.acting_user_access_token;
     const userID: string | undefined = call.context.acting_user?.id;
     const values: AppCallValues | undefined = call.values;
+    const i18nObj = configureI18n(call.context);
 
     if (!values?.code) {
-        throw new Error(values?.error_description || 'Bad Request: code param not provided');
+        throw new Error(values?.error_description || i18nObj.__('connect-binding.response.codeNotProvided'));
     }
 
     const oAuth2Client = await getOAuthGoogleClient(call);
@@ -78,7 +83,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const aboutParams: StandardParameters = {
         fields: `${GoogleConstants.USER}`
     }
-    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, 'Google failed: ');
+    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
     const storedToken: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
@@ -107,7 +112,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     googleData.userData.push(googleUser);
     await kvStoreClient.kvSet(KVStoreGoogleData.GOOGLE_DATA, googleData);
 
-    const message = 'You have successfully connected your Google account!';
+    const message = i18nObj.__('connect-binding.response.success');
     await postBotChannel(call, message);
     await callBindingByApp(call, Routes.App.CallPathStartNotifications);
 }
@@ -118,9 +123,10 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const botAccessToken: string | undefined = call.context.bot_access_token;
     const userID: string | undefined = call.context.acting_user?.id;
     const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
-    
+    const i18nObj = configureI18n(call.context);
+
     if (!isConnected(oauth2)) {
-        throw new Exception(ExceptionType.MARKDOWN, 'Impossible to disconnect. There is no active session');
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'));
     }
 
     const kvOptionsOauth: KVStoreOptions = {
@@ -144,6 +150,6 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     }
     await kvStoreClient.kvSet(KVStoreGoogleData.GOOGLE_DATA, googleData);
 
-    const message = 'You have successfully disconnected your Google account!';
+    const message = i18nObj.__('disconnect-binding.response.success');
     await postBotChannel(call, message);
 }

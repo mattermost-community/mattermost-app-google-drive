@@ -1,5 +1,6 @@
 import { 
    ExceptionType, 
+   KVStoreGoogleData, 
    Routes, 
    StoreKeys 
 } from "../constant";
@@ -23,12 +24,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { 
    KVStoreClient 
 } from "../clients";
+import { configureI18n } from "../utils/translations";
 require('dotenv').config('../');
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const actingUser: string | undefined = call.context.acting_user?.id;
+   const i18nObj = configureI18n(call.context);
 
    const options: KVStoreOptions = {
       mattermostUrl: <string>mattermostUrl,
@@ -44,10 +47,10 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
          resourceId: channelNotification.resourceId,
       }
    }
-   await tryPromise<Schema$Channel>(drive.channels.stop(stopParams), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   await tryPromise<Schema$Channel>(drive.channels.stop(stopParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    await kvStoreClient.kvSet(`${actingUser}-${StoreKeys.channel}`, {});
 
-   return 'Google notifications are disabled!';
+   return i18nObj.__('notifications-binding.response.disabled');
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
@@ -58,13 +61,14 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
    const botAccessToken: string | undefined = call.context.bot_access_token;
    const appPath: string | undefined = call.context.app_path;
    const actingUser: string | undefined = call.context.acting_user?.id;
+   const i18nObj = configureI18n(call.context);
 
    const drive = await getGoogleDriveClient(call);
 
-   const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
    
    const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
-   urlWithParams.searchParams.append('userId', <string>actingUser);
+   urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, <string>actingUser);
 
    const params = {
       pageToken: <string>pageToken.startPageToken,
@@ -81,7 +85,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
       }
    }
    
-   const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+   const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
    const options: KVStoreOptions = {
       mattermostUrl: <string>mattermostUrl,
@@ -95,5 +99,5 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
    };
 
    await kvStoreClient.kvSet(`${actingUser}-${StoreKeys.channel}`, currentChannel);
-   return 'Google notifications are enabled!';
+   return i18nObj.__('notifications-binding.response.enabled');
 }
