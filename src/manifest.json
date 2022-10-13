@@ -41,5 +41,15 @@
       "expand": {
          "oauth2_app": "all"
       }
-   }
+   },
+   "aws_lambda": {
+        "functions": [
+            {
+                "path": "/",
+                "name": "Drive",
+                "handler": "Drive",
+                "runtime": "nodejs16.x"
+            }
+        ]
+    }
 }
