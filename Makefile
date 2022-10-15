@@ -24,9 +24,16 @@ build: node_modules
 	$(NPM) run build
 
 ## dist: creates the bundle file
-dist: build
-	cp -r node_modules dist;  cd dist; zip -qr js-function *; cp ../src/manifest.json .; cp -r ../static .;  zip -r bundle.zip js-function.zip manifest.json static/
-
+dist-aws: build
+	rm -rf aws/drive && mkdir -p aws/drive
+	mv dist/* aws/drive
+	rm -r dist
+	cp src/manifest.json aws
+	cp -r static aws
+	cd aws ; \
+		zip -rm drive.zip drive ; \
+		zip -rm ../drive-aws.zip manifest.json static drive.zip
+	rm -r aws
 ## build: build the app when changed
 watch: node_modules
 	$(NPM) run build:watch
