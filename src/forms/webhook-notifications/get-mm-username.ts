@@ -1,4 +1,3 @@
-
 import {
    MattermostOptions,
    User,
