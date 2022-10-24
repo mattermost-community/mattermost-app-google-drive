@@ -1,14 +1,14 @@
-import {drive_v3,} from 'googleapis';
-import {head} from "lodash";
+import { drive_v3, } from 'googleapis';
+import { head } from "lodash";
 import moment from "moment";
-import {getGoogleDriveActivityClient, getGoogleDriveClient} from "../clients/google-client";
-import {ExceptionType,} from '../constant';
+import { getGoogleDriveActivityClient, getGoogleDriveClient } from "../clients/google-client";
+import { ExceptionType, } from '../constant';
 import GeneralConstants from '../constant/general';
-import {GoogleResourceState} from "../constant/google-kinds";
-import {Change, ChangeList, GA$DriveActivity, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest} from "../types";
-import {tryPromise} from "../utils/utils";
-import {manageCommentOnFile} from "./webhook-notifications/comments";
-import {permissionsChanged} from "./webhook-notifications/permissions-change";
+import { GoogleResourceState } from "../constant/google-kinds";
+import { Change, ChangeList, GA$DriveActivity, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest } from "../types";
+import { tryPromise } from "../utils/utils";
+import { manageCommentOnFile } from "./webhook-notifications/comments";
+import { permissionsChanged } from "./webhook-notifications/permissions-change";
 
 export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
 	if (call.values.headers["X-Goog-Resource-State"] !== GoogleResourceState.CHANGE) {

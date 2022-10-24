@@ -124,10 +124,7 @@
       "title": "Create a Google Presentation"
     },
     "sheets": {
-      "title": "Crear una Hoja de Cálculo en Google",
-      "response": {
-        "footer": "create-binding.sheets.response.footer"
-      }
+      "title": "Crear una Hoja de Cálculo en Google"
     }
   },
   "comments": {

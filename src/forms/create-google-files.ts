@@ -1,8 +1,8 @@
-import {head} from "lodash";
+import { head } from "lodash";
 import moment from "moment";
-import {MattermostClient} from "../clients";
-import {getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient} from "../clients/google-client";
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, notShareFileOnChannel, Routes, shareFileOnChannel} from "../constant";
+import { MattermostClient } from "../clients";
+import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient } from "../clients/google-client";
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, notShareFileOnChannel, Routes, shareFileOnChannel } from "../constant";
 import GeneralConstants from '../constant/general';
 import {
 	AppCallRequest,
@@ -19,10 +19,10 @@ import {
 	Schema$Spreadsheet,
 	Schema$User,
 } from "../types";
-import {CreateFileForm} from "../types/forms";
-import {configureI18n} from "../utils/translations";
-import {tryPromise} from "../utils/utils";
-import {SHARE_FILE_ACTIONS} from "./share-google-file";
+import { CreateFileForm } from "../types/forms";
+import { configureI18n } from "../utils/translations";
+import { tryPromise } from "../utils/utils";
+import { SHARE_FILE_ACTIONS } from "./share-google-file";
 
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {

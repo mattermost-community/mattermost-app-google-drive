@@ -1,7 +1,7 @@
-import {AppExpandLevels, Commands, GoogleDriveIcon, Routes,} from "../constant";
+import { AppExpandLevels, Commands, GoogleDriveIcon, Routes, } from "../constant";
 import manifest from '../manifest.json';
-import {AppBinding, AppContext} from "../types";
-import {configureI18n} from "../utils/translations";
+import { AppBinding, AppContext } from "../types";
+import { configureI18n } from "../utils/translations";
 
 export const getHelpBinding = (context: AppContext): AppBinding => {
 	const i18nObj = configureI18n(context);

@@ -1,12 +1,12 @@
-import {head} from "lodash";
+import { head } from "lodash";
 import moment from "moment";
-import {MattermostClient} from "../clients";
-import {getGoogleDriveClient} from "../clients/google-client";
-import {AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes,} from "../constant";
-import {AppCallRequest, AppField, AppForm, AppSelectOption, MattermostOptions, PostCreate, Schema$File, Schema$User,} from "../types";
-import {SelectedUploadFilesForm} from "../types/forms";
-import {configureI18n} from "../utils/translations";
-import {throwException, tryPromise} from "../utils/utils";
+import { MattermostClient } from "../clients";
+import { getGoogleDriveClient } from "../clients/google-client";
+import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes, } from "../constant";
+import { AppCallRequest, AppField, AppForm, AppSelectOption, MattermostOptions, PostCreate, Schema$File, Schema$User, } from "../types";
+import { SelectedUploadFilesForm } from "../types/forms";
+import { configureI18n } from "../utils/translations";
+import { throwException, tryPromise } from "../utils/utils";
 
 export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<AppForm> {
 	const i18nObj = configureI18n(call.context);

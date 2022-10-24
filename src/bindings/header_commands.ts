@@ -1,7 +1,7 @@
-import {AppBindingLocations, CommandTrigger} from "../constant";
+import { AppBindingLocations, CommandTrigger } from "../constant";
 import manifest from '../manifest.json';
-import {AppBinding, AppCallRequest, AppContext, AppsState} from "../types";
-import {getHelpBinding} from "./bindings";
+import { AppBinding, AppCallRequest, AppContext, AppsState } from "../types";
+import { getHelpBinding } from "./bindings";
 
 const newHeaderButtonBindings = (bindings: AppBinding[]): AppsState => {
 	const m = manifest;

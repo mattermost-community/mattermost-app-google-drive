@@ -1,10 +1,11 @@
-import {Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1,} from 'googleapis';
-import {head} from "lodash";
-import {KVStoreClient} from ".";
-import {ExceptionType, KVStoreGoogleData} from "../constant";
-import {AppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser} from "../types";
-import {configureI18n} from "../utils/translations";
-import {tryPromise} from "../utils/utils";
+import { Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1, } from 'googleapis';
+import { head } from "lodash";
+import { KVStoreClient } from ".";
+import { ExceptionType, KVStoreGoogleData } from "../constant";
+import { AppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from "../types";
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
+
 
 
 export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {

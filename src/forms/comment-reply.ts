@@ -1,10 +1,10 @@
-import {MattermostClient} from "../clients";
-import {getGoogleDriveClient} from "../clients/google-client";
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes} from '../constant';
-import {AppCallRequest, AppForm, MattermostOptions, Params$Resource$Replies$Create, PostCreate,} from "../types";
-import {CommentState, ReplyCommentFormType} from "../types/forms";
-import {configureI18n} from "../utils/translations";
-import {tryPromise} from "../utils/utils";
+import { MattermostClient } from "../clients";
+import { getGoogleDriveClient } from "../clients/google-client";
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
+import { AppCallRequest, AppForm, MattermostOptions, Params$Resource$Replies$Create, PostCreate, } from "../types";
+import { CommentState, ReplyCommentFormType } from "../types/forms";
+import { configureI18n } from "../utils/translations";
+import { tryPromise } from "../utils/utils";
 
 export async function openFormReplyComment(call: AppCallRequest): Promise<AppForm> {
 	const i18nObj = configureI18n(call.context);

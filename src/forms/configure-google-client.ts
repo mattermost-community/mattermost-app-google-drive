@@ -1,9 +1,9 @@
-import {KVStoreClient,} from '../clients/kvstore';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ConfigureClientForm, GoogleDriveIcon, modeConfiguration, optConfigure, Routes} from '../constant';
+import { KVStoreClient, } from '../clients/kvstore';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ConfigureClientForm, GoogleDriveIcon, modeConfiguration, optConfigure, Routes } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import {AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data,} from '../types';
-import {configureI18n} from '../utils/translations';
+import { AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data, } from '../types';
+import { configureI18n } from '../utils/translations';
 
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {

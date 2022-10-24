@@ -1,16 +1,16 @@
-import {head} from 'lodash';
-import {getGoogleDriveClient, getOAuthGoogleClient} from '../clients/google-client';
-import {KVStoreClient} from '../clients/kvstore';
-import {ExceptionType, GoogleConstants, KVStoreGoogleData, Routes} from '../constant';
+import { head } from 'lodash';
+import { getGoogleDriveClient, getOAuthGoogleClient } from '../clients/google-client';
+import { KVStoreClient } from '../clients/kvstore';
+import { ExceptionType, GoogleConstants, KVStoreGoogleData, Routes } from '../constant';
 import GeneralConstants from '../constant/general';
-import {AppCallRequest, AppCallValues, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters,} from '../types';
-import {callBindingByApp} from '../utils/call-binding';
-import {Exception} from '../utils/exception';
-import {hyperlink} from '../utils/markdown';
-import {getGoogleOAuthScopes} from '../utils/oauth-scopes';
-import {postBotChannel} from '../utils/post-in-channel';
-import {configureI18n} from '../utils/translations';
-import {isConnected, tryPromise} from '../utils/utils';
+import { AppCallRequest, AppCallValues, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters, } from '../types';
+import { callBindingByApp } from '../utils/call-binding';
+import { Exception } from '../utils/exception';
+import { hyperlink } from '../utils/markdown';
+import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
+import { postBotChannel } from '../utils/post-in-channel';
+import { configureI18n } from '../utils/translations';
+import { isConnected, tryPromise } from '../utils/utils';
 
 const {google} = require('googleapis');
 
