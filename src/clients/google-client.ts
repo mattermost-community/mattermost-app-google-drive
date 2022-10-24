@@ -6,8 +6,6 @@ import { AppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, 
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
 
-
-
 export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {
 	const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
 	const oAuth2Client = new google.auth.OAuth2(

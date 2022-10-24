@@ -24,7 +24,6 @@ import { configureI18n } from "../utils/translations";
 import { tryPromise } from "../utils/utils";
 import { SHARE_FILE_ACTIONS } from "./share-google-file";
 
-
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
 	const i18nObj = configureI18n(call.context);
 

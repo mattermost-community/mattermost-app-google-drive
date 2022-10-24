@@ -124,20 +124,17 @@
       "title": "Crear una Presentación en Google"
     },
     "sheets": {
-      "title": "Crear una Hoja de Cálculo en Google",
-      "response": {
-        "footer": "create-binding.sheets.response.footer"
-      }
+      "title": "Crear una Hoja de Cálculo en Google"
     }
   },
   "comments": {
     "file-icon": "Icono de archivo",
     "add": {
-      "text-mentioned": "te mencioné en",
-      "text-comment": "comentado"
+      "text-mentioned": "{{ userDisplay }} te mencioné en {{ image }} {{ link }}",
+      "text-comment": "{{ userDisplay }} ha comentado en {{ image }} {{ link }}"
     },
     "reply": {
-      "comment": "respondió a un comentario en",
+      "comment": "{{ userDisplay }}  respondió a un comentario en {{ image }} {{ link }}",
       "previous": "Respuesta anterior:"
     },
     "resolved": {

@@ -60,8 +60,19 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 	}
 
 	const message = comment.content?.includes(<string>about.user.emailAddress)
-		? h5(`${userDisplay} ${i18nObj.__('comments.add.text-mentioned')} ${inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
-		: h5(`${userDisplay} ${i18nObj.__('comments.add.text-comment')} ${inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`);
+		? h5(i18nObj.__('comments.add',
+			{
+				userDisplay: userDisplay,
+				image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
+				link: hyperlink(`${file?.name}`, <string>urlToComment)
+			}
+		))
+		: h5(i18nObj.__('comments.text-comment',
+			{
+				userDisplay: userDisplay,
+				image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
+				link: hyperlink(`${file?.name}`, <string>urlToComment)
+			}));
 
 	const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> ${comment.content}`;
 
@@ -105,7 +116,12 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 	if (!!mmUser) {
 		userDisplay = `@${mmUser.username}`;
 	}
-	const message = h5(`${userDisplay} ${i18nObj.__('comments.reply.comment')} ${inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, <string>urlToComment)}`)
+	const message = h5(i18nObj.__('comments.reply.comment',
+		{
+			userDisplay: userDisplay,
+			image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
+			link: hyperlink(`${file?.name}`, <string>urlToComment)
+		}));
 
 	const description = `${bold(i18nObj.__('comments.reply.previous'))}\n ${oneBeforeLast.content || ' '}\n ___ \n> ${lastReply.content}`;
 

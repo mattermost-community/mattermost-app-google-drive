@@ -130,11 +130,11 @@
   "comments": {
     "file-icon": "File icon",
     "add": {
-      "text-mentioned": "mentioned you in",
-      "text-comment": "commented on"
+      "text-mentioned": "{{ userDisplay }} mentioned you in {{ image }} {{ link }}",
+      "text-comment": "{{ userDisplay }} commented on {{ image }} {{ link }}"
     },
     "reply": {
-      "comment": "replied to a comment in",
+      "comment": "{{ userDisplay }} replied to a comment in {{ image }} {{ link }}",
       "previous": "Previous reply:"
     },
     "resolved": {

@@ -6,7 +6,6 @@ import { CreateFileForm } from "../types/forms";
 import { configureI18n } from "../utils/translations";
 import { tryPromise } from "../utils/utils";
 
-
 export const SHARE_FILE_ACTIONS: { [key: string]: Function } = {
 	[optFileShare.notShare]: actNotShare,
 	[optFileShare.sAView]: shareWithAnyone,
