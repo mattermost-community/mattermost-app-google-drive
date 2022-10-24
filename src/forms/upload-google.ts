@@ -1,4 +1,4 @@
-import { head } from "lodash";
+import {head} from "lodash";
 import moment from "moment";
 import { MattermostClient } from "../clients";
 import { getGoogleDriveClient } from "../clients/google-client";
