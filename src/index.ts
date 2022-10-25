@@ -14,11 +14,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(morgan('tiny'))
 app.use('/', apiRoutes);
+app.post('/ping', (req, res) => { res.json({}) })
 
-const port: number = config.APP.PORT;
-app.listen(port, () => console.log('Listening on ' + port));
-
-const handler = serverless(app, { provider: 'aws' });
-module.exports.handler = async (context: any, req: any) => {
-  context.res = await handler(context, req);
+// App released via HTTP and docker
+if (config.APP.HOST) {
+    const port: number = config.APP.PORT;
+    app.listen(port, () => console.log('Listening on ' + port));
+}
+// App released via AWS Lambda
+else {
+    module.exports.handler = serverless(app);
 }

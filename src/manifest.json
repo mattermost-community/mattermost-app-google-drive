@@ -45,9 +45,9 @@
    "aws_lambda": {
         "functions": [
             {
-                "path": "/drive",
+                "path": "/",
                 "name": "drive",
-                "handler": "handler",
+                "handler": "drive/index.handler",
                 "runtime": "nodejs16.x"
             }
         ]
