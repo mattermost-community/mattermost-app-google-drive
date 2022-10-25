@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist node_modules",
     "build": "tsc -p .",
-    "start": "tsc -p . && node dist/index.js",
+    "start": "tsc -p . && cp -r src/locales dist/ && node dist/index.js",
     "dev": "ts-node-dev src/index.ts"
   },
   "repository": {
