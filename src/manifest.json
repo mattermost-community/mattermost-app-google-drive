@@ -1,5 +1,5 @@
 {
-   "app_id": "Drive",
+   "app_id": "drive",
    "version": "v1.0.0",
    "homepage_url": "https://bitbucket.org/dominion-ancient/mattermost-app-google-drive/src/develop/README.md",
    "display_name": "Google Drive",
@@ -33,7 +33,7 @@
       "/post_menu"
    ],
    "http": {
-      "root_url": ""
+      "root_url": "https://mattermost-bussiness-dev.ancient.mx"
    },
    "remote_webhook_auth_type": "none",
    "on_remote_webhook": {
@@ -46,8 +46,8 @@
         "functions": [
             {
                 "path": "/",
-                "name": "Drive",
-                "handler": "Drive",
+                "name": "drive",
+                "handler": "drive/index.handler",
                 "runtime": "nodejs16.x"
             }
         ]

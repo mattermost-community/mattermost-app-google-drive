@@ -24,9 +24,18 @@ build: node_modules
 	$(NPM) run build
 
 ## dist: creates the bundle file
-dist: build
-	cp -r node_modules dist;  cd dist; zip -qr js-function *; cp ../src/manifest.json .; cp -r ../static .;  zip -r bundle.zip js-function.zip manifest.json static/
-
+dist-aws: build
+	rm -rf aws/$(app_id) && mkdir -p aws/$(app_id)
+	mv dist/* aws/$(app_id)
+	mv node_modules aws/$(app_id)
+	cp -r src/locales aws/$(app_id)
+	rm -r dist
+	cp src/manifest.json aws
+	cp -r static aws
+	cd aws ; \
+		zip -rm $(app_id).zip $(app_id) ; \
+		zip -rm ../$(app_id).zip manifest.json static $(app_id).zip
+	rm -r aws
 ## build: build the app when changed
 watch: node_modules
 	$(NPM) run build:watch
