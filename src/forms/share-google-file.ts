@@ -35,7 +35,7 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
 			type: 'anyone'
 		}
 	}
-	return await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-erro'));
+	return await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 }
 
 async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
@@ -70,7 +70,7 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
 				sendNotificationEmail: true
 			}
 		}
-		await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-erro'));
+		await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 	}
 
 	return;

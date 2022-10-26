@@ -30,8 +30,7 @@ const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: Function } = {
 	REOPENED: funCommentReOpened,
 };
 
-async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
-}
+async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {}
 
 async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
 	const i18nObj = configureI18n(call.context);
