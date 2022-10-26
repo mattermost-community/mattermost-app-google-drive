@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist node_modules",
     "build": "tsc -p .",
-    "start": "tsc -p . && node dist/index.js",
+    "start": "tsc -p . && cp -r src/locales dist/ && node dist/index.js",
     "dev": "ts-node-dev src/index.ts"
   },
   "repository": {
@@ -32,6 +32,7 @@
     "morgan": "^1.10.0",
     "query-string": "^7.1.1",
     "request": "^2.88.2",
+    "serverless-http": "^3.0.3",
     "ts-node": "^10.9.1",
     "uuid": "^8.3.2"
   },
