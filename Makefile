@@ -24,7 +24,7 @@ build: node_modules
 	$(NPM) run build
 
 ## dist: creates the bundle file
-dist-aws: build
+dist: build
 	rm -rf aws/$(app_id) && mkdir -p aws/$(app_id)
 	mv dist/* aws/$(app_id)
 	mv node_modules aws/$(app_id)
