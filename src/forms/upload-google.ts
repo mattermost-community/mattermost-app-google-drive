@@ -55,8 +55,8 @@ export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				post: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}

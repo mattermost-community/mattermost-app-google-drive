@@ -274,8 +274,8 @@ export async function postNewCommentOnMattermost(call: WebhookRequest, postData:
 							path: Routes.App.CallPathCommentReplayForm,
 							expand: {
 								acting_user: AppExpandLevels.EXPAND_SUMMARY,
-								oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-								oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+								oauth2_user: AppExpandLevels.EXPAND_ALL,
+								oauth2_app: AppExpandLevels.EXPAND_ALL,
 								post: AppExpandLevels.EXPAND_SUMMARY
 							},
 							state: state
