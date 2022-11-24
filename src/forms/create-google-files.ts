@@ -85,8 +85,8 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				channel: AppExpandLevels.EXPAND_SUMMARY,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
@@ -229,8 +229,8 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_ALL,
 				acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				channel: AppExpandLevels.EXPAND_SUMMARY,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
@@ -371,8 +371,8 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_ALL,
 				acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				channel: AppExpandLevels.EXPAND_SUMMARY,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}

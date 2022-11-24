@@ -17,14 +17,14 @@ export const callBindingByApp = async (call: AppCallRequest, path: string) => {
    const mattermostClient: MattermostClient = new MattermostClient(mattermostOption);
 
    const channel: Channel = await mattermostClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
-   
+
    const binding = JSON.stringify({
       path: path,
       expand: {
          acting_user: AppExpandLevels.EXPAND_SUMMARY,
          app: AppExpandLevels.EXPAND_SUMMARY,
-         oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-         oauth2_user: AppExpandLevels.EXPAND_SUMMARY
+         oauth2_app: AppExpandLevels.EXPAND_ALL,
+         oauth2_user: AppExpandLevels.EXPAND_ALL
       },
       context: {
          app_id: manifest.app_id,

@@ -15,8 +15,8 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
 			path: Routes.App.CallPathHelp,
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -35,7 +35,7 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
 			path: Routes.App.CallPathConfigForm,
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -54,8 +54,8 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
 			path: Routes.App.CallPathConnectSubmit,
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -75,8 +75,8 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				acting_user_access_token: AppExpandLevels.EXPAND_ALL,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -118,8 +118,8 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -139,8 +139,8 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		}
@@ -184,8 +184,8 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		},
@@ -205,8 +205,8 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		},
@@ -226,8 +226,8 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
 			expand: {
 				acting_user: AppExpandLevels.EXPAND_SUMMARY,
 				app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_app: AppExpandLevels.EXPAND_SUMMARY,
-				oauth2_user: AppExpandLevels.EXPAND_SUMMARY,
+				oauth2_app: AppExpandLevels.EXPAND_ALL,
+				oauth2_user: AppExpandLevels.EXPAND_ALL,
 				locale: AppExpandLevels.EXPAND_SUMMARY,
 			}
 		},
