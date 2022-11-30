@@ -1,6 +1,6 @@
 {
    "app_id": "drive",
-   "version": "v1.0.0",
+   "version": "1.0.0",
    "homepage_url": "https://bitbucket.org/dominion-ancient/mattermost-app-google-drive/src/develop/README.md",
    "display_name": "Google Drive",
    "description": "Google Drive App for Mattermost",
@@ -46,8 +46,8 @@
         "functions": [
             {
                 "path": "/",
-                "name": "drive",
-                "handler": "drive/index.handler",
+                "name": "bundle",
+                "handler": "bundle/index.handler",
                 "runtime": "nodejs16.x"
             }
         ]
