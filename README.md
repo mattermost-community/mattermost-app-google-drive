@@ -112,6 +112,8 @@ has any files, a new modal will appear to let the user select the files that wou
 
 # Development
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mattermost/mattermost-app-google-drive)
+
 ## Manual installation
 
 *  Download the latest repository release.
