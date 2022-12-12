@@ -21,10 +21,10 @@ export interface Oauth2Data {
     [ConfigureClientForm.API_KEY]: string;
 }
 
-export interface KVGoogleData {
-    userData: KVGoogleUser[]
-}
-
 export interface KVGoogleUser {
     [userId: string]: Oauth2CurrentUser
+}
+
+export interface KVGoogleData {
+    userData: KVGoogleUser[]
 }

@@ -14,7 +14,7 @@ export async function getMattermostUsername(call: WebhookRequest, authorEmail: s
     const kvGUser: KVGoogleUser | undefined = kvGoogleData?.userData?.find((user) => head(Object.values(user))?.user_email === authorEmail);
 
     if (Boolean(kvGUser)) {
-        const userId: string | undefined = head(Object.keys(kvGUser));
+        const userId: string | undefined = head(Object.keys(<KVGoogleUser>kvGUser));
         const mattermostUrl: string | undefined = call.context.mattermost_site_url;
         const botAccessToken: string | undefined = call.context.acting_user_access_token;
 

@@ -1,6 +1,6 @@
 import {AppBindingLocations} from '../../constant/apps';
 import manifest from '../../manifest.json';
-import {GA$DriveActivity, Schema$File, Schema$User, WebhookRequest} from '../../types';
+import {GA$DriveActivity, Schema$File, Schema$User, User, WebhookRequest} from '../../types';
 import {h5, hyperlink, inLineImage} from '../../utils/markdown';
 import {postBotChannel} from '../../utils/post-in-channel';
 import {configureI18n} from '../../utils/translations';
@@ -13,7 +13,7 @@ export async function permissionsChanged(call: WebhookRequest, file: Schema$File
     const author = file.sharingUser as Schema$User;
     const actorEmail = <string>author.emailAddress;
     let userDisplay = `${author?.displayName} (${actorEmail})`;
-    const mmUser = await getMattermostUsername(call, actorEmail);
+    const mmUser = await getMattermostUsername(call, actorEmail) as User;
 
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;

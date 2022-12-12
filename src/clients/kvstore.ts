@@ -33,7 +33,7 @@ export class KVStoreClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public storeOauth2User(currentUser: Oauth2CurrentUser | {}): Promise<any> {
+    public storeOauth2User(currentUser: Oauth2CurrentUser | object): Promise<any> {
         const url = `${this.config.mattermostUrl}/plugins/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.PathOAuth2User}`;
         return axios.post(url, currentUser, {
             headers: {

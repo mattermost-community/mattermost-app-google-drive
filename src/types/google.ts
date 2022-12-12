@@ -21,10 +21,6 @@ export interface StartPageToken {
     startPageToken?: string | null;
 }
 
-export interface Schema$About {
-    user: Schema$User
-}
-
 export interface Schema$User {
     displayName?: string | null;
     emailAddress?: string | null;
@@ -33,6 +29,11 @@ export interface Schema$User {
     permissionId?: string | null;
     photoLink?: string | null;
 }
+
+export interface Schema$About {
+    user: Schema$User
+}
+
 export interface Schema$File {
     appProperties?: {
         [key: string]: string;
@@ -181,6 +182,17 @@ export interface Schema$File {
     writersCanShare?: boolean | null;
 }
 
+export interface Schema$Reply {
+    action?: string | null;
+    author?: Schema$User;
+    content?: string | null;
+    createdTime?: string | null;
+    deleted?: boolean | null;
+    htmlContent?: string | null;
+    id?: string | null;
+    kind?: string | null;
+    modifiedTime?: string | null;
+}
 export interface Schema$Comment {
     anchor?: string | null;
     author?: Schema$User;
@@ -197,18 +209,6 @@ export interface Schema$Comment {
     } | null;
     replies?: Schema$Reply[];
     resolved?: boolean | null;
-}
-
-export interface Schema$Reply {
-    action?: string | null;
-    author?: Schema$User;
-    content?: string | null;
-    createdTime?: string | null;
-    deleted?: boolean | null;
-    htmlContent?: string | null;
-    id?: string | null;
-    kind?: string | null;
-    modifiedTime?: string | null;
 }
 
 export interface Schema$CommentList {
@@ -267,10 +267,6 @@ export interface ChannelWatchHeaders {
     'X-Goog-Resource-Uri': string,
 }
 
-export interface Params$Resource$Documents$Create {
-    requestBody?: Schema$Document;
-}
-
 export interface Schema$Document {
     body?: any;
     documentId?: string | null;
@@ -309,8 +305,8 @@ export interface Schema$Document {
     title?: string | null;
 }
 
-export interface Params$Resource$Files$Get extends StandardParameters {
-    fileId?: string;
+export interface Params$Resource$Documents$Create {
+    requestBody?: Schema$Document;
 }
 
 export interface StandardParameters {
@@ -322,6 +318,10 @@ export interface StandardParameters {
     prettyPrint?: boolean;
     quotaUser?: string;
     userIp?: string;
+}
+
+export interface Params$Resource$Files$Get extends StandardParameters {
+    fileId?: string;
 }
 
 export interface Schema$Page {
@@ -373,19 +373,6 @@ export interface Params$Resource$Replies$Create extends StandardParameters {
     requestBody?: Schema$Reply;
 }
 
-export interface Params$Resource$Permissions$Create extends StandardParameters {
-    emailMessage?: string;
-    enforceSingleParent?: boolean;
-    fileId?: string;
-    moveToNewOwnersRoot?: boolean;
-    sendNotificationEmail?: boolean;
-    supportsAllDrives?: boolean;
-    supportsTeamDrives?: boolean;
-    transferOwnership?: boolean;
-    useDomainAdminAccess?: boolean;
-    requestBody?: Schema$Permission;
-}
-
 export interface Schema$Permission {
     allowFileDiscovery?: boolean | null;
     deleted?: boolean | null;
@@ -406,4 +393,17 @@ export interface Schema$Permission {
     role?: GooglePermissionRole;
     type?: GoogleTypeGrantee;
     view?: string | null;
+}
+
+export interface Params$Resource$Permissions$Create extends StandardParameters {
+    emailMessage?: string;
+    enforceSingleParent?: boolean;
+    fileId?: string;
+    moveToNewOwnersRoot?: boolean;
+    sendNotificationEmail?: boolean;
+    supportsAllDrives?: boolean;
+    supportsTeamDrives?: boolean;
+    transferOwnership?: boolean;
+    useDomainAdminAccess?: boolean;
+    requestBody?: Schema$Permission;
 }

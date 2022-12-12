@@ -1,9 +1,7 @@
-
 export interface GA$QueryDriveActivityResponse {
     activities?: GA$DriveActivity[];
     nextPageToken?: string | null;
 }
-
 export interface GA$DriveActivity {
     actions?: GA$Action[];
     actors?: GA$Actor[];

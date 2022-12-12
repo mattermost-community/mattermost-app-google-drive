@@ -31,5 +31,5 @@ export const callBindingByApp = async (call: AppCallRequest, path: string) => {
             channel_id: channel.id,
         },
     });
-    return await mattermostClient.callBinding(binding);
+    await mattermostClient.callBinding(binding);
 };

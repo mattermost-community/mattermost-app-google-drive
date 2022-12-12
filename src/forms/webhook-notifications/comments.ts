@@ -3,7 +3,7 @@ import {head, last} from 'lodash';
 import {getGoogleDriveClient} from '../../clients/google-client';
 import {ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes} from '../../constant';
 import manifest from '../../manifest.json';
-import {GA$CommentSubtype, GA$DriveActivity, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, StateCommentPost, WebhookRequest} from '../../types';
+import {GA$CommentSubtype, GA$DriveActivity, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, StateCommentPost, User, WebhookRequest} from '../../types';
 import {bold, h5, hyperlink, inLineImage} from '../../utils/markdown';
 import {postBotChannel} from '../../utils/post-in-channel';
 import {configureI18n} from '../../utils/translations';
@@ -53,9 +53,9 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail);
+    const mmUser = await getMattermostUsername(call, actorEmail) as User;
     if (Boolean(mmUser)) {
-        userDisplay = `@${mmUser.username}`;
+        userDisplay = `@${mmUser?.username}`;
     }
 
     const message = comment.content?.includes(<string>about.user.emailAddress) ?
@@ -111,7 +111,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail);
+    const mmUser = await getMattermostUsername(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -158,7 +158,7 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail);
+    const mmUser = await getMattermostUsername(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -194,7 +194,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail);
+    const mmUser = await getMattermostUsername(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }

@@ -301,18 +301,19 @@ export type MattermostOptions = {
     accessToken: string | null | undefined;
 }
 
-export type WebhookRequest = {
-    path: '/webhook',
-    values: GoogleWebhook,
-    context: any
-}
-
 export type GoogleWebhook = {
     data: string,
     headers: ChannelWatchHeaders,
     httpMethod: 'POST' | 'GET',
     rawQuery: string,
 }
+
+export type WebhookRequest = {
+    path: '/webhook',
+    values: GoogleWebhook,
+    context: any
+}
+
 export type ObjectId = {
     id: string
 }

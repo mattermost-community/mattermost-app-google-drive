@@ -31,7 +31,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share != undefined ?
+    const willShare = values?.google_file_will_share !== undefined ?
         values?.google_file_will_share :
         true;
     const fields: AppField[] = [
@@ -174,7 +174,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share != undefined ?
+    const willShare = values?.google_file_will_share !== undefined ?
         values?.google_file_will_share :
         true;
 
@@ -316,7 +316,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share != undefined ?
+    const willShare = values?.google_file_will_share !== undefined ?
         values?.google_file_will_share :
         true;
 
