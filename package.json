@@ -8,7 +8,9 @@
     "clean": "rm -rf dist node_modules",
     "build": "tsc -p .",
     "start": "tsc -p . && cp -r src/locales dist/ && node dist/index.js",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --cache",
+    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --fix --cache"
   },
   "repository": {
     "type": "git",
@@ -19,11 +21,16 @@
   "homepage": "https://github.com/development-ancient/mattermost-business-apps#readme",
   "dependencies": {
     "@types/i18n": "^0.13.4",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
     "axios": "^0.27.2",
     "blob": "^0.1.0",
     "body-parser": "^1.20.0",
     "date-fns": "^2.28.0",
     "dotenv": "^16.0.1",
+    "eslint": "^8.29.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
     "express": "^4.18.1",
     "googleapis": "^105.0.0",
     "i18n": "^0.15.1",
