@@ -94,7 +94,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
             continue;
         }
 
-        const file = await mmClient.getFileUploaded(metadata.id);
+        const file = await mmClient.getFileUploaded(metadata.id); // eslint-disable-line no-await-in-loop
 
         const requestBody = {
             name: metadata.name,
@@ -105,7 +105,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
             body: file,
         };
 
-        const fileUploaded = await tryPromise<Schema$File>(drive.files.create({
+        const fileUploaded = await tryPromise<Schema$File>(drive.files.create({ // eslint-disable-line no-await-in-loop
             requestBody,
             media,
             fields: 'id,name,webViewLink,iconLink,owners,createdTime',
