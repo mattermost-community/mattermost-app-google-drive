@@ -1,7 +1,8 @@
-import { ConfigureClientForm } from "../constant";
-import { GoogleToken } from "./google";
-import { Oauth2Data } from "./kv-store";
-import { UserProfile } from "./mattermost";
+import {ConfigureClientForm} from '../constant';
+
+import {GoogleToken} from './google';
+import {Oauth2Data} from './kv-store';
+import {UserProfile} from './mattermost';
 
 export type AppManifest = {
     app_id: string;
@@ -43,7 +44,6 @@ export type AppBinding = {
     // Description is the (optional) extended help.ts text, used in modals and autocomplete
     description?: string;
 
-
     // A Binding is either an action (makes a call), a Form, or is a
     // "container" for other locations - i.e. menu sub-items or subcommands.
     bindings?: AppBinding[];
@@ -75,7 +75,6 @@ export type Oauth2App = {
     user?: Oauth2CurrentUser;
     data?: Oauth2Data;
 }
-
 
 export type AppCall = {
     path: string;
@@ -260,6 +259,7 @@ export type AppFieldType = string;
 
 // This should go in mattermost-redux
 export type AppField = {
+
     // Name is the name of the JSON field to use.
     name: string;
     type: AppFieldType;
