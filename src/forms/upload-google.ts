@@ -87,6 +87,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
     const responseArray: Schema$File[] = [];
 
     const drive = await getGoogleDriveClient(call);
+    /* eslint-enable no-await-in-loop */
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
 
@@ -94,6 +95,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
             continue;
         }
 
+        /* eslint-enable no-await-in-loop */
         const file = await mmClient.getFileUploaded(metadata.id);
 
         const requestBody = {
@@ -105,6 +107,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
             body: file,
         };
 
+        /* eslint-enable no-await-in-loop */
         const fileUploaded = await tryPromise<Schema$File>(drive.files.create({
             requestBody,
             media,
@@ -113,6 +116,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
 
         responseArray.push(fileUploaded);
     }
+    /* eslint-enable no-await-in-loop */
 
     const attachments = responseArray.map((fileUp) => {
         const owner = head(fileUp.owners) as Schema$User;

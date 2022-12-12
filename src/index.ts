@@ -1,4 +1,3 @@
-
 import express, {Express} from 'express';
 import bodyParser from 'body-parser';
 
@@ -25,9 +24,7 @@ app.post('/ping', (req, res) => {
 if (config.APP.HOST) {
     const port: number = config.APP.PORT;
     app.listen(port, () => console.log('Listening on ' + port));
-}
-
-// App released via AWS Lambda
-else {
+} else {
+    // App released via AWS Lambda
     module.exports.handler = serverless(app);
 }

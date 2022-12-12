@@ -12,6 +12,23 @@ export type AppManifest = {
     root_url?: string;
 }
 
+export type AppExpandLevel = string;
+
+export type AppExpand = {
+    app?: AppExpandLevel;
+    acting_user?: AppExpandLevel;
+    acting_user_access_token?: AppExpandLevel;
+    admin_access_token?: AppExpandLevel;
+    channel?: AppExpandLevel;
+    post?: AppExpandLevel;
+    root_post?: AppExpandLevel;
+    team?: AppExpandLevel;
+    user?: AppExpandLevel;
+    oauth2_app?: AppExpandLevel;
+    oauth2_user?: AppExpandLevel;
+    locale?: AppExpandLevel;
+};
+
 export type AppCall = {
     path: string;
     expand?: AppExpand;
@@ -23,6 +40,10 @@ export type AppSelectOption = {
     value: string;
     icon_data?: string;
 };
+
+export type AppFormValue = string | AppSelectOption | boolean | null;
+
+export type AppFieldType = string;
 
 // This should go in mattermost-redux
 export type AppField = {
@@ -54,6 +75,12 @@ export type AppField = {
     min_length?: number;
     max_length?: number;
 };
+
+export type AppFormSubmit = {
+    path: string;
+    expand: AppExpand;
+    state?: any;
+}
 
 export type AppForm = {
     title?: string;
@@ -139,6 +166,10 @@ export type AppContext = {
     locale: string
 };
 
+export type AppCallValues = {
+    [name: string]: any;
+};
+
 export type AppCallRequest = AppCall & {
     context: AppContext;
     values?: AppCallValues;
@@ -184,10 +215,6 @@ export type AppsState = {
     bindings: AppBinding[];
     app_id: string,
     label: string,
-};
-
-export type AppCallValues = {
-    [name: string]: any;
 };
 
 export type AppCallType = string;
@@ -260,34 +287,7 @@ export type ExpandedBotActingUser = AppContext & {
     bot_access_token: string,
 }
 
-export type AppExpandLevel = string;
-
-export type AppExpand = {
-    app?: AppExpandLevel;
-    acting_user?: AppExpandLevel;
-    acting_user_access_token?: AppExpandLevel;
-    admin_access_token?: AppExpandLevel;
-    channel?: AppExpandLevel;
-    post?: AppExpandLevel;
-    root_post?: AppExpandLevel;
-    team?: AppExpandLevel;
-    user?: AppExpandLevel;
-    oauth2_app?: AppExpandLevel;
-    oauth2_user?: AppExpandLevel;
-    locale?: AppExpandLevel;
-};
-
-export type AppFormSubmit = {
-    path: string;
-    expand: AppExpand;
-    state?: any;
-}
-
-export type AppFormValue = string | AppSelectOption | boolean | null;
-
 export type AppFormValues = {[name: string]: AppFormValue};
-
-export type AppFieldType = string;
 
 export type AutocompleteSuggestion = {
     suggestion: string;

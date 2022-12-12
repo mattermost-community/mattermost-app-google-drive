@@ -37,7 +37,7 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 }
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
-    const mattermostUrl: string | undefined = process.env.LOCAL == 'TRUE' ?
+    const mattermostUrl: string | undefined = process.env.LOCAL === 'TRUE' ?
         process.env.MATTERMOST_URL as string :
         call.context.mattermost_site_url;
 
