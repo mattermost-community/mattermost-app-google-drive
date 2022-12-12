@@ -3,11 +3,11 @@ import {getGoogleDriveClient} from '../clients/google-client';
 import {ExceptionType, GooglePermissionRoleByOption, optFileShare} from '../constant';
 import {AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User} from '../types';
 import {CreateFileForm} from '../types/forms';
+import {ShareFileFunction} from '../types/functions';
 import {configureI18n} from '../utils/translations';
 import {tryPromise} from '../utils/utils';
 
-export const SHARE_FILE_ACTIONS: { [key: string]: Function } = {
-    [optFileShare.notShare]: actNotShare,
+export const SHARE_FILE_ACTIONS: { [key: string]: ShareFileFunction } = {
     [optFileShare.sAView]: shareWithAnyone,
     [optFileShare.sAComment]: shareWithAnyone,
     [optFileShare.sAEdit]: shareWithAnyone,
@@ -16,10 +16,6 @@ export const SHARE_FILE_ACTIONS: { [key: string]: Function } = {
     [optFileShare.sCComment]: shareWithChannel,
     [optFileShare.sCEdit]: shareWithChannel,
 };
-
-async function actNotShare(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
-
-}
 
 async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
@@ -35,7 +31,7 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
             type: 'anyone',
         },
     };
-    return await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 }
 
 async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
@@ -56,6 +52,7 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
     const membersOfChannel: ChannelMember[] = await mmClient.getChannelMembers(channelId);
     const userIDs = membersOfChannel.map((user) => user.user_id);
     const users: User[] = await mmClient.getUsersById(userIDs);
+    const promises: Promise<any>[] = [];
     for (let index = 0; index < users.length; index++) {
         const user = users[index];
         if (user.is_bot) {
@@ -71,7 +68,8 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
                 sendNotificationEmail: true,
             },
         };
-        await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+        promises.push(tryPromise(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error')));
     }
+    await Promise.all(promises);
 }
 

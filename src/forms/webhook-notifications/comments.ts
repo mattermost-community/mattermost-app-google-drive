@@ -10,17 +10,18 @@ import {configureI18n} from '../../utils/translations';
 import {tryPromise} from '../../utils/utils';
 
 import {getMattermostUsername} from './get-mm-username';
+type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) => void;
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
     const subtype = activity.primaryActionDetail?.comment?.post?.subtype as GA$CommentSubtype;
 
-    const action: Function = COMMENT_ACTIONS[subtype];
+    const action: CallbackFunction = COMMENT_ACTIONS[subtype];
     if (action) {
         await action(call, file, activity);
     }
 }
 
-const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: Function } = {
+const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: CallbackFunction } = {
     SUBTYPE_UNSPECIFIED: funCommentSubtypeUnspecified,
     ADDED: funCommentAdded,
     DELETED: funCommentDeleted,
@@ -30,7 +31,9 @@ const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: Function } = {
     REOPENED: funCommentReOpened,
 };
 
-async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {}
+async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+    const i18nObj = configureI18n(call.context);
+}
 
 async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);

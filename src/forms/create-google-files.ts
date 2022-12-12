@@ -21,6 +21,7 @@ import {
     Schema$User,
 } from '../types';
 import {CreateFileForm} from '../types/forms';
+import {ShareFileFunction} from '../types/functions';
 import {configureI18n} from '../utils/translations';
 import {tryPromise} from '../utils/utils';
 
@@ -31,9 +32,11 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share !== undefined ?
-        values?.google_file_will_share :
-        true;
+
+    const willShare = values?.google_file_will_share === undefined ?
+        true :
+        values?.google_file_will_share;
+
     const fields: AppField[] = [
         {
             type: AppFieldTypes.TEXT,
@@ -163,7 +166,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
     };
     await mmClient.createPost(post);
 
-    const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+    const shareFile: ShareFileFunction = SHARE_FILE_ACTIONS[values.google_file_access.value];
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
@@ -174,9 +177,11 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share !== undefined ?
-        values?.google_file_will_share :
-        true;
+
+    /*eslint no-negated-condition: "error"*/
+    const willShare = values?.google_file_will_share === undefined ?
+        true :
+        values?.google_file_will_share;
 
     const fields: AppField[] = [
         {
@@ -305,7 +310,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
         },
     };
     await mmClient.createPost(post);
-    const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+    const shareFile: ShareFileFunction = SHARE_FILE_ACTIONS[values.google_file_access.value];
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
@@ -316,9 +321,10 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 
     const context = call.context as AppContext;
     const values = call.values as CreateFileForm;
-    const willShare = values?.google_file_will_share !== undefined ?
-        values?.google_file_will_share :
-        true;
+
+    const willShare = values?.google_file_will_share === undefined ?
+        true :
+        values?.google_file_will_share;
 
     const fields: AppField[] = [
         {
@@ -450,7 +456,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
     };
     await mmClient.createPost(post);
 
-    const shareFile: Function = SHARE_FILE_ACTIONS[values.google_file_access.value];
+    const shareFile: ShareFileFunction = SHARE_FILE_ACTIONS[values.google_file_access.value];
     if (shareFile) {
         await shareFile(call, file, channelId);
     }

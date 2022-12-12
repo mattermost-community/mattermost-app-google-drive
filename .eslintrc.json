@@ -326,12 +326,10 @@
     ],
     "no-self-compare": 2,
     "no-sequences": 2,
-    "no-shadow": [
-      2,
-      {
-        "hoist": "functions"
-      }
+    "@typescript-eslint/no-shadow": [
+      "error"
     ],
+    "no-shadow": "off",
     "no-shadow-restricted-names": 2,
     "no-spaced-func": 2,
     "no-tabs": 0,
