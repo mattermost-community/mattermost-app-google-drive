@@ -1,4 +1,4 @@
-import { CommandTrigger } from "../constant";
+import {CommandTrigger} from '../constant';
 
 export function addBulletSlashCommand(text: string, description: string): string {
     return `* \`/${CommandTrigger} ${text}\` - ${description}`;
@@ -17,13 +17,13 @@ export function joinLines(...lines: string[]): string {
 }
 
 export function bold(text: string): string {
-    return `**${text}**`
+    return `**${text}**`;
 }
 
 export function hyperlink(text: string, url: string): string {
-    return `[${text}](${url})`
+    return `[${text}](${url})`;
 }
 
 export function inLineImage(text: string, url: string): string {
-    return `![${text}](${url})`
+    return `![${text}](${url})`;
 }

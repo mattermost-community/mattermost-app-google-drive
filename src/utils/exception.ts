@@ -1,4 +1,4 @@
-import { ExceptionType } from '../constant';
+import {ExceptionType} from '../constant';
 
 export class Exception extends Error {
     constructor(
