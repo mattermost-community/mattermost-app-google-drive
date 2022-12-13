@@ -74,5 +74,5 @@ export default {
     REMOVE_ONE: 1,
     PAGE_ONE: 1,
     SECOND_AND_HALF: 1500,
-    HAS_VALUE: 0
+    HAS_VALUE: 0,
 };

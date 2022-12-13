@@ -1,13 +1,13 @@
 export const GoogleKindsAPI = {
-   CHANNEL: 'api#channel'
-}
+    CHANNEL: 'api#channel',
+};
 
 export const GoogleResourceState = {
-   CHANGE: 'change'
-}
+    CHANGE: 'change',
+};
 
 export const GoogleConstants = {
-   USER: 'user',
-   OFFLINE: 'offline',
-   CONSENT: 'consent'
-}
+    USER: 'user',
+    OFFLINE: 'offline',
+    CONSENT: 'consent',
+};

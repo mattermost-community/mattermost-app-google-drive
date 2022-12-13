@@ -1,7 +1,8 @@
-import { ConfigureClientForm } from "../constant";
-import { GoogleToken } from "./google";
-import { Oauth2Data } from "./kv-store";
-import { UserProfile } from "./mattermost";
+import { ConfigureClientForm } from '../constant';
+
+import { GoogleToken } from './google';
+import { Oauth2Data } from './kv-store';
+import { UserProfile } from './mattermost';
 
 export type AppManifest = {
     app_id: string;
@@ -11,71 +12,22 @@ export type AppManifest = {
     root_url?: string;
 }
 
-export type AppModalState = {
-    form: AppForm;
-    call: AppCallRequest;
-}
+export type AppExpandLevel = string;
 
-export type AppsState = {
-    location: string;
-    bindings: AppBinding[];
-    app_id: string,
-    label: string,
+export type AppExpand = {
+    app?: AppExpandLevel;
+    acting_user?: AppExpandLevel;
+    acting_user_access_token?: AppExpandLevel;
+    admin_access_token?: AppExpandLevel;
+    channel?: AppExpandLevel;
+    post?: AppExpandLevel;
+    root_post?: AppExpandLevel;
+    team?: AppExpandLevel;
+    user?: AppExpandLevel;
+    oauth2_app?: AppExpandLevel;
+    oauth2_user?: AppExpandLevel;
+    locale?: AppExpandLevel;
 };
-
-export type AppBinding = {
-    app_id: string;
-    location?: string;
-    icon?: string;
-
-    // Label is the (usually short) primary text to display at the location.
-    // - For LocationPostMenu is the menu item text.
-    // - For LocationChannelHeader is the dropdown text.
-    // - For LocationCommand is the name of the command
-    label: string;
-
-    // Hint is the secondary text to display
-    // - LocationPostMenu: not used
-    // - LocationChannelHeader: tooltip
-    // - LocationCommand: the "Hint" line
-    hint?: string;
-
-    // Description is the (optional) extended help.ts text, used in modals and autocomplete
-    description?: string;
-
-
-    // A Binding is either an action (makes a call), a Form, or is a
-    // "container" for other locations - i.e. menu sub-items or subcommands.
-    bindings?: AppBinding[];
-    form?: AppForm;
-    submit?: AppCall;
-};
-
-export type AppCallValues = {
-    [name: string]: any;
-};
-
-export type AppCallType = string;
-
-export type Oauth2CurrentUser = {
-    refresh_token: string,
-    user_email?: string;
-}
-
-export type ChannelNotification = {
-    channelId: string,
-    resourceId: string,
-}
-
-export type Oauth2App = {
-    client_id: string;
-    client_secret: string;
-    connect_url?: string;
-    complete_url?: string;
-    user?: Oauth2CurrentUser;
-    data?: Oauth2Data;
-}
-
 
 export type AppCall = {
     path: string;
@@ -83,51 +35,80 @@ export type AppCall = {
     state?: any;
 };
 
-export type AppCallRequest = AppCall & {
-    context: AppContext;
-    values?: AppCallValues;
-    raw_command?: string;
-    selected_field?: string;
-    query?: string;
+export type AppSelectOption = {
+    label: string;
+    value: string;
+    icon_data?: string;
 };
 
-export type AppCallDialog<T> = {
-    type: string;
-    callback_id: string;
-    state: string;
-    user_id: string;
-    channel_id: string;
-    team_id: string;
-    submission: T;
-    cancelled: boolean;
+export type AppFormValue = string | AppSelectOption | boolean | null;
+
+export type AppFieldType = string;
+
+// This should go in mattermost-redux
+export type AppField = {
+
+    // Name is the name of the JSON field to use.
+    name: string;
+    type: AppFieldType;
+    is_required?: boolean;
+    readonly?: boolean;
+
+    // Present (default) value of the field
+    value?: AppFormValue | AppSelectOption[];
+    placeholder?: string,
+    description?: string;
+
+    label?: string;
+    hint?: string;
+    position?: number;
+
+    modal_label?: string;
+
+    // Select props
+    refresh?: boolean;
+    options?: AppSelectOption[] | null;
+    multiselect?: boolean;
+
+    // Text props
+    subtype?: string;
+    min_length?: number;
+    max_length?: number;
+};
+
+export type AppFormSubmit = {
+    path: string;
+    expand: AppExpand;
+    state?: any;
 }
 
-export type AppCallAction<T> = {
-    user_id: string;
-    user_name: string;
-    channel_id: string;
-    channel_name: string;
-    team_id: string;
-    team_domain: string;
-    post_id: string;
-    trigger_id: string;
-    type: string;
-    data_source: string;
-    context: T;
-}
-
-export type AppCallResponseType = string;
-
-export type AppCallResponse<Res = unknown> = {
-    type: AppCallResponseType;
-    text?: string;
-    data?: Res;
-    error?: string;
-    navigate_to_url?: string;
-    use_external_browser?: boolean;
+export type AppForm = {
+    title?: string;
+    header?: string;
+    footer?: string;
+    icon?: string;
+    submit: AppFormSubmit;
+    fields: AppField[];
     call?: AppCall;
-    form?: AppForm;
+    depends_on?: string[];
+    source?: any;
 };
+
+export type AppActingUser = {
+    id: string,
+    delete_at: number,
+    username: string,
+    auth_service: string,
+    email: string,
+    nickname: string,
+    first_name: string,
+    last_name: string,
+    position: string,
+    roles: string,
+    locale: string,
+    timezone: any,
+    disable_welcome_email: boolean
+}
 
 export type AppContext = {
     app_id: string;
@@ -185,6 +166,116 @@ export type AppContext = {
     locale: string
 };
 
+export type AppCallValues = {
+    [name: string]: any;
+};
+
+export type AppCallRequest = AppCall & {
+    context: AppContext;
+    values?: AppCallValues;
+    raw_command?: string;
+    selected_field?: string;
+    query?: string;
+};
+
+export type AppModalState = {
+    form: AppForm;
+    call: AppCallRequest;
+}
+
+export type AppBinding = {
+    app_id: string;
+    location?: string;
+    icon?: string;
+
+    // Label is the (usually short) primary text to display at the location.
+    // - For LocationPostMenu is the menu item text.
+    // - For LocationChannelHeader is the dropdown text.
+    // - For LocationCommand is the name of the command
+    label: string;
+
+    // Hint is the secondary text to display
+    // - LocationPostMenu: not used
+    // - LocationChannelHeader: tooltip
+    // - LocationCommand: the "Hint" line
+    hint?: string;
+
+    // Description is the (optional) extended help.ts text, used in modals and autocomplete
+    description?: string;
+
+    // A Binding is either an action (makes a call), a Form, or is a
+    // "container" for other locations - i.e. menu sub-items or subcommands.
+    bindings?: AppBinding[];
+    form?: AppForm;
+    submit?: AppCall;
+};
+
+export type AppsState = {
+    location: string;
+    bindings: AppBinding[];
+    app_id: string,
+    label: string,
+};
+
+export type AppCallType = string;
+
+export type Oauth2CurrentUser = {
+    refresh_token: string,
+    user_email?: string;
+}
+
+export type ChannelNotification = {
+    channelId: string,
+    resourceId: string,
+}
+
+export type Oauth2App = {
+    client_id: string;
+    client_secret: string;
+    connect_url?: string;
+    complete_url?: string;
+    user?: Oauth2CurrentUser;
+    data?: Oauth2Data;
+}
+
+export type AppCallDialog<T> = {
+    type: string;
+    callback_id: string;
+    state: string;
+    user_id: string;
+    channel_id: string;
+    team_id: string;
+    submission: T;
+    cancelled: boolean;
+}
+
+export type AppCallAction<T> = {
+    user_id: string;
+    user_name: string;
+    channel_id: string;
+    channel_name: string;
+    team_id: string;
+    team_domain: string;
+    post_id: string;
+    trigger_id: string;
+    type: string;
+    data_source: string;
+    context: T;
+}
+
+export type AppCallResponseType = string;
+
+export type AppCallResponse<Res = unknown> = {
+    type: AppCallResponseType;
+    text?: string;
+    data?: Res;
+    error?: string;
+    navigate_to_url?: string;
+    use_external_browser?: boolean;
+    call?: AppCall;
+    form?: AppForm;
+};
+
 export type AppContextProps = {
     [name: string]: string;
 };
@@ -196,97 +287,7 @@ export type ExpandedBotActingUser = AppContext & {
     bot_access_token: string,
 }
 
-export type AppExpandLevel = string;
-
-export type AppActingUser = {
-    id: string,
-    delete_at: number,
-    username: string,
-    auth_service: string,
-    email: string,
-    nickname: string,
-    first_name: string,
-    last_name: string,
-    position: string,
-    roles: string,
-    locale: string,
-    timezone: any,
-    disable_welcome_email: boolean
-}
-
-export type AppExpand = {
-    app?: AppExpandLevel;
-    acting_user?: AppExpandLevel;
-    acting_user_access_token?: AppExpandLevel;
-    admin_access_token?: AppExpandLevel;
-    channel?: AppExpandLevel;
-    post?: AppExpandLevel;
-    root_post?: AppExpandLevel;
-    team?: AppExpandLevel;
-    user?: AppExpandLevel;
-    oauth2_app?: AppExpandLevel;
-    oauth2_user?: AppExpandLevel;
-    locale?: AppExpandLevel;
-};
-
-export type AppFormSubmit = {
-    path: string;
-    expand: AppExpand;
-    state?: any;
-}
-
-export type AppForm = {
-    title?: string;
-    header?: string;
-    footer?: string;
-    icon?: string;
-    submit: AppFormSubmit;
-    fields: AppField[];
-    call?: AppCall;
-    depends_on?: string[];
-    source?: any;
-};
-
-export type AppFormValue = string | AppSelectOption | boolean | null;
-export type AppFormValues = {[name: string]: AppFormValue};
-
-export type AppSelectOption = {
-    label: string;
-    value: string;
-    icon_data?: string;
-};
-
-export type AppFieldType = string;
-
-// This should go in mattermost-redux
-export type AppField = {
-    // Name is the name of the JSON field to use.
-    name: string;
-    type: AppFieldType;
-    is_required?: boolean;
-    readonly?: boolean;
-
-    // Present (default) value of the field
-    value?: AppFormValue | AppSelectOption[];
-    placeholder?: string,
-    description?: string;
-
-    label?: string;
-    hint?: string;
-    position?: number;
-
-    modal_label?: string;
-
-    // Select props
-    refresh?: boolean;
-    options?: AppSelectOption[] | null;
-    multiselect?: boolean;
-
-    // Text props
-    subtype?: string;
-    min_length?: number;
-    max_length?: number;
-};
+export type AppFormValues = { [name: string]: AppFormValue };
 
 export type AutocompleteSuggestion = {
     suggestion: string;
@@ -332,4 +333,3 @@ export type AppContextAction = {
     bot_access_token: string;
     selected_option?: string;
 }
-

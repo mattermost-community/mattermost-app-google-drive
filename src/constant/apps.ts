@@ -1,11 +1,11 @@
-import { AppCallResponseType, AppCallType, AppExpandLevel, AppFieldType } from '../types';
+import {AppCallResponseType, AppCallType, AppExpandLevel, AppFieldType} from '../types';
 
 export const AppBindingLocations = {
     POST_MENU_ITEM: '/post_menu',
     CHANNEL_HEADER_ICON: '/channel_header',
     COMMAND: '/command',
     IN_POST: '/in_post',
-    EMBEDDED: 'embedded'
+    EMBEDDED: 'embedded',
 };
 
 export const AppBindingPresentations = {
@@ -45,5 +45,5 @@ export const AppFieldTypes: { [name: string]: AppFieldType } = {
 
 export const AppFieldSubTypes: { [name: string]: AppFieldType } = {
     TEXTAREA: 'textarea',
-    PASSWORD: 'password'
+    PASSWORD: 'password',
 };
