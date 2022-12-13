@@ -131,7 +131,7 @@ $ npm install
 ```
 file: .env
 
-PROJECT=mattermost-business-apps
+PROJECT=mattermost-app-google-drive
 PORT=4005
 HOST=https://mattermost-bussiness-dev.ancient.mx
 ```
