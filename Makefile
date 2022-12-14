@@ -67,7 +67,16 @@ dist: build
 
 ## build: build the app when changed
 watch: node_modules
-	$(NPM) run build:watch
+	$(NPM) run dev
+
+run:
+	docker-compose up
+
+stop: 
+	docker-compose stop
+
+restart: 
+	docker-compose stop && docker-compose up
 
 ## clean: deletes all
 clean:

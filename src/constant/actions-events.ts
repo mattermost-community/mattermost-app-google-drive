@@ -1,3 +1,3 @@
 export const ActionsEvents = {
-   REPLY_COMMENTS: 'replytogooglecomment'
+    REPLY_COMMENTS: 'replytogooglecomment',
 };
