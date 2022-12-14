@@ -38,10 +38,10 @@ async function getCommands(context: AppContext): Promise<string> {
         if (isConnected(oauth2App)) {
             commands.push(addBulletSlashCommand(`${Commands.NOTIFICATION} [${Commands.START} | ${Commands.STOP}]`, i18nObj.__('help-binding.descriptions.notification')));
             commands.push(addBulletSlashCommand(`${Commands.CREATE} [${Commands.DOCUMENT} | ${Commands.PRESENTATION} | ${Commands.SPREADSHEET}]`, i18nObj.__('help-binding.descriptions.create')));
+            commands.push(addBulletSlashCommand(Commands.DISCONNECT, i18nObj.__('help-binding.descriptions.disconnect')));
+        } else {
+            commands.push(addBulletSlashCommand(Commands.CONNECT, i18nObj.__('help-binding.descriptions.connect')));
         }
-
-        commands.push(addBulletSlashCommand(Commands.CONNECT, i18nObj.__('help-binding.descriptions.connect')));
-        commands.push(addBulletSlashCommand(Commands.DISCONNECT, i18nObj.__('help-binding.descriptions.disconnect')));
     }
 
     return `${joinLines(...commands)}`;

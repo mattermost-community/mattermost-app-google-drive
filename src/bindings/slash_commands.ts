@@ -70,12 +70,12 @@ export const getCommandBindings = async (call: AppCallRequest): Promise<AppsStat
             bindings.push(getNotificationBinding(context));
             commands.push(Commands.CREATE);
             bindings.push(getCreateGoogleFilesBinding(context));
+            commands.push(Commands.DISCONNECT);
+            bindings.push(getDisconnectBinding(context));
+        } else {
+            commands.push(Commands.CONNECT);
+            bindings.push(getConnectBinding(context));
         }
-
-        commands.push(Commands.CONNECT);
-        bindings.push(getConnectBinding(context));
-        commands.push(Commands.DISCONNECT);
-        bindings.push(getDisconnectBinding(context));
     }
 
     return newCommandBindings(context, bindings, commands);
