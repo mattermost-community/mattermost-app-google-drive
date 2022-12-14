@@ -26,7 +26,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     const apiKey = values?.google_drive_api_key || oauth2App?.data?.google_drive_api_key;
     const saJson = values?.google_drive_service_account || oauth2App?.data?.google_drive_service_account;
 
-    const defValue: AppSelectOption | undefined = modeConfiguration(call.context).find((mode) => mode.value === modeConfig);
+    const defValue: AppSelectOption = modeConfiguration(call.context).find((mode) => mode.value === modeConfig)!;
 
     const form: AppForm = {
         title: i18nObj.__('configure-binding.form.title'),
@@ -78,6 +78,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     };
 
     let extraField: AppField | undefined;
+    
     switch (modeConfig) {
     case optConfigure.fAPIKey:
         extraField = {
@@ -122,8 +123,8 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
         throwException(ExceptionType.TEXT_ERROR, i18nObj.__('configure-binding.error.system-admin'));
     }
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const botAccessToken: string = call.context.bot_access_token!;
     const values: AppCallValues = <any>call.values;
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
@@ -133,8 +134,8 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const gApiKey: string = values[ConfigureClientForm.API_KEY];
 
     const options: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl: mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
 

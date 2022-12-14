@@ -73,12 +73,12 @@ export function getHTTPPath(): string {
 }
 
 export async function getKVGoogleData(call: AppCallRequest): Promise<KVGoogleData> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const botAccessToken: string = call.context.bot_access_token!;
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl: mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
     const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);

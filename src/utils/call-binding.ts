@@ -4,19 +4,19 @@ import { AppCallRequest, Channel, MattermostOptions } from '../types';
 import manifest from '../manifest.json';
 
 export const callBindingByApp = async (call: AppCallRequest, path: string) => {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const accessToken: string | undefined = call.context.acting_user_access_token;
-    const botUserID: string | undefined = call.context.bot_user_id;
-    const actingUserID: string | undefined = call.context.acting_user?.id;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const botUserId: string = call.context.bot_user_id!;
+    const actingUserId: string = call.context.acting_user?.id!;
 
     const mattermostOption: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>accessToken,
+        mattermostUrl: mattermostUrl,
+        accessToken: userAccessToken
     };
 
     const mattermostClient: MattermostClient = new MattermostClient(mattermostOption);
 
-    const channel: Channel = await mattermostClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
+    const channel: Channel = await mattermostClient.createDirectChannel([<string>botUserId, <string>actingUserId]);
 
     const binding = JSON.stringify({
         path,

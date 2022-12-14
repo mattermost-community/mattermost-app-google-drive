@@ -108,14 +108,14 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
 
 export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
-    const actingUserID: string | undefined = call.context.acting_user?.id;
-    const botUserID: string | undefined = call.context.bot_user_id;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const actingUserId: string = call.context.acting_user?.id!;
+    const botUserId: string = call.context.bot_user_id!;
     const values = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
+        mattermostUrl: mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -139,7 +139,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
 
     let channelId: string = call.context.channel?.id as string;
     if (!values.google_file_will_share) {
-        const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
+        const channel: Channel = await mmClient.createDirectChannel([<string>botUserId, <string>actingUserId]);
         channelId = channel.id;
     }
 
@@ -147,7 +147,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserID,
+        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -254,14 +254,14 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
 
 export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
-    const actingUserID: string | undefined = call.context.acting_user?.id;
-    const botUserID: string | undefined = call.context.bot_user_id;
-    const values = call.values as CreateFileForm;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const actingUserId: string = call.context.acting_user?.id!;
+    const botUserId: string = call.context.bot_user_id!;
+    const values: CreateFileForm = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
+        mattermostUrl: mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -285,14 +285,14 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
 
     let channelId: string = call.context.channel?.id as string;
     if (!values.google_file_will_share) {
-        const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
+        const channel: Channel = await mmClient.createDirectChannel([<string>botUserId, <string>actingUserId]);
         channelId = channel.id;
     }
     const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserID,
+        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -397,14 +397,14 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
 
 export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
-    const actingUserID: string | undefined = call.context.acting_user?.id;
-    const botUserID: string | undefined = call.context.bot_user_id;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const actingUserId: string = call.context.acting_user?.id!;
+    const botUserId: string = call.context.bot_user_id!;
     const values = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
+        mattermostUrl: mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -430,14 +430,14 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
 
     let channelId: string = call.context.channel?.id as string;
     if (!values.google_file_will_share) {
-        const channel: Channel = await mmClient.createDirectChannel([<string>botUserID, <string>actingUserID]);
+        const channel: Channel = await mmClient.createDirectChannel([<string>botUserId, <string>actingUserId]);
         channelId = channel.id;
     }
     const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserID,
+        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [

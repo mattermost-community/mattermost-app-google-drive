@@ -37,14 +37,14 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
 async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const values = call.values as CreateFileForm;
     const role = GooglePermissionRoleByOption[values.google_file_access.value];
     const drive = await getGoogleDriveClient(call);
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
+        mattermostUrl: mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
