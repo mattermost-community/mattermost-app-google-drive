@@ -7,7 +7,6 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.HELP,
         icon: GoogleDriveIcon,
         description: i18nObj.__('bindings-descriptions.help'),
@@ -27,7 +26,6 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CONFIGURE,
         description: i18nObj.__('bindings-descriptions.configure'),
@@ -46,7 +44,6 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CONNECT,
         description: i18nObj.__('bindings-descriptions.connect'),
@@ -66,7 +63,6 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.DISCONNECT,
         description: i18nObj.__('bindings-descriptions.disconnect'),
@@ -96,7 +92,6 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
     bindings.push(getNotificationStopBinding(context));
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.NOTIFICATION,
         description: i18nObj.__('bindings-descriptions.notification'),
@@ -109,7 +104,6 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.START,
         description: i18nObj.__('bindings-descriptions.notification-start'),
@@ -130,7 +124,6 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.STOP,
         description: i18nObj.__('bindings-descriptions.notification-stop'),
@@ -162,7 +155,6 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
     bindings.push(getCreateSpreadsheetBinding(context));
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CREATE,
         description: i18nObj.__('bindings-descriptions.create'),
@@ -175,7 +167,6 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.DOCUMENT,
         description: i18nObj.__('bindings-descriptions.create-document'),
         icon: GoogleDriveIcon,
@@ -196,7 +187,6 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.PRESENTATION,
         description: i18nObj.__('bindings-descriptions.create-slide'),
         icon: GoogleDriveIcon,
@@ -217,7 +207,6 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.SPREADSHEET,
         description: i18nObj.__('bindings-descriptions.create-sheet'),
         icon: GoogleDriveIcon,
@@ -238,7 +227,6 @@ export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: i18nObj.__('bindings-descriptions.save-file'),
         icon: GoogleDriveIcon,
         submit: {

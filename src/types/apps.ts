@@ -181,7 +181,7 @@ export type AppModalState = {
 }
 
 export type AppBinding = {
-    app_id: string;
+    app_id?: string;
     location?: string;
     icon?: string;
 
