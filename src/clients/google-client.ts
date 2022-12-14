@@ -5,6 +5,7 @@ import { ExceptionType, KVStoreGoogleData } from '../constant';
 import { AppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
+
 import { KVStoreClient } from './kvstore';
 
 export const getOAuthGoogleClient = async (call: AppCallRequest): Promise<Auth.OAuth2Client> => {
@@ -23,17 +24,17 @@ export const getGoogleOAuth = async (call: AppCallRequest): Promise<Auth.OAuth2C
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
-    const userID: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     let oauth2Token = call.context.oauth2?.user as Oauth2CurrentUser;
 
     if (!oauth2Token?.refresh_token) {
         const kvOptions: KVStoreOptions = {
-            mattermostUrl: mattermostUrl,
+            mattermostUrl,
             accessToken: botAccessToken,
         };
         const kvStoreClient = new KVStoreClient(kvOptions);
         const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-        const kvGUser: KVGoogleUser = googleData?.userData?.find((user) => head(Object.keys(user)) === userID)!;
+        const kvGUser: KVGoogleUser = googleData?.userData?.find((user) => head(Object.keys(user)) === actingUserId) as KVGoogleUser;
         if (Boolean(kvGUser)) {
             oauth2Token = head(Object.values(<KVGoogleUser>kvGUser)) as Oauth2CurrentUser;
         }

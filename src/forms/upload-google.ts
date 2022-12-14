@@ -17,7 +17,7 @@ export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<
     const postId: string = call.context.post?.id as string;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -71,7 +71,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
     const botAccessToken: string = call.context.bot_access_token as string;
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
-    const actingUserID = call.context.acting_user?.id as string;
+    const actingUserID = call.context.acting_user.id as string;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
 

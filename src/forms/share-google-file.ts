@@ -44,7 +44,7 @@ async function shareWithChannel(call: AppCallRequest, file: Schema$File, channel
     const drive = await getGoogleDriveClient(call);
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);

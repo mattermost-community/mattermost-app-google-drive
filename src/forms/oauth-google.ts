@@ -51,7 +51,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const values: AppCallValues = call.values!;
     const i18nObj = configureI18n(call.context);
 
@@ -82,14 +82,14 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     };
 
     const kvOptionsOauth: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: userAccessToken,
     };
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
     await kvStoreClientOauth.storeOauth2User(storedToken);
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
@@ -112,7 +112,7 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const botAccessToken: string = call.context.bot_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
 
@@ -121,14 +121,14 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
     }
 
     const kvOptionsOauth: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: userAccessToken,
     };
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
     await kvStoreClientOauth.storeOauth2User({});
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);

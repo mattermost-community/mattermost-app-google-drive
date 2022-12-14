@@ -11,7 +11,7 @@ import { MattermostClient } from '../../clients';
 
 export async function getMattermostUsername(call: WebhookRequest, authorEmail: string): Promise<User | null> {
     const kvGoogleData: KVGoogleData = await getKVGoogleData(call);
-    const kvGUser: KVGoogleUser = kvGoogleData?.userData?.find((user) => head(Object.values(user))?.user_email === authorEmail)!;
+    const kvGUser: KVGoogleUser = kvGoogleData?.userData?.find((user) => head(Object.values(user))?.user_email === authorEmail) as KVGoogleUser;
 
     if (Boolean(kvGUser)) {
         const userId: string = head(Object.keys(<KVGoogleUser>kvGUser))!;
@@ -19,7 +19,7 @@ export async function getMattermostUsername(call: WebhookRequest, authorEmail: s
         const botAccessToken: string = call.context.acting_user_access_token!;
 
         const mattermostOpts: MattermostOptions = {
-            mattermostUrl: mattermostUrl,
+            mattermostUrl,
             accessToken: botAccessToken,
         };
         const mmClient: MattermostClient = new MattermostClient(mattermostOpts);

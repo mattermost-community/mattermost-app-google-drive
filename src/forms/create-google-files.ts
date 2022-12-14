@@ -110,12 +110,12 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const botUserId: string = call.context.bot_user_id!;
     const values = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -256,12 +256,12 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const botUserId: string = call.context.bot_user_id!;
     const values: CreateFileForm = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
@@ -399,12 +399,12 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const botUserId: string = call.context.bot_user_id!;
     const values = call.values as CreateFileForm;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);

@@ -77,7 +77,7 @@ export async function getKVGoogleData(call: AppCallRequest): Promise<KVGoogleDat
     const botAccessToken: string = call.context.bot_access_token!;
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);

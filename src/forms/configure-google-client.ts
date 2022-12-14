@@ -78,7 +78,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     };
 
     let extraField: AppField | undefined;
-    
+
     switch (modeConfig) {
     case optConfigure.fAPIKey:
         extraField = {
@@ -134,7 +134,7 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const gApiKey: string = values[ConfigureClientForm.API_KEY];
 
     const options: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);

@@ -11,11 +11,11 @@ import { throwException, tryPromise } from '../utils/utils';
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const i18nObj = configureI18n(call.context);
 
     const options: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
@@ -40,12 +40,12 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
 
 export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
     const mattermostUrl: string = process.env.LOCAL === 'TRUE' ?
-        process.env.MATTERMOST_URL as string:
+        process.env.MATTERMOST_URL as string :
         call.context.mattermost_site_url!;
 
     const botAccessToken: string = call.context.bot_access_token!;
     const appPath: string = call.context.app_path!;
-    const actingUserId: string = call.context.acting_user?.id!;
+    const actingUserId: string = call.context.acting_user.id!;
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
@@ -73,7 +73,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
     const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
     const options: KVStoreOptions = {
-        mattermostUrl: mattermostUrl,
+        mattermostUrl,
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
