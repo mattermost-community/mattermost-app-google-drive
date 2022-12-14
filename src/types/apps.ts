@@ -1,8 +1,8 @@
-import {ConfigureClientForm} from '../constant';
+import { ConfigureClientForm } from '../constant';
 
-import {GoogleToken} from './google';
-import {Oauth2Data} from './kv-store';
-import {UserProfile} from './mattermost';
+import { GoogleToken } from './google';
+import { Oauth2Data } from './kv-store';
+import { UserProfile } from './mattermost';
 
 export type AppManifest = {
     app_id: string;
@@ -287,7 +287,7 @@ export type ExpandedBotActingUser = AppContext & {
     bot_access_token: string,
 }
 
-export type AppFormValues = {[name: string]: AppFormValue};
+export type AppFormValues = { [name: string]: AppFormValue };
 
 export type AutocompleteSuggestion = {
     suggestion: string;
@@ -333,4 +333,3 @@ export type AppContextAction = {
     bot_access_token: string;
     selected_option?: string;
 }
-

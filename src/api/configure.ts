@@ -32,4 +32,3 @@ export const configureGoogleClientSubmit: CallResponseHandler = async (req: Requ
     }
     res.json(callResponse);
 };
-

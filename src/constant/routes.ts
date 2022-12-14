@@ -34,7 +34,6 @@ const AppPaths = {
     CallPathCreatePresentation: '/create/presentation',
     CallPathUpdatePresentationForm: '/create/presentation/update/form',
     CallPathCreatePresentationSubmit: '/create/presentation/submit',
-
     CallPathCreateSpreadsheet: '/create/spreadsheet',
     CallPathUpdateSpreadsheetForm: '/create/spreadsheet/update/form',
     CallPathCreateSpreadsheetSubmit: '/create/spreadsheet/submit',
