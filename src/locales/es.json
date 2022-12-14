@@ -82,6 +82,7 @@
     }
   },
   "notifications-binding": {
+    "already-disabled": "Google notifications are already disabled",
     "response": {
       "disabled": "Las notificaciones de Google se han detenido",
       "enabled": "Las notificaciones de Google se han encendido"

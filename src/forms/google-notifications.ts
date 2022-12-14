@@ -6,9 +6,7 @@ import { ExceptionType, KVStoreGoogleData, Routes, StoreKeys } from '../constant
 import { GoogleKindsAPI } from '../constant/google-kinds';
 import { AppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
 import { configureI18n } from '../utils/translations';
-import { tryPromise } from '../utils/utils';
-
-require('dotenv').config('../');
+import { throwException, tryPromise } from '../utils/utils';
 
 export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
@@ -21,7 +19,11 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
         accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
-    const channelNotification: ChannelNotification = await kvStoreClient.kvGet(`${actingUserId}-channel`);
+    const channelNotification: ChannelNotification = await kvStoreClient.kvGet(`drive_notifications-${actingUserId}`);
+
+    if (!Object.keys(channelNotification).length) {
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('notifications-binding.already-disabled'));
+    }
 
     const drive = await getGoogleDriveClient(call);
     const stopParams = {
@@ -31,7 +33,7 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
         },
     };
     await tryPromise<Schema$Channel>(drive.channels.stop(stopParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
-    await kvStoreClient.kvSet(`${actingUserId}-${StoreKeys.channel}`, {});
+    await kvStoreClient.kvSet(`drive_notifications-${actingUserId}`, {});
 
     return i18nObj.__('notifications-binding.response.disabled');
 }
@@ -51,7 +53,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
     const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
     const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
-    urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, <string>actingUserId);
+    urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, actingUserId);
 
     const params = {
         pageToken: <string>pageToken.startPageToken,
@@ -63,7 +65,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
             type: 'web_hook',
             payload: true,
             params: {
-                userId: <string>actingUserId,
+                userId: actingUserId,
             },
         },
     };
@@ -81,6 +83,6 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
         resourceId: <string>watchChannel.resourceId,
     };
 
-    await kvStoreClient.kvSet(`${actingUserId}-${StoreKeys.channel}`, currentChannel);
+    await kvStoreClient.kvSet(`drive_notifications-${actingUserId}`, currentChannel);
     return i18nObj.__('notifications-binding.response.enabled');
 }

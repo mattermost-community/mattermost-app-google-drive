@@ -33,7 +33,7 @@ export const getGoogleOAuth = async (call: AppCallRequest): Promise<Auth.OAuth2C
         };
         const kvStoreClient = new KVStoreClient(kvOptions);
         const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-        const kvGUser: KVGoogleUser = googleData?.userData?.find((user) => head(Object.keys(user)) === <string>userID)!;
+        const kvGUser: KVGoogleUser = googleData?.userData?.find((user) => head(Object.keys(user)) === userID)!;
         if (Boolean(kvGUser)) {
             oauth2Token = head(Object.values(<KVGoogleUser>kvGUser)) as Oauth2CurrentUser;
         }

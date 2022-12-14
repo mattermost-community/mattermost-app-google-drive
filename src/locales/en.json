@@ -82,6 +82,7 @@
     }
   },
   "notifications-binding": {
+    "already-disabled": "Google notifications are already disabled",
     "response": {
       "disabled": "Google notifications are disabled!",
       "enabled": "Google notifications are enabled!"
