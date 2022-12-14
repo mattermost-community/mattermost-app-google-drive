@@ -62,6 +62,9 @@
     },
     "response": {
       "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+    },
+    "error": {
+      "system-admin": "Error: This command is only available for Mattermost System Admin"
     }
   },
   "connect-binding": {
@@ -79,6 +82,7 @@
     }
   },
   "notifications-binding": {
+    "already-disabled": "Google notifications are already disabled",
     "response": {
       "disabled": "Las notificaciones de Google se han detenido",
       "enabled": "Las notificaciones de Google se han encendido"
@@ -130,7 +134,7 @@
   "comments": {
     "file-icon": "Icono de archivo",
     "add": {
-      "text-mentioned": "{{ userDisplay }} te mencioné en {{ image }} {{ link }}",
+      "text-mentioned": "{{ userDisplay }} te mencionó en {{ image }} {{ link }}",
       "text-comment": "{{ userDisplay }} ha comentado en {{ image }} {{ link }}"
     },
     "reply": {
@@ -152,20 +156,20 @@
     },
     "new": {
       "label": "Responder al comentario"
+    },
+    "comment-reply": {
+      "open-form-reply": {
+        "title": "Responder al comentario",
+        "label": "Respuesta de mensaje",
+        "description": "Agregue un mensaje que se publicará como hilo en la publicación seleccionada"
+      }
+    },
+    "permission-change": {
+      "message": "{{ userDisplay }} compartió un artículo contigo"
+    },
+    "manage-reply-comment": {
+      "message": "Respondiste a este comentario con"
     }
-  },
-  "permission-change": {
-    "message": "{{ userDisplay }} compartió un artículo contigo"
-  },
-  "comment-reply": {
-    "open-form-reply": {
-      "title": "Responder al comentario",
-      "label": "Respuesta de mensaje",
-      "description": "Agregue un mensaje que se publicará como hilo en la publicación seleccionada"
-    }
-  },
-  "manage-reply-comment": {
-    "message": "Respondiste a este comentario con"
   },
   "upload-google": {
     "confirmation-call": {

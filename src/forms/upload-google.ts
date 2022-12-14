@@ -1,24 +1,24 @@
-import {head} from 'lodash';
+import { head } from 'lodash';
 import moment from 'moment';
 
-import {MattermostClient} from '../clients';
-import {getGoogleDriveClient} from '../clients/google-client';
-import {AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes} from '../constant';
-import {AppCallRequest, AppField, AppForm, AppSelectOption, MattermostOptions, PostCreate, Schema$File, Schema$User} from '../types';
-import {SelectedUploadFilesForm} from '../types/forms';
-import {configureI18n} from '../utils/translations';
-import {throwException, tryPromise} from '../utils/utils';
+import { MattermostClient } from '../clients';
+import { getGoogleDriveClient } from '../clients/google-client';
+import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
+import { AppCallRequest, AppField, AppForm, AppSelectOption, MattermostOptions, PostCreate, Schema$File, Schema$User } from '../types';
+import { SelectedUploadFilesForm } from '../types/forms';
+import { configureI18n } from '../utils/translations';
+import { throwException, tryPromise } from '../utils/utils';
 
 export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.acting_user_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const postId: string = call.context.post?.id as string;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
@@ -71,7 +71,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
     const botAccessToken: string = call.context.bot_access_token as string;
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
-    const actingUserID = call.context.acting_user?.id as string;
+    const actingUserID = call.context.acting_user.id as string;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
 
@@ -121,7 +121,7 @@ export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promis
             author_icon: `${owner?.photoLink}`,
             title: `${fileUp.name}`,
             title_link: `${fileUp.webViewLink}`,
-            footer: i18nObj.__('upload-google.confirmation-submit.footer', {date: moment(fileUp?.createdTime).format('MMM Do, YYYY')}),
+            footer: i18nObj.__('upload-google.confirmation-submit.footer', { date: moment(fileUp?.createdTime).format('MMM Do, YYYY') }),
             footer_icon: `${fileUp.iconLink}`,
         };
     });

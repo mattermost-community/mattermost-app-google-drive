@@ -1,51 +1,69 @@
 NPM ?= npm
 
+define GetFromPkg
+$(shell node -p "require('./src/manifest.json').$(1)")
+endef
+
+APP_ID      := $(call GetFromPkg, app_id)
+VERSION     := $(call GetFromPkg, version)
+BUNDLE_NAME := app_$(APP_ID)_$(VERSION)
+
+DIST_DIR := dist
+DEFAULT_BUNDLE_NAME := bundle
+
+# should be the same as the one in tsconfig.json
+TS_DIST_DIR := dist-ts
+
 .PHONY: run-server stop-server restart-server build dist watch clean help
 
 ## run-server: starts the server.
 run-server:
-		@echo Running mattermost for development
+		@echo Running Google Drive app for development
 		./run-server.sh
 
 ## stop-server: stops the server
 stop-server:
-		@echo Stopping mattermost for development
+		@echo Stopping Google Drive app for development
 		./stop-server.sh
 
 ## restart-server: restarts the server.
 restart-server:
-		@echo Stopping mattermost for development
+		@echo Stopping Google Drive app for development
 		./stop-server.sh
-		@echo Running mattermost for development
+		@echo Running Google Drive app for development
 		./run-server.sh
 
 ## build: build the app
 build: node_modules
 	$(NPM) run build
 
-## dist: creates the bundle file for aws deployment
-dist-aws: build
-	rm -rf aws/$(app_id) && mkdir -p aws/$(app_id)
-	mv dist/* aws/$(app_id)
-	mv node_modules aws/$(app_id)
-	cp -r src/locales aws/$(app_id)
-	rm -r dist
-	cp src/manifest.json aws
-	cp -r static aws
-	cd aws ; \
-		zip -rm $(app_id).zip $(app_id) ; \
-		zip -rm ../$(app_id).zip manifest.json static $(app_id).zip
-	rm -r aws
+## dist: creates the bundle file for dev deployment
+dist-dev: build
+	rm -rf $(DIST_DIR)/$(BUNDLE_NAME) && mkdir -p $(DIST_DIR)/$(BUNDLE_NAME)
+	mv $(TS_DIST_DIR)/* $(DIST_DIR)/$(BUNDLE_NAME)
+	rm -r $(TS_DIST_DIR)
+	mv node_modules $(DIST_DIR)/$(BUNDLE_NAME)
+	cp -r src/locales $(DIST_DIR)/$(BUNDLE_NAME)
+	cp src/manifest.json $(DIST_DIR)
+	cp -r static $(DIST_DIR)
+	cd $(DIST_DIR) ; \
+		zip -rm $(BUNDLE_NAME).zip $(BUNDLE_NAME) ; \
+		zip -rm ../$(BUNDLE_NAME).zip manifest.json static $(BUNDLE_NAME).zip
+	rm -rf ./$(DIST_DIR)/* && mv ./$(BUNDLE_NAME).zip ./$(DIST_DIR)	
 
-## dist: creates the bundle file for http deployment
+## dist: creates the bundle file for deployment
 dist: build
-	rm -rf bundle && mkdir -p bundle
-	mv dist/* bundle
-	cp -r src/locales bundle
-	rm -r dist
-	cp src/manifest.json bundle
-	cp -r static bundle
-	zip -rm bundle.zip bundle
+	rm -rf ./$(DIST_DIR)/* && mkdir -p ./$(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
+	mv $(TS_DIST_DIR)/* $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
+	rm -r $(TS_DIST_DIR)
+	mv node_modules $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
+	cp -r src/locales $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
+	cp src/manifest.json $(DIST_DIR)
+	cp -r static $(DIST_DIR)
+	cd $(DIST_DIR) ; \
+		zip -rm $(DEFAULT_BUNDLE_NAME).zip $(DEFAULT_BUNDLE_NAME) ; \
+		zip -rm ../$(DEFAULT_BUNDLE_NAME).zip manifest.json static $(DEFAULT_BUNDLE_NAME).zip
+	rm -rf ./$(DIST_DIR)/* && mv ./$(DEFAULT_BUNDLE_NAME).zip ./$(DIST_DIR)	
 
 ## build: build the app when changed
 watch: node_modules

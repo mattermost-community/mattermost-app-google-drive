@@ -1,6 +1,3 @@
-import { ConfigureClientForm } from '../constant';
-
-import { GoogleToken } from './google';
 import { Oauth2Data } from './kv-store';
 import { UserProfile } from './mattermost';
 
@@ -115,7 +112,7 @@ export type AppContext = {
     location?: string;
     user_agent?: string;
     track_as_submit?: boolean;
-    mattermost_site_url?: string;
+    mattermost_site_url: string;
     developer_mode?: boolean;
     app_path?: string;
     bot_user_id?: string;
@@ -154,7 +151,7 @@ export type AppContext = {
         policy_id: any;
         last_root_post_at: number;
     }
-    acting_user?: AppActingUser;
+    acting_user: AppActingUser;
     acting_user_access_token?: string;
     oauth2: any;
     post?: {
@@ -184,7 +181,7 @@ export type AppModalState = {
 }
 
 export type AppBinding = {
-    app_id: string;
+    app_id?: string;
     location?: string;
     icon?: string;
 

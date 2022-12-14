@@ -1,12 +1,12 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
 import {
     manageReplyCommentSubmit,
     openFormReplyComment,
 } from '../forms/comment-reply';
-import {AppCallResponse} from '../types';
-import {CallResponseHandler, newFormCallResponse, newOKCallResponse} from '../utils/call-responses';
-import {showMessageToMattermost} from '../utils/utils';
+import { AppCallResponse } from '../types';
+import { CallResponseHandler, newFormCallResponse, newOKCallResponse } from '../utils/call-responses';
+import { showMessageToMattermost } from '../utils/utils';
 
 export const replyToCommentForm: CallResponseHandler = async (req: Request, res: Response) => {
     let callResponse: AppCallResponse;

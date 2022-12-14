@@ -1,12 +1,18 @@
-import {KVStoreClient} from '../clients/kvstore';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ConfigureClientForm, GoogleDriveIcon, Routes, modeConfiguration, optConfigure} from '../constant';
+import { KVStoreClient } from '../clients/kvstore';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import {AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data} from '../types';
-import {configureI18n} from '../utils/translations';
+import { AppActingUser, AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { configureI18n } from '../utils/translations';
+import { isUserSystemAdmin, throwException } from '../utils/utils';
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
+    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
+
+    if (!isUserSystemAdmin(actingUser)) {
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('configure-binding.error.system-admin'));
+    }
 
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
@@ -20,11 +26,11 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     const apiKey = values?.google_drive_api_key || oauth2App?.data?.google_drive_api_key;
     const saJson = values?.google_drive_service_account || oauth2App?.data?.google_drive_service_account;
 
-    const defValue: AppSelectOption | undefined = modeConfiguration(call.context).find((mode) => mode.value === modeConfig);
+    const defValue: AppSelectOption = modeConfiguration(call.context).find((mode) => mode.value === modeConfig)!;
 
     const form: AppForm = {
         title: i18nObj.__('configure-binding.form.title'),
-        header: i18nObj.__('configure-binding.form.header', {homepageUrl}),
+        header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
         fields: [
             {
@@ -71,10 +77,8 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         },
     };
 
-    let extraField: AppField = {
-        name: '',
-        type: '',
-    };
+    let extraField: AppField | undefined;
+
     switch (modeConfig) {
     case optConfigure.fAPIKey:
         extraField = {
@@ -104,16 +108,23 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    form.fields.push(extraField);
+    if (extraField) {
+        form.fields.push(extraField);
+    }
 
     return form;
 }
 
 export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
+    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
+    if (!isUserSystemAdmin(actingUser)) {
+        throwException(ExceptionType.TEXT_ERROR, i18nObj.__('configure-binding.error.system-admin'));
+    }
+
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const botAccessToken: string = call.context.bot_access_token!;
     const values: AppCallValues = <any>call.values;
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
@@ -123,8 +134,8 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const gApiKey: string = values[ConfigureClientForm.API_KEY];
 
     const options: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
 

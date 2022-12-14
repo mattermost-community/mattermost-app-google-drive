@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import {
     Channel,
@@ -11,8 +11,8 @@ import {
     PostUpdate,
     User,
 } from '../types';
-import {AppsPluginName, Routes} from '../constant';
-import {replace} from '../utils/utils';
+import { AppsPluginName, Routes } from '../constant';
+import { replace } from '../utils/utils';
 
 export class MattermostClient {
     private readonly config: MattermostOptions;
@@ -26,7 +26,7 @@ export class MattermostClient {
     public updateRolesByUser(userId: string, roles: string): Promise<any> {
         const url = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.UsersUpdateRolePath}`;
 
-        return axios.put(replace(url, Routes.PV.Identifier, userId), {roles}, {
+        return axios.put(replace(url, Routes.PV.Identifier, userId), { roles }, {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
