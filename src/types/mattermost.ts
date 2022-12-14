@@ -1,4 +1,4 @@
-import {ChannelWatchHeaders} from './google';
+import { ChannelWatchHeaders } from './google';
 
 export type UserNotifyProps = {
     channel: string;

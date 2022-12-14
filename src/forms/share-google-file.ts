@@ -1,11 +1,11 @@
-import {MattermostClient} from '../clients';
-import {getGoogleDriveClient} from '../clients/google-client';
-import {ExceptionType, GooglePermissionRoleByOption, optFileShare} from '../constant';
-import {AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User} from '../types';
-import {CreateFileForm} from '../types/forms';
-import {ShareFileFunction} from '../types/functions';
-import {configureI18n} from '../utils/translations';
-import {tryPromise} from '../utils/utils';
+import { MattermostClient } from '../clients';
+import { getGoogleDriveClient } from '../clients/google-client';
+import { ExceptionType, GooglePermissionRoleByOption, optFileShare } from '../constant';
+import { AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User } from '../types';
+import { CreateFileForm } from '../types/forms';
+import { ShareFileFunction } from '../types/functions';
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
 
 export const SHARE_FILE_ACTIONS: { [key: string]: ShareFileFunction } = {
     [optFileShare.sAView]: shareWithAnyone,

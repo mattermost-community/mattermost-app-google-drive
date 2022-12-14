@@ -1,4 +1,4 @@
-import {GoogleScopes} from '../constant/google-scopes';
+import { GoogleScopes } from '../constant/google-scopes';
 import config from '../config';
 
 export const getGoogleOAuthScopes = () => {

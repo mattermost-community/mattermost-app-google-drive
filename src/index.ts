@@ -1,4 +1,4 @@
-import express, {Express} from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 
 import morgan from 'morgan';

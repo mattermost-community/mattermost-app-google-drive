@@ -1,12 +1,12 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
-import {KVStoreClient} from '../clients';
-import {getGoogleDriveClient} from '../clients/google-client';
-import {ExceptionType, KVStoreGoogleData, Routes, StoreKeys} from '../constant';
-import {GoogleKindsAPI} from '../constant/google-kinds';
-import {AppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken} from '../types';
-import {configureI18n} from '../utils/translations';
-import {tryPromise} from '../utils/utils';
+import { KVStoreClient } from '../clients';
+import { getGoogleDriveClient } from '../clients/google-client';
+import { ExceptionType, KVStoreGoogleData, Routes, StoreKeys } from '../constant';
+import { GoogleKindsAPI } from '../constant/google-kinds';
+import { AppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
 
 require('dotenv').config('../');
 

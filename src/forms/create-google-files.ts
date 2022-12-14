@@ -1,9 +1,9 @@
-import {head} from 'lodash';
+import { head } from 'lodash';
 import moment from 'moment';
 
-import {MattermostClient} from '../clients';
-import {getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient} from '../clients/google-client';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel} from '../constant';
+import { MattermostClient } from '../clients';
+import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient } from '../clients/google-client';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
     AppCallRequest,
@@ -20,12 +20,12 @@ import {
     Schema$Spreadsheet,
     Schema$User,
 } from '../types';
-import {CreateFileForm} from '../types/forms';
-import {ShareFileFunction} from '../types/functions';
-import {configureI18n} from '../utils/translations';
-import {tryPromise} from '../utils/utils';
+import { CreateFileForm } from '../types/forms';
+import { ShareFileFunction } from '../types/functions';
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
 
-import {SHARE_FILE_ACTIONS} from './share-google-file';
+import { SHARE_FILE_ACTIONS } from './share-google-file';
 
 export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
@@ -156,7 +156,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
                     author_icon: `${owner?.photoLink}`,
                     title: `${file.name}`,
                     title_link: `${file.webViewLink}`,
-                    footer: i18nObj.__('create-binding.response.footer', {date}),
+                    footer: i18nObj.__('create-binding.response.footer', { date }),
                     footer_icon: `${file.iconLink}`,
                     fields: [],
                     actions: [],
@@ -301,7 +301,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
                     author_icon: `${owner?.photoLink}`,
                     title: `${file.name}`,
                     title_link: `${file.webViewLink}`,
-                    footer: i18nObj.__('create-binding.response.footer', {date}),
+                    footer: i18nObj.__('create-binding.response.footer', { date }),
                     footer_icon: `${file.iconLink}`,
                     fields: [],
                     actions: [],
@@ -446,7 +446,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
                     author_icon: `${owner?.photoLink}`,
                     title: `${file.name}`,
                     title_link: `${file.webViewLink}`,
-                    footer: i18nObj.__('create-binding.response.footer', {date}),
+                    footer: i18nObj.__('create-binding.response.footer', { date }),
                     footer_icon: `${file.iconLink}`,
                     fields: [],
                     actions: [],

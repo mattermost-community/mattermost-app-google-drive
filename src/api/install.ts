@@ -1,11 +1,11 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
-import {MattermostClient} from '../clients/mattermost';
+import { MattermostClient } from '../clients/mattermost';
 import manifest from '../manifest.json';
-import {AppCallRequest, AppCallResponse, AppContext, MattermostOptions} from '../types';
-import {newOKCallResponseWithMarkdown} from '../utils/call-responses';
-import {joinLines} from '../utils/markdown';
-import {configureI18n} from '../utils/translations';
+import { AppCallRequest, AppCallResponse, AppContext, MattermostOptions } from '../types';
+import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
+import { joinLines } from '../utils/markdown';
+import { configureI18n } from '../utils/translations';
 
 export const getInstall = async (request: Request, response: Response) => {
     const call: AppCallRequest = request.body;

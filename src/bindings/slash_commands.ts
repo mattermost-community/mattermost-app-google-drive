@@ -19,7 +19,7 @@ import {
 } from '../utils/utils';
 
 import manifest from '../manifest.json';
-import {configureI18n} from '../utils/translations';
+import { configureI18n } from '../utils/translations';
 
 import {
     getConfigureBinding,

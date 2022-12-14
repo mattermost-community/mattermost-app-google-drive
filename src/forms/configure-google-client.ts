@@ -1,10 +1,10 @@
-import {KVStoreClient} from '../clients/kvstore';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure} from '../constant';
+import { KVStoreClient } from '../clients/kvstore';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import {AppActingUser, AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data} from '../types';
-import {configureI18n} from '../utils/translations';
-import {isUserSystemAdmin, throwException} from '../utils/utils';
+import { AppActingUser, AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { configureI18n } from '../utils/translations';
+import { isUserSystemAdmin, throwException } from '../utils/utils';
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
@@ -30,7 +30,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
 
     const form: AppForm = {
         title: i18nObj.__('configure-binding.form.title'),
-        header: i18nObj.__('configure-binding.form.header', {homepageUrl}),
+        header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
         fields: [
             {

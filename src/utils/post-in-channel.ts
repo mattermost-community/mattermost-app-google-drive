@@ -1,5 +1,5 @@
-import {MattermostClient} from '../clients';
-import {AppCallRequest, AppCallValues, Channel, MattermostOptions, PostCreate} from '../types';
+import { MattermostClient } from '../clients';
+import { AppCallRequest, AppCallValues, Channel, MattermostOptions, PostCreate } from '../types';
 
 export const postBotChannel = async (call: AppCallRequest, message: string, props: any = {}) => {
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;

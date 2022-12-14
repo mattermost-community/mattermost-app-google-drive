@@ -1,12 +1,12 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
-import {Commands} from '../constant';
+import { Commands } from '../constant';
 import manifest from '../manifest.json';
-import {AppActingUser, AppCallResponse, AppContext, ExpandedBotActingUser, Oauth2App} from '../types';
-import {newOKCallResponseWithMarkdown} from '../utils/call-responses';
-import {addBulletSlashCommand, h5, joinLines} from '../utils/markdown';
-import {configureI18n} from '../utils/translations';
-import {existsOauth2AppConfig, isConnected, isUserSystemAdmin} from '../utils/utils';
+import { AppActingUser, AppCallResponse, AppContext, ExpandedBotActingUser, Oauth2App } from '../types';
+import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
+import { addBulletSlashCommand, h5, joinLines } from '../utils/markdown';
+import { configureI18n } from '../utils/translations';
+import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from '../utils/utils';
 
 export const getHelp = async (request: Request, response: Response) => {
     const context = request.body.context as ExpandedBotActingUser;
@@ -28,7 +28,7 @@ async function getCommands(context: AppContext): Promise<string> {
     const oauth2App: Oauth2App = context.oauth2 as Oauth2App;
     const commands: string[] = [];
 
-    commands.push(addBulletSlashCommand(Commands.HELP, i18nObj.__('help-binding.descriptions.help', {homepageUrl})));
+    commands.push(addBulletSlashCommand(Commands.HELP, i18nObj.__('help-binding.descriptions.help', { homepageUrl })));
 
     if (isUserSystemAdmin(<AppActingUser>actingUser)) {
         commands.push(addBulletSlashCommand(Commands.CONFIGURE, i18nObj.__('help-binding.descriptions.configure')));

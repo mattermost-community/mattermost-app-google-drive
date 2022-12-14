@@ -1,6 +1,6 @@
-import {ConfigureClientForm} from '../constant';
+import { ConfigureClientForm } from '../constant';
 
-import {AppSelectOption, Oauth2CurrentUser} from './apps';
+import { AppSelectOption, Oauth2CurrentUser } from './apps';
 
 export interface KVStoreOptions {
     mattermostUrl: string;

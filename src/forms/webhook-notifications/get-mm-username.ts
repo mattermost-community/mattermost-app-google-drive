@@ -1,13 +1,13 @@
-import {head} from 'lodash';
+import { head } from 'lodash';
 
 import {
     MattermostOptions,
     User,
     WebhookRequest,
 } from '../../types';
-import {KVGoogleData, KVGoogleUser} from '../../types/kv-store';
-import {getKVGoogleData} from '../../utils/utils';
-import {MattermostClient} from '../../clients';
+import { KVGoogleData, KVGoogleUser } from '../../types/kv-store';
+import { getKVGoogleData } from '../../utils/utils';
+import { MattermostClient } from '../../clients';
 
 export async function getMattermostUsername(call: WebhookRequest, authorEmail: string): Promise<User | null> {
     const kvGoogleData: KVGoogleData = await getKVGoogleData(call);
