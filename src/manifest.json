@@ -1,5 +1,5 @@
 {
-   "app_id": "drive",
+   "app_id": "google-drive",
    "version": "1.0.0",
    "homepage_url": "https://bitbucket.org/dominion-ancient/mattermost-app-google-drive/src/develop/README.md",
    "display_name": "Google Drive",
