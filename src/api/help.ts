@@ -11,10 +11,7 @@ import {existsOauth2AppConfig, isConnected, isUserSystemAdmin} from '../utils/ut
 export const getHelp = async (request: Request, response: Response) => {
     const context = request.body.context as ExpandedBotActingUser;
 
-    const helpText: string = [
-        getHeader(context),
-        await getCommands(context),
-    ].join('');
+    const helpText: string = await getCommands(context);
     const callResponse: AppCallResponse = newOKCallResponseWithMarkdown(helpText);
     response.json(callResponse);
 };

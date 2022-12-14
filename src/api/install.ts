@@ -21,9 +21,7 @@ export const getInstall = async (request: Request, response: Response) => {
 
     await mattermostClient.updateRolesByUser(<string>userId, 'system_admin system_post_all');
 
-    const helpText: string = [
-        getCommands(call.context),
-    ].join('');
+    const helpText: string = getCommands(call.context);
     const callResponse: AppCallResponse = newOKCallResponseWithMarkdown(helpText);
 
     response.json(callResponse);
@@ -33,7 +31,5 @@ function getCommands(context: AppContext): string {
     const i18nObj = configureI18n(context);
 
     const homepageUrl: string = manifest.homepage_url;
-    return `${joinLines(
-        i18nObj.__('install.message', {homepageUrl})
-    )}\n`;
+    return i18nObj.__('install.message', { homepageUrl }) + '\n';
 }

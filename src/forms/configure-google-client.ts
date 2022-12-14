@@ -71,10 +71,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         },
     };
 
-    let extraField: AppField = {
-        name: '',
-        type: '',
-    };
+    let extraField: AppField | undefined;
     switch (modeConfig) {
     case optConfigure.fAPIKey:
         extraField = {
@@ -104,7 +101,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    form.fields.push(extraField);
+    form.fields.push(<AppField>extraField);
 
     return form;
 }
