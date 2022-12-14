@@ -35,7 +35,7 @@
    "http": {
       "root_url": "https://mattermost-bussiness-dev.ancient.mx"
    },
-   "remote_webhook_auth_type": "none",
+   "remote_webhook_auth_type": "secret",
    "on_remote_webhook": {
       "path": "/webhook",
       "expand": {

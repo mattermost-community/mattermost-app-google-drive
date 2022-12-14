@@ -9,7 +9,7 @@ import { postBotChannel } from '../../utils/post-in-channel';
 import { configureI18n } from '../../utils/translations';
 import { tryPromise } from '../../utils/utils';
 
-import { getMattermostUsername } from './get-mm-username';
+import { getMattermostUserFromGoogleEmail } from './get-mm-username';
 type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) => void;
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
@@ -56,7 +56,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser?.username}`;
     }
@@ -114,7 +114,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -161,7 +161,7 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -197,7 +197,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
