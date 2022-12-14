@@ -1,6 +1,6 @@
-import {Schema} from 'inspector';
+import { Schema } from 'inspector';
 
-import {GooglePermissionRole, GoogleTypeGrantee} from '../constant';
+import { GooglePermissionRole, GoogleTypeGrantee } from '../constant';
 
 export type GoogleToken = {
     refresh_token?: string | null;

@@ -1,7 +1,7 @@
-import {AppContext, AppSelectOption} from '../types';
-import {configureI18n} from '../utils/translations';
+import { AppContext, AppSelectOption } from '../types';
+import { configureI18n } from '../utils/translations';
 
-import {GooglePermissionRole} from './google-files';
+import { GooglePermissionRole } from './google-files';
 
 export const ConfigureClientForm = Object.freeze({
     CLIENT_ID: 'google_drive_client_id',

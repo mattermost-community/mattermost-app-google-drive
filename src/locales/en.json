@@ -62,7 +62,10 @@
     },
     "response": {
       "success": "Successfully updated Google Client configuration!"
-    }
+    },
+	 "error": {
+		"system-admin": "Error: This command is only available for Mattermost System Admin"
+	 }
   },
   "connect-binding": {
     "response": {
@@ -79,6 +82,7 @@
     }
   },
   "notifications-binding": {
+    "already-disabled": "Google notifications are already disabled",
     "response": {
       "disabled": "Google notifications are disabled!",
       "enabled": "Google notifications are enabled!"

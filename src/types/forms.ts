@@ -1,6 +1,6 @@
-import {CreateGoogleDocument, FilesToUpload, ReplyCommentForm} from '../constant';
+import { CreateGoogleDocument, FilesToUpload, ReplyCommentForm } from '../constant';
 
-import {AppSelectOption} from './apps';
+import { AppSelectOption } from './apps';
 
 export interface CreateFileForm {
     [CreateGoogleDocument.TITLE]: string | null;

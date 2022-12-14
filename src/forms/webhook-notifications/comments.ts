@@ -1,15 +1,15 @@
-import {head, last} from 'lodash';
+import { head, last } from 'lodash';
 
-import {getGoogleDriveClient} from '../../clients/google-client';
-import {ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes} from '../../constant';
+import { getGoogleDriveClient } from '../../clients/google-client';
+import { ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes } from '../../constant';
 import manifest from '../../manifest.json';
-import {GA$CommentSubtype, GA$DriveActivity, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, StateCommentPost, User, WebhookRequest} from '../../types';
-import {bold, h5, hyperlink, inLineImage} from '../../utils/markdown';
-import {postBotChannel} from '../../utils/post-in-channel';
-import {configureI18n} from '../../utils/translations';
-import {tryPromise} from '../../utils/utils';
+import { GA$CommentSubtype, GA$DriveActivity, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, StateCommentPost, User, WebhookRequest } from '../../types';
+import { bold, h5, hyperlink, inLineImage } from '../../utils/markdown';
+import { postBotChannel } from '../../utils/post-in-channel';
+import { configureI18n } from '../../utils/translations';
+import { tryPromise } from '../../utils/utils';
 
-import {getMattermostUsername} from './get-mm-username';
+import { getMattermostUserFromGoogleEmail } from './get-mm-username';
 type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) => void;
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
@@ -41,7 +41,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;
     const urlToComment = target.fileComment?.linkToDiscussion as string;
-    const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({fields: 'user'}), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
     const commentParam = {
         fileId: <string>file.id,
@@ -56,7 +56,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser?.username}`;
     }
@@ -114,7 +114,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -161,7 +161,7 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }
@@ -197,7 +197,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUsername(call, actorEmail) as User;
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser.username}`;
     }

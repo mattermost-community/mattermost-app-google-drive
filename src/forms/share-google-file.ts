@@ -1,11 +1,11 @@
-import {MattermostClient} from '../clients';
-import {getGoogleDriveClient} from '../clients/google-client';
-import {ExceptionType, GooglePermissionRoleByOption, optFileShare} from '../constant';
-import {AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User} from '../types';
-import {CreateFileForm} from '../types/forms';
-import {ShareFileFunction} from '../types/functions';
-import {configureI18n} from '../utils/translations';
-import {tryPromise} from '../utils/utils';
+import { MattermostClient } from '../clients';
+import { getGoogleDriveClient } from '../clients/google-client';
+import { ExceptionType, GooglePermissionRoleByOption, optFileShare } from '../constant';
+import { AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User } from '../types';
+import { CreateFileForm } from '../types/forms';
+import { ShareFileFunction } from '../types/functions';
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
 
 export const SHARE_FILE_ACTIONS: { [key: string]: ShareFileFunction } = {
     [optFileShare.sAView]: shareWithAnyone,
@@ -37,14 +37,14 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
 async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const values = call.values as CreateFileForm;
     const role = GooglePermissionRoleByOption[values.google_file_access.value];
     const drive = await getGoogleDriveClient(call);
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
+        mattermostUrl,
         accessToken: <string>userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);

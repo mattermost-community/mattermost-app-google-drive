@@ -1,10 +1,10 @@
-import {MattermostClient} from '../clients';
-import {getGoogleDriveClient} from '../clients/google-client';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes} from '../constant';
-import {AppCallRequest, AppForm, MattermostOptions, Params$Resource$Replies$Create, PostCreate} from '../types';
-import {CommentState, ReplyCommentFormType} from '../types/forms';
-import {configureI18n} from '../utils/translations';
-import {tryPromise} from '../utils/utils';
+import { MattermostClient } from '../clients';
+import { getGoogleDriveClient } from '../clients/google-client';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
+import { AppCallRequest, AppForm, MattermostOptions, Params$Resource$Replies$Create, PostCreate } from '../types';
+import { CommentState, ReplyCommentFormType } from '../types/forms';
+import { configureI18n } from '../utils/translations';
+import { tryPromise } from '../utils/utils';
 
 export async function openFormReplyComment(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
@@ -55,21 +55,21 @@ export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<an
 
     await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const postId: string | undefined = call.context.post?.id;
-    const channelId: string | undefined = call.context.post?.channel_id;
-    const actingUserID: string | undefined = call.context.acting_user?.id;
-    const botAccessToken = call.context.bot_access_token as string;
+    const mattermostUrl: string = call.context.mattermost_site_url;
+    const postId: string = call.context.post?.id as string;
+    const channelId: string = call.context.post?.channel_id as string;
+    const actingUserId: string = call.context.acting_user.id;
+    const botAccessToken: string = call.context.bot_access_token!;
 
     const mattermostOpts: MattermostOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: botAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
     const post: PostCreate = {
         message: `${i18nObj.__('manage-reply-comment.message')}: \n"${values.google_response_comment}"`,
-        user_id: <string>actingUserID,
+        user_id: <string>actingUserId,
         channel_id: <string>channelId,
         root_id: postId,
     };

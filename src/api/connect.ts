@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
 import {
     getConnectLink,
@@ -6,14 +6,14 @@ import {
     oAuth2Connect,
     oAuth2Disconnect,
 } from '../forms/oauth-google';
-import {AppCallResponse} from '../types';
+import { AppCallResponse } from '../types';
 import {
     CallResponseHandler,
     newOKCallResponse,
     newOKCallResponseWithData,
     newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
-import {showMessageToMattermost} from '../utils/utils';
+import { showMessageToMattermost } from '../utils/utils';
 
 export const getConnectGoogleURL: CallResponseHandler = async (req: Request, res: Response) => {
     let callResponse: AppCallResponse;

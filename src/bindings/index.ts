@@ -1,8 +1,8 @@
-import {AppCallRequest, AppsState} from '../types';
+import { AppCallRequest, AppsState } from '../types';
 
-import {getHeaderButtonBindings} from './header_commands';
-import {getPostMenuBindings} from './post_menu';
-import {getCommandBindings} from './slash_commands';
+import { getHeaderButtonBindings } from './header_commands';
+import { getPostMenuBindings } from './post_menu';
+import { getCommandBindings } from './slash_commands';
 
 export async function getAppBindings(callRequest: AppCallRequest): Promise<AppsState[]> {
     const bindings: AppsState[] = [];

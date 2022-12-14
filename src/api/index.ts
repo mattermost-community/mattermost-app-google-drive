@@ -1,6 +1,6 @@
-import express, {Router} from 'express';
+import express, { Router } from 'express';
 
-import {Routes} from '../constant';
+import { Routes } from '../constant';
 
 import * as cManifest from './manifest';
 import * as cBindings from './bindings';

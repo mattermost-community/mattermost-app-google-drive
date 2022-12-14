@@ -1,4 +1,4 @@
-import {CommandTrigger} from '../constant';
+import { CommandTrigger } from '../constant';
 
 export function addBulletSlashCommand(text: string, description: string): string {
     return `* \`/${CommandTrigger} ${text}\` - ${description}`;
