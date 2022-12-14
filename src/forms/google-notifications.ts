@@ -47,6 +47,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
     const appPath: string = call.context.app_path!;
     const actingUserId: string = call.context.acting_user.id!;
     const i18nObj = configureI18n(call.context);
+    const webhookSecret: string = call.context.app?.webhook_secret!;
 
     const drive = await getGoogleDriveClient(call);
 
@@ -54,6 +55,7 @@ export async function startNotificationsCall(call: AppCallRequest): Promise<stri
 
     const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
     urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, actingUserId);
+    urlWithParams.searchParams.append(KVStoreGoogleData.SECRET, webhookSecret);
 
     const params = {
         pageToken: <string>pageToken.startPageToken,

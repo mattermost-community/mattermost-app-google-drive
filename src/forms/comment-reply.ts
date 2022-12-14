@@ -11,15 +11,15 @@ export async function openFormReplyComment(call: AppCallRequest): Promise<AppFor
 
     const state = call.state;
     return {
-        title: i18nObj.__('comment-reply.open-form-reply.title'),
+        title: i18nObj.__('comments.comment-reply.open-form-reply.title'),
         icon: GoogleDriveIcon,
         fields: [
             {
                 type: AppFieldTypes.TEXT,
                 name: ReplyCommentForm.RESPONSE,
                 subtype: AppFieldSubTypes.TEXTAREA,
-                modal_label: i18nObj.__('comment-reply.open-form-reply.label'),
-                description: i18nObj.__('comment-reply.open-form-reply.description'),
+                modal_label: i18nObj.__('comments.comment-reply.open-form-reply.label'),
+                description: i18nObj.__('comments.comment-reply.open-form-reply.description'),
                 is_required: true,
             },
         ],
@@ -68,7 +68,7 @@ export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<an
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
     const post: PostCreate = {
-        message: `${i18nObj.__('manage-reply-comment.message')}: \n"${values.google_response_comment}"`,
+        message: `${i18nObj.__('comments.manage-reply-comment.message')}: \n"${values.google_response_comment}"`,
         user_id: <string>actingUserId,
         channel_id: <string>channelId,
         root_id: postId,
