@@ -1,12 +1,18 @@
 import {KVStoreClient} from '../clients/kvstore';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ConfigureClientForm, GoogleDriveIcon, Routes, modeConfiguration, optConfigure} from '../constant';
+import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure} from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import {AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data} from '../types';
+import {AppActingUser, AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data} from '../types';
 import {configureI18n} from '../utils/translations';
+import {isUserSystemAdmin, throwException} from '../utils/utils';
 
 export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
     const i18nObj = configureI18n(call.context);
+    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
+
+    if (!isUserSystemAdmin(<AppActingUser>actingUser)) {
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('configure-binding.error.system-admin'));
+    }
 
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
@@ -101,13 +107,20 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    form.fields.push(<AppField>extraField);
+    if (extraField) {
+        form.fields.push(extraField);
+    }
 
     return form;
 }
 
 export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
+    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
+
+    if (!isUserSystemAdmin(<AppActingUser>actingUser)) {
+        throwException(ExceptionType.TEXT_ERROR, i18nObj.__('configure-binding.error.system-admin'));
+    }
 
     const mattermostUrl: string | undefined = call.context.mattermost_site_url;
     const botAccessToken: string | undefined = call.context.bot_access_token;

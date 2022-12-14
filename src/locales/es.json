@@ -62,6 +62,9 @@
     },
     "response": {
       "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+    },
+    "error": {
+      "system-admin": "Error: This command is only available for Mattermost System Admin"
     }
   },
   "connect-binding": {

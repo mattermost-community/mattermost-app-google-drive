@@ -62,7 +62,10 @@
     },
     "response": {
       "success": "Successfully updated Google Client configuration!"
-    }
+    },
+	 "error": {
+		"system-admin": "Error: This command is only available for Mattermost System Admin"
+	 }
   },
   "connect-binding": {
     "response": {
