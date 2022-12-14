@@ -2,7 +2,8 @@
 
 * [Feature summary](#feature-summary)
 * [Set up](#set-up)
-    * [Installation](#installation)
+    * [Installation HTTP](#installation-http)
+    * [Installation Mattermost Cloud](#installation-mattermost-cloud)
     * [Create a Google Cloud Project](#create-a-google-cloud-project)
     * [Configuration](#configuration)
 * [Admin guide](#admin-guide)
@@ -10,25 +11,12 @@
 * [End user guide](#end-user-guide)
     * [Get started](#get-started)
     * [Use /drive commands](#use-drive-commands)
-    * [Channel header bindings](#channel-header-bindings)
-* [Development](#development)
+    * [Post menu bindings](#post-menu-bindings)
+* [Development](#development-environment)
     * [Manual installation](#manual-installation)
+    * [Install dependencies](#install-dependencies)
     * [Run the local development environment](#run-the-local-development-environment)
     * [Run the local development environment with Docker](#run-the-local-development-environment-with-docker)
-
-This application allows you to integrate Google Drive to your Mattermost instance, letting you:
-- Share a Google Drive link
-- Connect your Google Drive account
-
-### Use Google Drive in Mattermost
-- Create a Google Drive file
-- Share a Google Drive file
-- View and reply to comments
-- Publish on Google Drive any file attached to a Mattermost post
-
-### Manage Google Drive notifications
-- Enable or disable notifications for all files
-
 
 # Feature summary
 
@@ -48,13 +36,15 @@ This application allows you to integrate Google Drive to your Mattermost instanc
 
 # Set up
 
-## Installation
+## Installation HTTP
 
-This plugin requires that your Mattermost workspace has the ``/apps install`` command enabled.
+To install, as a Mattermost system admin user, run the command ``/apps install http GOOGLE_API_URL`` in any channel. The ``/drive`` command should be available after the configuration has been successfully installed.
 
-To install, as a super admin user, run the command ``/apps install http GOOGLE_API_URL`` in any channel. The ``/drive`` command should be available after the configuration has been successfully installed.
+The ``GOOGLE_API_URL`` should be replaced with the URL where the Google Drive API instance is running. Example: ``/apps install http https://myapp.com/manifest.json``
 
-The ``GOOGLE_API_URL`` should be replaced with the URL where the Google Drive API instance is running. Example: ``/apps install http https://mattermost-bussiness-dev.ancient.mx/manifest.json``
+## Installation Mattermost Cloud
+
+To install, as a Mattermost system admin user, run the command ``/apps install listed drive`` in any channel. The ``/drive`` command should be available after the configuration has been successfully installed.
 
 ## Create a Google Cloud Project
 
@@ -75,11 +65,9 @@ The ``GOOGLE_API_URL`` should be replaced with the URL where the Google Drive AP
 
 ## Configuration
 
-1. First, you need to install the app in your current Mattermost instance (refer to [Installation](#installation)), the ``/drive`` command should be available.
-2. Go to [Google Cloud Dashboard](https://console.cloud.google.com/home/dashboard) and create a new project (refer to [Create a Google Cloud Project](#create-a-google-cloud-project)).
-3. Return to Mattermost. 
-4. As a super admin user, run the ``/drive configure`` command.
-5. In the configuration modal, enter your Client ID, Client Secret and Service Account.
+After [installing](#installation)) the app and [creating a project](#create-a-google-cloud-project)):
+1. As a Mattermost system admin user, run the ``/drive configure`` command.
+2. In the configuration modal, enter your Client ID, Client Secret and Service Account.
     - Client ID and Client Secret: Used to generate the link to let the user connect with their Google Drive account.
     - Service Account: Is the way the app will get the credentials to manage webhook notifications
 
@@ -105,12 +93,11 @@ The ``GOOGLE_API_URL`` should be replaced with the URL where the Google Drive AP
 - ``/drive notifications [start | stop]``: This command will start or stop the notifications. After a user has executed ``/drive connect`` command, notifications will start on the private channel with the user.
 
 
-## Channel header bindings
+## Post menu bindings
 
-- ``Save file on Drive:``: This option is available in any post, but validates that the selected post has any files on it. If the post
-has any files, a new modal will appear to let the user select the files that would like to be uploaded. After the action is done, a new post will appear as part of the thread to let you notified of the action.
+- ``Save file on Drive:``: This option is available in any post, but validates that the selected post has any files on it, in case there is no files, an error message will appear. If the post has any files, a new modal will appear to let the user select the files that would like to be uploaded. After the action is done, a new post will appear as part of the thread to let you notified of the action.
 
-# Development
+# Development environment
 
 ## Manual installation
 
@@ -118,9 +105,10 @@ has any files, a new modal will appear to let the user select the files that wou
 
 ### Run the local development environment
 
-* You need to have installed at least node version 12 and maximum version 18. You can download the latest lts version of node for the required operating system here https://nodejs.org/es/download/
+* You need to have installed at least node version 15 and maximum version 18. You can download the latest lts version of node for the required operating system here https://nodejs.org/es/download/
 
-*  Install libraries: ``cd`` to the project directory and execute ``npm install`` to download all dependency libraries.
+### Install dependencies
+* Move to the project directory or execute ``cd`` command to the project directory and execute ``npm install`` with a terminal to download all dependency libraries.
 
 ```
 $ npm install
@@ -133,7 +121,7 @@ file: .env
 
 PROJECT=mattermost-app-google-drive
 PORT=4005
-HOST=https://mattermost-bussiness-dev.ancient.mx
+HOST=http://localhost:4005
 ```
 
 Variable definition
@@ -148,6 +136,12 @@ Variable definition
 $ npm run dev
 ```
 
+Or, if you would like to use the Makefile command:
+
+```
+$ make watch
+```
+
 ### Run the local development environment with Docker
 
 * You need to have Docker installed. You can find the necessary steps to install Docker for the following operating systems:
@@ -156,10 +150,20 @@ $ npm run dev
 [Mac](https://docs.docker.com/desktop/mac/install/)
 [Windows](https://docs.docker.com/desktop/windows/install/)
 
-* Once you have Docker installed, the next step would be to run the ``./build.sh`` file to create the API container and expose it locally or on the server, depending on the case required.
+* Once you have Docker installed, the next step would be to run the ``make run-server`` command to create the API container and expose it locally or on the server, depending on the case required.
 
 ```
-$ ./build
+$ make run-server
 ```
 
-When the container is created correctly, the API will be running at the url http://127.0.0.1:4005 in such a way that the installation can be carried out in Mattermost.
+When the container is created correctly, the API will be running at the url http://127.0.0.1:4005. If Mattermost is running on the same machine, run this slash command in Mattermost to install the app:
+
+```
+/apps install http http://127.0.0.1:4005
+```
+
+To stop the container, execute:
+
+```
+$ make stop-server
+```
