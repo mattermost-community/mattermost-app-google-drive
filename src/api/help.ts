@@ -24,13 +24,13 @@ function getHeader(context: AppContext): string {
 async function getCommands(context: AppContext): Promise<string> {
     const i18nObj = configureI18n(context);
     const homepageUrl: string = manifest.homepage_url;
-    const actingUser: AppActingUser | undefined = context.acting_user;
+    const actingUser: AppActingUser = context.acting_user as AppActingUser;
     const oauth2App: Oauth2App = context.oauth2 as Oauth2App;
     const commands: string[] = [];
 
     commands.push(addBulletSlashCommand(Commands.HELP, i18nObj.__('help-binding.descriptions.help', { homepageUrl })));
 
-    if (isUserSystemAdmin(<AppActingUser>actingUser)) {
+    if (isUserSystemAdmin(actingUser)) {
         commands.push(addBulletSlashCommand(Commands.CONFIGURE, i18nObj.__('help-binding.descriptions.configure')));
     }
 

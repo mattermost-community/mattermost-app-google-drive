@@ -52,14 +52,14 @@ const newCommandBindings = (context: AppContext, bindings: AppBinding[], command
 };
 
 export const getCommandBindings = async (call: AppCallRequest): Promise<AppsState> => {
-    const actingUser: AppActingUser | undefined = call.context.acting_user;
+    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
     const context = call.context as AppContext;
 
     const bindings: AppBinding[] = [getHelpBinding(context)];
     const commands: string[] = [Commands.HELP];
 
-    if (isUserSystemAdmin(<AppActingUser>actingUser)) {
+    if (isUserSystemAdmin(actingUser)) {
         bindings.push(getConfigureBinding(context));
         commands.push(Commands.CONFIGURE);
     }

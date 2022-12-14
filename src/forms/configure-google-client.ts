@@ -10,7 +10,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     const i18nObj = configureI18n(call.context);
     const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
 
-    if (!isUserSystemAdmin(<AppActingUser>actingUser)) {
+    if (!isUserSystemAdmin(actingUser)) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('configure-binding.error.system-admin'));
     }
 
@@ -118,7 +118,7 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const i18nObj = configureI18n(call.context);
     const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
 
-    if (!isUserSystemAdmin(<AppActingUser>actingUser)) {
+    if (!isUserSystemAdmin(actingUser)) {
         throwException(ExceptionType.TEXT_ERROR, i18nObj.__('configure-binding.error.system-admin'));
     }
 
