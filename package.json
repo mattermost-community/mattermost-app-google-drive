@@ -4,13 +4,14 @@
   "description": "Connect with Google service through the Mattermost platform to receive comments from Google Drive files",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\"",
     "clean": "rm -rf dist node_modules",
     "build": "tsc -p .",
     "start": "tsc -p . && cp -r src/locales dist/ && node dist/index.js",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --cache",
-    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --fix --cache"
+    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --fix --cache",
+    "check-types": "tsc -p . --skipLibCheck"
   },
   "repository": {
     "type": "git",
