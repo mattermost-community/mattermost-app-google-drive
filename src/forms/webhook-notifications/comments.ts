@@ -57,24 +57,22 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
     const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
+    
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser?.username}`;
     }
 
-    const message = comment.content?.includes(<string>about.user.emailAddress) ?
-        h5(i18nObj.__('comments.add',
-            {
-                userDisplay,
-                image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-                link: hyperlink(`${file?.name}`, <string>urlToComment),
-            }
-        )) :
-        h5(i18nObj.__('comments.text-comment',
-            {
-                userDisplay,
-                image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-                link: hyperlink(`${file?.name}`, <string>urlToComment),
-            }));
+    const mentions = comment.content?.includes(<string>about.user.emailAddress) ?
+        'comments.add.text-mentioned' :
+        'comments.add.text-comment';
+
+    const message = h5(i18nObj.__(mentions,
+        {
+            userDisplay,
+            image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
+            link: hyperlink(`${file?.name}`, <string>urlToComment),
+        })
+    );
 
     const description = `${comment.quotedFileContent?.value || ' '}\n ___ \n> ${comment.content}`;
 

@@ -111,7 +111,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
             path: Routes.App.CallPathStartNotifications,
             expand: {
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
-                app: AppExpandLevels.EXPAND_SUMMARY,
+                app: AppExpandLevels.EXPAND_ALL,
                 oauth2_app: AppExpandLevels.EXPAND_ALL,
                 oauth2_user: AppExpandLevels.EXPAND_ALL,
                 locale: AppExpandLevels.EXPAND_SUMMARY,
