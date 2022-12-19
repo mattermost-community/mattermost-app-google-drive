@@ -3,9 +3,7 @@ name: CI
 on:
   push:
     branches:
-    - 'ci/**'
-    - 'master'
-    - 'develop'
+      - '**'
   pull_request:
     branches:
       - '**'
@@ -15,8 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - name: Install modules
-      run: npm i
+      run: npm ci
     - name: Run ESLint
       run: npm run lint
 
@@ -24,8 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - name: Install modules
-      run: npm i
+      run: npm ci
     - name: Check Types
       run: npm run check-types
 
@@ -33,8 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - name: Install modules
-      run: npm i
+      run: npm ci
     - name: Build Server
       run: npm run build
 
@@ -42,7 +49,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - name: Install modules
-      run: npm i
+      run: npm ci
     - name: Run Tests
       run: npm test
