@@ -1,6 +1,10 @@
 {
 	"general": {
-		"google-error": "Google failed: "
+		"google-error": "Google failed: ",
+		"validation-user": {
+			"system-admin": "Error: This command is only available for Mattermost System Admin",
+			"not-provided": "Not acting user provided"
+		}
 	},
 	"bindings-descriptions": {
 		"bindings": "Manage Google Drive",

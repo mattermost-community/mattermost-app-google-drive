@@ -1,6 +1,10 @@
 {
   "general": {
-    "google-error": "Google falló: "
+    "google-error": "Google falló: ",
+    "validation-user": {
+			"system-admin": "Error: Este comando esta únicamente disponible a usuarios Mattermost System Admin",
+			"not-provided": "El usuario no fue provisto"
+		}
   },
   "bindings-descriptions": {
     "bindings": "Administrar Google Drive",
@@ -64,7 +68,7 @@
       "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
     },
     "error": {
-      "system-admin": "Error: This command is only available for Mattermost System Admin"
+      "system-admin": "Error: Este comando esta únicamente disponible a usuarios Mattermost System Admin"
     }
   },
   "connect-binding": {

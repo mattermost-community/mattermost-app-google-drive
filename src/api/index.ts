@@ -13,6 +13,7 @@ import * as cWebhook from './webhook';
 import * as cReplyComments from './reply-comments';
 import * as cGoogleFiles from './create-files';
 import * as cUploadFile from './upload-file';
+import { requireSystemAdmin } from '../restapi/middleware';
 
 const router: Router = express.Router();
 
@@ -22,9 +23,9 @@ router.post(Routes.App.InstallPath, cInstall.getInstall);
 router.post(Routes.App.CallPathHelp, cHelp.getHelp);
 
 // Configure Google Client
-router.post(Routes.App.CallPathConfigForm, cConfigure.configureGoogleClient);
-router.post(Routes.App.CallPathUpdateConfigForm, cConfigure.configureGoogleClient);
-router.post(Routes.App.CallPathConfigSubmit, cConfigure.configureGoogleClientSubmit);
+router.post(Routes.App.CallPathConfigForm, requireSystemAdmin, cConfigure.configureGoogleClient);
+router.post(Routes.App.CallPathUpdateConfigForm, requireSystemAdmin, cConfigure.configureGoogleClient);
+router.post(Routes.App.CallPathConfigSubmit, requireSystemAdmin, cConfigure.configureGoogleClientSubmit);
 
 // Connect User's Google account
 router.post(`${Routes.App.CallPathConnectSubmit}`, cConnect.getConnectGoogleURL);
