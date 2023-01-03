@@ -89,7 +89,7 @@ After [installing](#installation)) the app and [creating a project](#create-a-go
 
 ## Post menu bindings
 
-- ``Save file on Drive:``: This option is available in any post, but validates that the selected post has any files on it, in case there is no files, an error message will appear. If the post has any files, a new modal will appear to let the user select the files that would like to be uploaded. After the action is done, a new post will appear as part of the thread to let you notified of the action.
+- ``Save file on Drive:``: This option is available in any post to validate that the selected post has any files on it. If the post has any files, a new modal prompts the user select the files to upload. Following the upload, a new post will appear as part of the thread to notify you about the action.
 
 # Development environment
 
@@ -99,7 +99,7 @@ After [installing](#installation)) the app and [creating a project](#create-a-go
 
 ### Run the local development environment
 
-* You need to have installed at least node version 15 and maximum version 18. You can download the latest lts version of node for the required operating system here https://nodejs.org/es/download/
+* A minimum of node version 12 is required, and up to node version 18 is supported. You can download the latest LTS version of node for the required operating system here https://nodejs.org/es/download/
 
 ### Install dependencies
 * Move to the project directory or execute ``cd`` command to the project directory and execute ``npm install`` with a terminal to download all dependency libraries.
