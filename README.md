@@ -22,16 +22,10 @@
 
 This application allows you to integrate Google Drive to your Mattermost instance, letting you:
 
-- Share a Google Drive link
-- Connect your Google Drive account
-
-**Use Google Drive in Mattermost**
 - Create a Google Drive file
 - Share a Google Drive file
 - View and reply to comments
 - Publish on Google Drive any file attached to a Mattermost post
-
-**Manage Google Drive notifications**
 - Enable or disable notifications for all files
 
 # Set up
@@ -75,7 +69,7 @@ After [installing](#installation)) the app and [creating a project](#create-a-go
 # Admin guide
 
 ## Slash commands
-- ``/drive configure:``: This command will enable the connect and disconnect commands, that will allow the user to link with their Google Drive account. Client ID and Client Secret will be asked.
+- ``/drive configure:``: This command will enable the connect and disconnect commands which allow the user to link with their Google Drive account. You're prompted to provide a Client ID and Client Secret.
 
 
 # End user guide
@@ -85,12 +79,12 @@ After [installing](#installation)) the app and [creating a project](#create-a-go
 ## Use ``/drive`` commands
 
 - ``/drive help``: This command will show all current commands available for this application.
-- ``/drive connect``: This command will create a new link, after clicked it will be redirected to select the Google account that will be used to execute all the available actions.
+- ``/drive connect``: This command will create a new link, and clicking on that link redirects the user to select the Google account that will be used to execute all the available actions.
 - ``/drive create [docs | slide | sheets]``: This command will display a new modal where the data will be asked. 
-    - Title: Name of the file to be created 
-    - Message: Optional, only if a file is shared on the channel 
-    - File Access: Choose to share with members on the channel, anyone with the link or keep it private.
-- ``/drive notifications [start | stop]``: This command will start or stop the notifications. After a user has executed ``/drive connect`` command, notifications will start on the private channel with the user.
+    - Title: Name of the file to be created.
+    - Message: Optional. Applicable only if a file is shared in the channel.
+    - File Access: Choose to share with members in the channel, with anyone who has the link, or choose to keep it private.
+- ``/drive notifications [start | stop]``: This command will start or stop notification. After a user runs the ``/drive connect`` command, notifications will be posted to the private channel with the user.
 
 
 ## Post menu bindings
@@ -126,9 +120,9 @@ HOST=http://localhost:4005
 
 Variable definition
 
-- PROJECT: In case of executing the project with Docker using the ``.build.sh`` file, this variable will be used for the name of the container
-- PORT: Port number on which the OpsGenie integration is listening
-- HOST: Google Drive API usage URL
+- PROJECT: Optional. When executing the project with Docker using the ``.build.sh`` file, this variable will be used for the name of the container.
+- PORT: Port number on which the Google Drive API integration is listening.
+- HOST: Optional. Google Drive API usage domain URL.
 
 * Finally, the project must be executed.
 

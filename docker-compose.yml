@@ -3,5 +3,8 @@ services:
   app:
     build: .
     env_file: .env
+    environment:
+      - "PORT=4004"
+      - "HOST=http://localhost:4004"
     ports:
       - "${PORT}:${PORT}"
