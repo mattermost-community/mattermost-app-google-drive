@@ -147,7 +147,7 @@ $ make watch
 * Once you have Docker installed, the next step would be to run the ``make run-server`` command to create the API container and expose it locally or on the server, depending on the case required.
 
 ```
-$ make run-server
+$ make run
 ```
 
 When the container is created correctly, the API will be running at the url http://127.0.0.1:4005. If Mattermost is running on the same machine, run this slash command in Mattermost to install the app:
@@ -159,5 +159,5 @@ When the container is created correctly, the API will be running at the url http
 To stop the container, execute:
 
 ```
-$ make stop-server
+$ make stop
 ```

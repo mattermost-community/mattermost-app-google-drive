@@ -14,24 +14,7 @@ DEFAULT_BUNDLE_NAME := bundle
 # should be the same as the one in tsconfig.json
 TS_DIST_DIR := dist-ts
 
-.PHONY: run-server stop-server restart-server build dist watch clean help
-
-## run-server: starts the server.
-run-server:
-		@echo Running Google Drive app for development
-		./run-server.sh
-
-## stop-server: stops the server
-stop-server:
-		@echo Stopping Google Drive app for development
-		./stop-server.sh
-
-## restart-server: restarts the server.
-restart-server:
-		@echo Stopping Google Drive app for development
-		./stop-server.sh
-		@echo Running Google Drive app for development
-		./run-server.sh
+.PHONY: build dist watch clean help
 
 ## build: build the app
 build: node_modules
