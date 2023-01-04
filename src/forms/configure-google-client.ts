@@ -59,6 +59,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
         source: {
@@ -66,6 +67,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
     };
@@ -112,7 +114,7 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
-    const botAccessToken: string = call.context.bot_access_token!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const values: AppCallValues = <any>call.values;
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
@@ -123,7 +125,7 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
 
     const options: KVStoreOptions = {
         mattermostUrl,
-        accessToken: botAccessToken,
+        accessToken: userAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
 
