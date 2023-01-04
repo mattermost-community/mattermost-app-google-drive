@@ -235,17 +235,6 @@ export type Oauth2App = {
     data?: Oauth2Data;
 }
 
-export type AppCallDialog<T> = {
-    type: string;
-    callback_id: string;
-    state: string;
-    user_id: string;
-    channel_id: string;
-    team_id: string;
-    submission: T;
-    cancelled: boolean;
-}
-
 export type AppCallAction<T> = {
     user_id: string;
     user_name: string;
