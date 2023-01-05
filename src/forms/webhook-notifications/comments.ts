@@ -56,9 +56,8 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser?.username}`;
     }
 
@@ -112,10 +111,11 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
+
     const message = h5(i18nObj.__('comments.reply.comment',
         {
             userDisplay,
@@ -159,8 +159,8 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
 
@@ -195,8 +195,8 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
 

@@ -13,9 +13,9 @@ export async function permissionsChanged(call: WebhookRequest, file: Schema$File
     const author = file.sharingUser as Schema$User;
     const actorEmail = <string>author.emailAddress;
     let userDisplay = `${author?.displayName} (${actorEmail})`;
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
 
-    if (Boolean(mmUser)) {
+    const mmUser: User | null = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
 

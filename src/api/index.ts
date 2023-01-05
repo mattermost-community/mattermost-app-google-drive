@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 
 import { Routes } from '../constant';
 
-import { requireUserOAuthConnected, requireSystemAdmin } from '../restapi/middleware';
+import { requireSystemAdmin, requireUserOAuthConnected } from '../restapi/middleware';
 
 import * as cManifest from './manifest';
 import * as cBindings from './bindings';

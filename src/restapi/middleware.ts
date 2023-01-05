@@ -29,7 +29,7 @@ export const requireUserOAuthConnected = (req: Request, res: Response, next: () 
     const oauth2: Oauth2App = call.context.oauth2 as Oauth2App;
 
     if (!isConnected(oauth2)) {
-        res.json(newErrorCallResponseWithMessage(i18nObj.__('general.validation-user.oauth-user')));;
+        res.json(newErrorCallResponseWithMessage(i18nObj.__('general.validation-user.oauth-user')));
         return;
     }
 
