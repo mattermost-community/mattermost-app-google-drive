@@ -14,6 +14,7 @@ import {
     CallResponseHandler,
     newFormCallResponse,
     newOKCallResponse,
+    newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
 import {
     showMessageToMattermost,
@@ -35,8 +36,8 @@ export const uploadFileToDriveSubmit: CallResponseHandler = async (req: Request,
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await uploadFileConfirmationSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await uploadFileConfirmationSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

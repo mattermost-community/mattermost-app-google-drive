@@ -1,4 +1,4 @@
-import { AppField, AppSelectOption } from '@mattermost/types/lib/apps';
+import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
 
@@ -64,7 +64,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     } as ExpandAppForm;
 }
 
-export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<void> {
+export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url as string;
@@ -125,8 +125,9 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         };
     });
 
+    const message = `${i18nObj.__('upload-google.confirmation-submit.file')}${attachments.length > 1 ? 's' : ''} ${i18nObj.__('upload-google.confirmation-submit.file-continue')}!`;
     const post: PostCreate = {
-        message: `${i18nObj.__('upload-google.confirmation-submit.file')}${attachments.length > 1 ? 's' : ''} ${i18nObj.__('upload-google.confirmation-submit.file-continue')}!`,
+        message,
         channel_id: channelId,
         props: {
             attachments,
@@ -134,4 +135,6 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         root_id: postId,
     };
     await mmClient.createPost(post);
+
+    return message;
 }

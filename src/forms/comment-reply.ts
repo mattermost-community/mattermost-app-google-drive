@@ -37,7 +37,7 @@ export async function openFormReplyComment(call: ExtendedAppCallRequest): Promis
     };
 }
 
-export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Promise<any> {
+export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
@@ -67,10 +67,13 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
+    const message = `${i18nObj.__('comments.manage-reply-comment.message')}: \n"${values.google_response_comment}"`;
     const post: PostCreate = {
-        message: `${i18nObj.__('comments.manage-reply-comment.message')}: \n"${values.google_response_comment}"`,
+        message,
         channel_id: <string>channelId,
         root_id: postId,
     };
     await mmClient.createPost(post);
+
+    return message;
 }

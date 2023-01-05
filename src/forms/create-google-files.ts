@@ -106,7 +106,7 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
     } as ExpandAppForm;
 }
 
-export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promise<any> {
+export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -169,6 +169,8 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.docs.success', { file: `${file.name}` });
 }
 
 export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
@@ -251,7 +253,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
     } as ExpandAppForm;
 }
 
-export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Promise<any> {
+export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -312,6 +314,8 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.slides.success', { file: `${file.name}` });
 }
 
 export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
@@ -393,7 +397,7 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
     } as ExpandAppForm;
 }
 
-export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Promise<any> {
+export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -457,4 +461,6 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.sheets.success', { file: `${file.name}` });
 }

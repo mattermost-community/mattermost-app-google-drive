@@ -9,7 +9,6 @@ import {
 import { ExpandAppCallResponse } from '../types';
 import {
     CallResponseHandler,
-    newOKCallResponse,
     newOKCallResponseWithData,
     newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
@@ -43,8 +42,8 @@ export const fOauth2Complete: CallResponseHandler = async (req: Request, res: Re
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await oAuth2Complete(req.body);
-        callResponse = newOKCallResponse();
+        const message = await oAuth2Complete(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -55,8 +54,8 @@ export const doDisconnectGoogle: CallResponseHandler = async (req: Request, res:
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await oAuth2Disconnect(req.body);
-        callResponse = newOKCallResponse();
+        const message = await oAuth2Disconnect(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

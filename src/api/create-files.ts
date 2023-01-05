@@ -17,7 +17,7 @@ import {
 import {
     CallResponseHandler,
     newFormCallResponse,
-    newOKCallResponse,
+    newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
 import {
     showMessageToMattermost,
@@ -39,8 +39,8 @@ export const executeFormGoogleDocs: CallResponseHandler = async (req: Request, r
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleDocSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleDocSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -63,8 +63,8 @@ export const executeFormGoogleSlides: CallResponseHandler = async (req: Request,
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleSlidesSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleSlidesSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -87,8 +87,8 @@ export const executeFormGoogleSheets: CallResponseHandler = async (req: Request,
     let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleSheetsSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleSheetsSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

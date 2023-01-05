@@ -127,13 +127,16 @@
 			"footer": "Google Drive for Mattermost | {{ date }}"
 		},
 		"docs": {
-			"title": "Create a Google Document"
+			"title": "Create a Google Document",
+			"success": "New Google Doc {{ file }} created!"
 		},
 		"slides": {
-			"title": "Create a Google Presentation"
+			"title": "Create a Google Presentation",
+			"success": "New Google Slides {{ file }} created!"
 		},
 		"sheets": {
-			"title": "Create a Google Spreadsheet"
+			"title": "Create a Google Spreadsheet",
+			"success": "New Google Sheets {{ file }} created!"
 		}
 	},
 	"comments": {

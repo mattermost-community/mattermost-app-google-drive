@@ -48,7 +48,7 @@ export async function oAuth2Connect(call: ExtendedAppCallRequest): Promise<strin
     });
 }
 
-export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<void> {
+export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<string> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -107,9 +107,10 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<void
     const message = i18nObj.__('connect-binding.response.success');
     await postBotChannel(call, message);
     await callBindingByApp(call, Routes.App.CallPathStartNotifications);
+    return message;
 }
 
-export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<void> {
+export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<string> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const botAccessToken: string = call.context.bot_access_token!;
@@ -143,4 +144,5 @@ export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<vo
 
     const message = i18nObj.__('disconnect-binding.response.success');
     await postBotChannel(call, message);
+    return message;
 }
