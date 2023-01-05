@@ -22,7 +22,7 @@ export async function stopNotificationsCall(call: ExtendedAppCallRequest): Promi
     const channelNotification: ChannelNotification = await kvStoreClient.kvGet(`drive_notifications-${actingUserId}`);
 
     if (!Object.keys(channelNotification).length) {
-        throwException(ExceptionType.MARKDOWN, i18nObj.__('notifications-binding.already-disabled'));
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('notifications-binding.already-disabled'), mattermostUrl);
     }
 
     const drive = await getGoogleDriveClient(call);
@@ -32,7 +32,7 @@ export async function stopNotificationsCall(call: ExtendedAppCallRequest): Promi
             resourceId: channelNotification.resourceId,
         },
     };
-    await tryPromise<Schema$Channel>(drive.channels.stop(stopParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    await tryPromise<Schema$Channel>(drive.channels.stop(stopParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), mattermostUrl);
     await kvStoreClient.kvSet(`drive_notifications-${actingUserId}`, {});
 
     return i18nObj.__('notifications-binding.response.disabled');
@@ -51,7 +51,7 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
 
     const drive = await getGoogleDriveClient(call);
 
-    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), mattermostUrl);
 
     const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
     urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, actingUserId);
@@ -72,7 +72,7 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
         },
     };
 
-    const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), mattermostUrl);
 
     const options: KVStoreOptions = {
         mattermostUrl,

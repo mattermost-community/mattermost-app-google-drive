@@ -6,7 +6,7 @@ import { getGoogleDriveActivityClient, getGoogleDriveClient } from '../clients/g
 import { ExceptionType } from '../constant';
 import GeneralConstants from '../constant/general';
 import { GoogleResourceState } from '../constant/google-kinds';
-import { Change, ChangeList, GA$DriveActivity, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest } from '../types';
+import { AppActingUser, Change, ChangeList, GA$DriveActivity, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest } from '../types';
 import { tryPromise } from '../utils/utils';
 
 import { manageCommentOnFile } from './webhook-notifications/comments';
@@ -17,22 +17,23 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
         return;
     }
 
+    const mattermostUrl: string = call.context.mattermost_site_url;
     const paramsd = new URLSearchParams(call.values.rawQuery);
     const userId = paramsd.get('userId');
 
     const acting_user = {
         id: userId,
-    };
+    } as AppActingUser;
     call.context = { ...call.context, acting_user };
 
     const drive: drive_v3.Drive = await getGoogleDriveClient(call);
-    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ');
+    const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, 'Google failed: ', mattermostUrl);
     const params = {
         pageToken: (Number(pageToken?.startPageToken) - GeneralConstants.REMOVE_ONE).toString(),
         fields: '*',
     };
 
-    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ');
+    const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ', mattermostUrl);
     const lastChange = head(list.changes) as Change;
     const file = lastChange?.file as Schema$File;
     if (Boolean(file.lastModifyingUser?.me)) {
@@ -55,7 +56,7 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
         itemName: `items/${file.id}`,
     };
 
-    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ');
+    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ', mattermostUrl);
     const activity = head(activityRes?.activities) as GA$DriveActivity;
     if (Boolean(activity.primaryActionDetail?.permissionChange)) {
         await permissionsChanged(call, file, activity);

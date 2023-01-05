@@ -44,12 +44,12 @@ export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, mes
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`, mattermostSiteUrl);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, mattermostSiteUrl, error);
         });
 }
 
-export function throwException(exceptionType: ExceptionType, message: string, mattermostSiteUrl: string, status: number = 200) {
-    throw new Exception(exceptionType, `${message}`, mattermostSiteUrl, status);
+export function throwException(exceptionType: ExceptionType, message: string, mattermostSiteUrl: string, status = 200) {
+    throw new Exception(exceptionType, `${message}`, mattermostSiteUrl, {}, status);
 }
 
 export function showMessageToMattermost(exception: Exception | Error): AppCallResponse {
