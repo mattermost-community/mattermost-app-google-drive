@@ -3,6 +3,7 @@
 		"google-error": "Google failed: ",
 		"validation-user": {
 			"system-admin": "Error: This command is only available for Mattermost System Admin",
+			"oauth-user": "Error: You haven't linked your Google Drive account. You need it to perform this action",
 			"not-provided": "Not acting user provided"
 		}
 	},
