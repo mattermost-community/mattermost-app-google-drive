@@ -17,8 +17,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com:mattermost/mattermost-app-google-drive.git"
   },
-  "author": "Lizeth García Segura <lizeth.garcia@ancient.mx>",
-  "license": "ISC",
   "homepage": "https://github.com/mattermost/mattermost-app-google-drive#readme",
   "dependencies": {
     "@mattermost/types": "^7.4.0",
