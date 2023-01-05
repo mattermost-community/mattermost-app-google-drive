@@ -71,7 +71,6 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
     const botAccessToken: string = call.context.bot_access_token as string;
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
-    const actingUserID = call.context.acting_user.id as string;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
 
@@ -128,7 +127,6 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const post: PostCreate = {
         message: `${i18nObj.__('upload-google.confirmation-submit.file')}${attachments.length > 1 ? 's' : ''} ${i18nObj.__('upload-google.confirmation-submit.file-continue')}!`,
-        user_id: <string>actingUserID,
         channel_id: channelId,
         props: {
             attachments,

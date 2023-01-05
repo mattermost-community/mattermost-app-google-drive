@@ -17,7 +17,6 @@ export const postBotChannel = async (call: ExtendedAppCallRequest, message: stri
 
     const post: PostCreate = {
         message,
-        user_id: <string>actingUserId,
         channel_id: channel.id,
         props,
     };

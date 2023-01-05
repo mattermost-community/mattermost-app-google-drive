@@ -69,7 +69,6 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
 
     const post: PostCreate = {
         message: `${i18nObj.__('comments.manage-reply-comment.message')}: \n"${values.google_response_comment}"`,
-        user_id: <string>actingUserId,
         channel_id: <string>channelId,
         root_id: postId,
     };

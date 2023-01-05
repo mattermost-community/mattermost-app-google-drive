@@ -147,7 +147,6 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -292,7 +291,6 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -437,7 +435,6 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
