@@ -2,26 +2,26 @@ import { Request, Response } from 'express';
 
 import { Commands } from '../constant';
 import manifest from '../manifest.json';
-import { AppActingUser, AppCallResponse, AppContext, ExpandedBotActingUser, Oauth2App } from '../types';
+import { AppActingUser, ExpandAppCallResponse, ExtendedAppContext, Oauth2App } from '../types';
 import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
 import { addBulletSlashCommand, h5, joinLines } from '../utils/markdown';
 import { configureI18n } from '../utils/translations';
 import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from '../utils/utils';
 
 export const getHelp = async (request: Request, response: Response) => {
-    const context = request.body.context as ExpandedBotActingUser;
+    const context = request.body.context as ExtendedAppContext;
 
     const helpText: string = await getCommands(context);
-    const callResponse: AppCallResponse = newOKCallResponseWithMarkdown(helpText);
+    const callResponse: ExpandAppCallResponse = newOKCallResponseWithMarkdown(helpText);
     response.json(callResponse);
 };
 
-function getHeader(context: AppContext): string {
+function getHeader(context: ExtendedAppContext): string {
     const i18nObj = configureI18n(context);
     return h5(i18nObj.__('help-binding.title'));
 }
 
-async function getCommands(context: AppContext): Promise<string> {
+async function getCommands(context: ExtendedAppContext): Promise<string> {
     const i18nObj = configureI18n(context);
     const homepageUrl: string = manifest.homepage_url;
     const actingUser: AppActingUser = context.acting_user as AppActingUser;

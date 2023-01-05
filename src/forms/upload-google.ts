@@ -1,15 +1,16 @@
+import { AppSelectOption, AppField } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { AppCallRequest, AppField, AppForm, AppSelectOption, MattermostOptions, PostCreate, Schema$File, Schema$User } from '../types';
+import { ExtendedAppCallRequest, ExpandAppForm, MattermostOptions, PostCreate, Schema$File, Schema$User, ExpandAppField } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise } from '../utils/utils';
 
-export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<AppForm> {
+export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
@@ -36,11 +37,10 @@ export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<
         };
     });
 
-    const fields: AppField[] = [
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.STATIC_SELECT,
             name: FilesToUpload.FILES,
-            value: options,
             modal_label: i18nObj.__('upload-google.confirmation-call.label-modal'),
             options,
             multiselect: true,
@@ -61,10 +61,10 @@ export async function uploadFileConfirmationCall(call: AppCallRequest): Promise<
                 post: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function uploadFileConfirmationSubmit(call: AppCallRequest): Promise<void> {
+export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url as string;

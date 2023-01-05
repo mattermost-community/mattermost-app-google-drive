@@ -12,7 +12,7 @@ import {
     createGoogleSlidesSubmit,
 } from '../forms/create-google-files';
 import {
-    AppCallResponse,
+    ExpandAppCallResponse,
 } from '../types';
 import {
     CallResponseHandler,
@@ -24,7 +24,7 @@ import {
 } from '../utils/utils';
 
 export const openFormGoogleDocs: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleDocForm(req.body);
@@ -36,7 +36,7 @@ export const openFormGoogleDocs: CallResponseHandler = async (req: Request, res:
 };
 
 export const executeFormGoogleDocs: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         await createGoogleDocSubmit(req.body);
@@ -48,7 +48,7 @@ export const executeFormGoogleDocs: CallResponseHandler = async (req: Request, r
 };
 
 export const openFormGoogleSlides: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleSlidesForm(req.body);
@@ -60,7 +60,7 @@ export const openFormGoogleSlides: CallResponseHandler = async (req: Request, re
 };
 
 export const executeFormGoogleSlides: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         await createGoogleSlidesSubmit(req.body);
@@ -72,7 +72,7 @@ export const executeFormGoogleSlides: CallResponseHandler = async (req: Request,
 };
 
 export const openFormGoogleSheets: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleSheetsForm(req.body);
@@ -84,7 +84,7 @@ export const openFormGoogleSheets: CallResponseHandler = async (req: Request, re
 };
 
 export const executeFormGoogleSheets: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         await createGoogleSheetsSubmit(req.body);

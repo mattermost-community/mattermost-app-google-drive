@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { AppActingUser, AppCallRequest } from '../types';
+import { AppActingUser, ExtendedAppCallRequest } from '../types';
 import { newErrorCallResponseWithMessage } from '../utils/call-responses';
 import { configureI18n } from '../utils/translations';
 import { isUserSystemAdmin } from '../utils/utils';
 
 export const requireSystemAdmin = (req: Request, res: Response, next: () => void) => {
-   const call: AppCallRequest = req.body as AppCallRequest;
+   const call: ExtendedAppCallRequest = req.body as ExtendedAppCallRequest;
    const i18nObj = configureI18n(call.context);
    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
 

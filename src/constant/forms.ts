@@ -1,4 +1,5 @@
-import { AppContext, AppSelectOption } from '../types';
+import { AppSelectOption } from '@mattermost/types/lib/apps';
+import { ExtendedAppContext } from '../types';
 import { configureI18n } from '../utils/translations';
 
 import { GooglePermissionRole } from './google-files';
@@ -28,7 +29,7 @@ export const FilesToUpload = Object.freeze({
     FILES: 'upload_file_google_drive',
 });
 
-export const modeConfiguration = (context: AppContext): AppSelectOption[] => {
+export const modeConfiguration = (context: ExtendedAppContext): AppSelectOption[] => {
     const i18nObj = configureI18n(context);
 
     return [
@@ -57,7 +58,7 @@ export const optFileShare = {
     sCEdit: 'channel_edit',
 };
 
-export const doNotShare = (context: AppContext): AppSelectOption => {
+export const doNotShare = (context: ExtendedAppContext): AppSelectOption => {
     const i18nObj = configureI18n(context);
     return {
         label: i18nObj.__('create-binding.form.fields.fileAccess.options.notShare'),
@@ -65,7 +66,7 @@ export const doNotShare = (context: AppContext): AppSelectOption => {
     };
 };
 
-export const fileShareAnyone = (context: AppContext): AppSelectOption[] => {
+export const fileShareAnyone = (context: ExtendedAppContext): AppSelectOption[] => {
     const i18nObj = configureI18n(context);
     return [
         {
@@ -83,7 +84,7 @@ export const fileShareAnyone = (context: AppContext): AppSelectOption[] => {
     ];
 };
 
-export const fileShareChannel = (context: AppContext): AppSelectOption[] => {
+export const fileShareChannel = (context: ExtendedAppContext): AppSelectOption[] => {
     const i18nObj = configureI18n(context);
     return [
         {
@@ -101,7 +102,7 @@ export const fileShareChannel = (context: AppContext): AppSelectOption[] => {
     ];
 };
 
-export const shareFileOnChannel = (context: AppContext): AppSelectOption[] => {
+export const shareFileOnChannel = (context: ExtendedAppContext): AppSelectOption[] => {
     return [
         doNotShare(context),
         ...fileShareChannel(context),
@@ -109,7 +110,7 @@ export const shareFileOnChannel = (context: AppContext): AppSelectOption[] => {
     ];
 };
 
-export const notShareFileOnChannel = (context: AppContext): AppSelectOption[] => {
+export const notShareFileOnChannel = (context: ExtendedAppContext): AppSelectOption[] => {
     return [
         doNotShare(context),
         ...fileShareAnyone(context),

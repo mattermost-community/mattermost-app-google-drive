@@ -1,4 +1,4 @@
-import { AppCallRequest } from './apps';
+import { ExtendedAppCallRequest } from './apps';
 import { Schema$File } from './google';
 
-export type ShareFileFunction = (call: AppCallRequest, file: Schema$File, channelId: string) => void;
+export type ShareFileFunction = (call: ExtendedAppCallRequest, file: Schema$File, channelId: string) => void;

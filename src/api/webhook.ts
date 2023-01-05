@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 
 import { manageWebhookCall } from '../forms/manage-webhook';
-import { AppCallResponse } from '../types';
+import { ExpandAppCallResponse } from '../types';
 import { CallResponseHandler, newOKCallResponse } from '../utils/call-responses';
 import { showMessageToMattermost } from '../utils/utils';
 
 export const filterWebhookNotification: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         await manageWebhookCall(req.body);

@@ -1,7 +1,7 @@
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { ExceptionType, GooglePermissionRoleByOption, optFileShare } from '../constant';
-import { AppCallRequest, ChannelMember, MattermostOptions, Schema$File, User } from '../types';
+import { ExtendedAppCallRequest, ChannelMember, MattermostOptions, Schema$File, User } from '../types';
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';
 import { configureI18n } from '../utils/translations';
@@ -17,7 +17,7 @@ export const SHARE_FILE_ACTIONS: { [key: string]: ShareFileFunction } = {
     [optFileShare.sCEdit]: shareWithChannel,
 };
 
-async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
+async function shareWithAnyone(call: ExtendedAppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
     const values = call.values as CreateFileForm;
@@ -34,7 +34,7 @@ async function shareWithAnyone(call: AppCallRequest, file: Schema$File, channelI
     await tryPromise<any>(drive.permissions.create(body), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
 }
 
-async function shareWithChannel(call: AppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
+async function shareWithChannel(call: ExtendedAppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url!;

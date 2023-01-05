@@ -6,10 +6,8 @@ import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGo
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
-    AppCallRequest,
-    AppContext,
-    AppField,
-    AppForm,
+    ExtendedAppCallRequest,
+    ExtendedAppContext,
     Channel,
     MattermostOptions,
     Params$Resource$Files$Get,
@@ -19,6 +17,8 @@ import {
     Schema$Presentation,
     Schema$Spreadsheet,
     Schema$User,
+    ExpandAppField,
+    ExpandAppForm,
 } from '../types';
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';
@@ -27,17 +27,17 @@ import { tryPromise } from '../utils/utils';
 
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
-export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -103,10 +103,10 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -172,10 +172,10 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
     }
 }
 
-export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
 
     /*eslint no-negated-condition: "error"*/
@@ -183,7 +183,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -249,10 +249,10 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -316,17 +316,17 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
     }
 }
 
-export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -392,10 +392,10 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;

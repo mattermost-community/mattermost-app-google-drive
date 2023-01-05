@@ -1,11 +1,12 @@
+import { AppSelectOption, AppField, AppCallValues } from '@mattermost/types/lib/apps';
 import { KVStoreClient } from '../clients/kvstore';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import { AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { ExtendedAppCallRequest, ExpandAppForm, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
 import { configureI18n } from '../utils/translations';
 
-export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
+export async function googleClientConfigForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
@@ -21,7 +22,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
 
     const defValue: AppSelectOption = modeConfiguration(call.context).find((mode) => mode.value === modeConfig)!;
 
-    const form: AppForm = {
+    const form: ExpandAppForm = {
         title: i18nObj.__('configure-binding.form.title'),
         header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
@@ -103,14 +104,14 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    if (extraField) {
+    if (extraField && form.fields) {
         form.fields.push(extraField);
     }
 
     return form;
 }
 
-export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
+export async function googleClientConfigFormSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url!;

@@ -1,9 +1,9 @@
 import { AppExpandLevels } from '../constant/apps';
 import { MattermostClient } from '../clients';
-import { AppCallRequest, Channel, MattermostOptions } from '../types';
+import { ExtendedAppCallRequest, Channel, MattermostOptions } from '../types';
 import manifest from '../manifest.json';
 
-export const callBindingByApp = async (call: AppCallRequest, path: string) => {
+export const callBindingByApp = async (call: ExtendedAppCallRequest, path: string) => {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const botUserId: string = call.context.bot_user_id!;

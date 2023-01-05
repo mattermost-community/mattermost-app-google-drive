@@ -1,12 +1,12 @@
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
-import { AppCallRequest, AppForm, MattermostOptions, Params$Resource$Replies$Create, PostCreate } from '../types';
+import { ExtendedAppCallRequest, MattermostOptions, Params$Resource$Replies$Create, PostCreate, ExpandAppForm } from '../types';
 import { CommentState, ReplyCommentFormType } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
 
-export async function openFormReplyComment(call: AppCallRequest): Promise<AppForm> {
+export async function openFormReplyComment(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
     const state = call.state;
@@ -37,7 +37,7 @@ export async function openFormReplyComment(call: AppCallRequest): Promise<AppFor
     };
 }
 
-export async function manageReplyCommentSubmit(call: AppCallRequest): Promise<any> {
+export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Promise<any> {
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);

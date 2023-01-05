@@ -4,11 +4,11 @@ import { KVStoreClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { ExceptionType, KVStoreGoogleData, Routes, StoreKeys } from '../constant';
 import { GoogleKindsAPI } from '../constant/google-kinds';
-import { AppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
+import { ExtendedAppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise } from '../utils/utils';
 
-export async function stopNotificationsCall(call: AppCallRequest): Promise<string> {
+export async function stopNotificationsCall(call: ExtendedAppCallRequest): Promise<string> {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
     const actingUserId: string = call.context.acting_user.id!;
@@ -38,7 +38,7 @@ export async function stopNotificationsCall(call: AppCallRequest): Promise<strin
     return i18nObj.__('notifications-binding.response.disabled');
 }
 
-export async function startNotificationsCall(call: AppCallRequest): Promise<string> {
+export async function startNotificationsCall(call: ExtendedAppCallRequest): Promise<string> {
     const mattermostUrl: string = process.env.LOCAL === 'TRUE' ?
         process.env.MATTERMOST_URL as string :
         call.context.mattermost_site_url!;

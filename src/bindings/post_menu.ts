@@ -3,10 +3,9 @@ import {
     CommandTrigger,
 } from '../constant';
 import {
-    AppBinding,
-    AppCallRequest,
-    AppContext,
-    AppsState,
+    ExtendedAppCallRequest,
+    ExtendedAppContext,
+    ExtendedAppBinding,
     Oauth2App,
 } from '../types';
 import {
@@ -21,7 +20,7 @@ import {
     saveFileOnDriveBinding,
 } from './bindings';
 
-const newPostMenuBindings = (bindings: AppBinding[]): AppsState => {
+const newPostMenuBindings = (bindings: ExtendedAppBinding[]): ExtendedAppBinding => {
     const m = manifest;
     return {
         app_id: m.app_id,
@@ -31,10 +30,10 @@ const newPostMenuBindings = (bindings: AppBinding[]): AppsState => {
     };
 };
 
-export const getPostMenuBindings = async (call: AppCallRequest): Promise<AppsState> => {
+export const getPostMenuBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
-    const bindings: AppBinding[] = [];
-    const context = call.context as AppContext;
+    const bindings: ExtendedAppBinding[] = [];
+    const context = call.context as ExtendedAppContext;
 
     if (await existsOauth2AppConfig(oauth2App)) {
         if (isConnected(oauth2App)) {
