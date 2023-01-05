@@ -1,15 +1,16 @@
-import { 
-    AppBinding, 
-    AppCallRequest, 
-    AppCallResponse, 
-    AppContext, 
-    AppExpand, 
-    AppExpandLevel, 
-    AppField, 
-    AppForm, 
-    AppManifest, 
-    AppSelectOption
-} from '@mattermost/types/lib/apps'; 
+import {
+    AppBinding,
+    AppCallRequest,
+    AppCallResponse,
+    AppContext,
+    AppExpand,
+    AppExpandLevel,
+    AppField,
+    AppForm,
+    AppManifest,
+    AppSelectOption,
+} from '@mattermost/types/lib/apps';
+
 import { Oauth2Data } from './kv-store';
 
 export type ExtendedAppManifest = AppManifest & {
@@ -29,7 +30,6 @@ export declare type ExtendedAppCall = {
     expand?: ExtendedAppExpand;
     state?: any;
 };
-
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
@@ -70,7 +70,7 @@ export type AppActingUser = {
 }
 
 export type ExtendedAppContext = AppContext & {
-    locale: string; 
+    locale: string;
     oauth2: Oauth2App;
     acting_user: AppActingUser;
     acting_user_access_token?: string;
