@@ -18,7 +18,7 @@ export const requireSystemAdmin = (req: Request, res: Response, next: () => void
         return;
     }
 
-    if (isUserSystemAdmin(actingUser)) {
+    if (!isUserSystemAdmin(actingUser)) {
         res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.system-admin'), mattermostSiteUrl)));
         return;
     }
