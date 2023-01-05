@@ -37,19 +37,19 @@ export function errorDataMessage(error: Exception | Error | any): string {
     return `${errorMessage}`;
 }
 
-export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, mattermostSiteUrl: string) {
+export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
     return p.
         then((response) => {
             return <T>response.data;
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`, mattermostSiteUrl, error);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
         });
 }
 
-export function throwException(exceptionType: ExceptionType, message: string, mattermostSiteUrl: string, status = 200) {
-    throw new Exception(exceptionType, `${message}`, mattermostSiteUrl, {}, status);
+export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest, status = 200) {
+    throw new Exception(exceptionType, `${message}`, call);
 }
 
 export function showMessageToMattermost(exception: Exception | Error): AppCallResponse {

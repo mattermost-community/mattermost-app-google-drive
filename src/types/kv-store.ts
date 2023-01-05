@@ -1,4 +1,5 @@
 import { AppSelectOption } from '@mattermost/types/lib/apps';
+
 import { ConfigureClientForm } from '../constant';
 
 import { Oauth2CurrentUser } from './apps';

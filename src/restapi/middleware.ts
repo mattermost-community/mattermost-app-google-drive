@@ -9,17 +9,16 @@ import { isConnected, isUserSystemAdmin, showMessageToMattermost } from '../util
 
 export const requireSystemAdmin = (req: Request, res: Response, next: () => void) => {
     const call: ExtendedAppCallRequest = req.body as ExtendedAppCallRequest;
-    const mattermostSiteUrl = call.context.mattermost_site_url as string;
     const i18nObj = configureI18n(call.context);
     const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
 
     if (!actingUser) {
-        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.not-provided'), mattermostSiteUrl)));
+        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.not-provided'), call)));
         return;
     }
 
     if (!isUserSystemAdmin(actingUser)) {
-        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.system-admin'), mattermostSiteUrl)));
+        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.system-admin'), call)));
         return;
     }
 
@@ -28,12 +27,11 @@ export const requireSystemAdmin = (req: Request, res: Response, next: () => void
 
 export const requireUserOAuthConnected = (req: Request, res: Response, next: () => void) => {
     const call: ExtendedAppCallRequest = req.body as ExtendedAppCallRequest;
-    const mattermostSiteUrl = call.context.mattermost_site_url as string;
     const i18nObj = configureI18n(call.context);
     const oauth2: Oauth2App = call.context.oauth2 as Oauth2App;
 
     if (!isConnected(oauth2)) {
-        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), mattermostSiteUrl)));
+        res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), call)));
         return;
     }
 

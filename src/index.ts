@@ -25,7 +25,7 @@ app.post('/ping', (req, res) => {
 if (config.APP.HOST) {
     const port: number = config.APP.PORT;
     app.listen(port);
-    logger.info({ message: 'Listening on ' + port, siteUrl: '', status: 78 });
+    logger.info({ message: 'Listening on ' + port, siteUrl: '', requestPath: 'none', status: 200 });
 } else {
     // App released via AWS Lambda
     module.exports.handler = serverless(app);

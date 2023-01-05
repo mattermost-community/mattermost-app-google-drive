@@ -74,7 +74,7 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
     const aboutParams: StandardParameters = {
         fields: `${GoogleConstants.USER}`,
     };
-    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), mattermostUrl);
+    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const storedToken: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
@@ -116,9 +116,10 @@ export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<st
     const actingUserId: string = call.context.acting_user.id!;
     const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
+    const requestPath = call.context.app_path;
 
     if (!isConnected(oauth2)) {
-        throwException(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'), mattermostUrl);
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'), call);
     }
 
     const kvOptionsOauth: KVStoreOptions = {

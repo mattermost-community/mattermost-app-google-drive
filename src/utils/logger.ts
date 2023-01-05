@@ -13,7 +13,7 @@ const logLevels = {
 const customFormat = format.combine(
     format.timestamp(),
     format.printf((info) => {
-        return `{ "site_url": "${info.siteUrl}", "${info.level}": "${info.message}", "status: "${info.status}", "timestamp": "${info.timestamp}" }`;
+        return `{ "site_url": "${info.siteUrl}", "${info.level}": "${info.message}", "request_path": "${info.requestPath}", "status: "${info.status}", "timestamp": "${info.timestamp}" }`;
     })
 );
 

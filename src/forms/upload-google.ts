@@ -13,6 +13,7 @@ import { throwException, tryPromise } from '../utils/utils';
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
+    const requestPath = call.context.app_path;
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const postId: string = call.context.post?.id as string;
@@ -26,7 +27,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     const Post = await mmClient.getPost(postId);
     const fileIds = Post.file_ids;
     if (!fileIds || !fileIds.length) {
-        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), mattermostUrl);
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
     }
     const fileMetadata = Post.metadata.files;
 
@@ -108,7 +109,7 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             requestBody,
             media,
             fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-        }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), mattermostUrl);
+        }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
         responseArray.push(fileUploaded);
     }
