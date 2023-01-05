@@ -17,6 +17,5 @@ export class Exception extends Error {
         } else {
             logger.error({ message, siteUrl, status });
         }
-    
     }
 }

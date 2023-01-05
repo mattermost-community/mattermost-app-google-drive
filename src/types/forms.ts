@@ -1,6 +1,6 @@
+import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { CreateGoogleDocument, FilesToUpload, ReplyCommentForm } from '../constant';
 
-import { AppSelectOption } from './apps';
 
 export interface CreateFileForm {
     [CreateGoogleDocument.TITLE]: string | null;
