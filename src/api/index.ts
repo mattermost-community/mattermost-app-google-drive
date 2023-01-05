@@ -2,6 +2,8 @@ import express, { Router } from 'express';
 
 import { Routes } from '../constant';
 
+import { requireSystemAdmin } from '../restapi/middleware';
+
 import * as cManifest from './manifest';
 import * as cBindings from './bindings';
 import * as cInstall from './install';
@@ -13,7 +15,6 @@ import * as cWebhook from './webhook';
 import * as cReplyComments from './reply-comments';
 import * as cGoogleFiles from './create-files';
 import * as cUploadFile from './upload-file';
-import { requireSystemAdmin } from '../restapi/middleware';
 
 const router: Router = express.Router();
 

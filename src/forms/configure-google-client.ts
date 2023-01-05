@@ -1,9 +1,10 @@
-import { AppSelectOption, AppField, AppCallValues } from '@mattermost/types/lib/apps';
+import { AppCallValues, AppField, AppSelectOption } from '@mattermost/types/lib/apps';
+
 import { KVStoreClient } from '../clients/kvstore';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import { ExtendedAppCallRequest, ExpandAppForm, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { ExpandAppForm, ExtendedAppCallRequest, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
 import { configureI18n } from '../utils/translations';
 
 export async function googleClientConfigForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {

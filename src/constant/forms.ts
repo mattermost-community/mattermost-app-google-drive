@@ -1,4 +1,5 @@
 import { AppSelectOption } from '@mattermost/types/lib/apps';
+
 import { ExtendedAppContext } from '../types';
 import { configureI18n } from '../utils/translations';
 
@@ -133,5 +134,5 @@ export const GooglePermissionRoleByOption: { [x: string]: GooglePermissionRole }
 export const KVStoreGoogleData = Object.freeze({
     GOOGLE_DATA: 'google_data',
     USER_ID: 'userId',
-    SECRET: 'secret'
+    SECRET: 'secret',
 });

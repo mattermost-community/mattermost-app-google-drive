@@ -57,7 +57,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
     const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    
+
     if (Boolean(mmUser)) {
         userDisplay = `@${mmUser?.username}`;
     }

@@ -6,9 +6,11 @@ import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGo
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
+    Channel,
+    ExpandAppField,
+    ExpandAppForm,
     ExtendedAppCallRequest,
     ExtendedAppContext,
-    Channel,
     MattermostOptions,
     Params$Resource$Files$Get,
     PostCreate,
@@ -17,8 +19,6 @@ import {
     Schema$Presentation,
     Schema$Spreadsheet,
     Schema$User,
-    ExpandAppField,
-    ExpandAppForm,
 } from '../types';
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';

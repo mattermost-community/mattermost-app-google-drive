@@ -1,6 +1,6 @@
 import { AppBindingLocations, CommandTrigger } from '../constant';
 import manifest from '../manifest.json';
-import { ExtendedAppCallRequest, ExtendedAppContext, ExtendedAppBinding } from '../types';
+import { ExtendedAppBinding, ExtendedAppCallRequest, ExtendedAppContext } from '../types';
 
 import { getHelpBinding } from './bindings';
 

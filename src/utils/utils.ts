@@ -1,3 +1,5 @@
+import { AppCallResponse } from '@mattermost/types/lib/apps';
+
 import GeneralConstants from '../constant/general';
 import { AppActingUser, ExtendedAppCallRequest, KVGoogleData, KVStoreOptions, Oauth2App } from '../types';
 import { ExceptionType, KVStoreGoogleData } from '../constant';
@@ -8,7 +10,6 @@ import { KVStoreClient } from '../clients/kvstore';
 
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
-import { AppCallResponse } from '@mattermost/types/lib/apps';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);

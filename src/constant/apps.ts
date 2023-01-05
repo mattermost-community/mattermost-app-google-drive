@@ -1,5 +1,4 @@
-import { AppCallResponseType, AppExpandLevel, AppFieldType } from "@mattermost/types/lib/apps";
-
+import { AppCallResponseType, AppExpandLevel, AppFieldType } from '@mattermost/types/lib/apps';
 
 export const AppBindingLocations = {
     POST_MENU_ITEM: '/post_menu',

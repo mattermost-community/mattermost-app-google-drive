@@ -1,4 +1,4 @@
-import { ExtendedAppCallRequest, ExtendedAppBinding } from '../types';
+import { ExtendedAppBinding, ExtendedAppCallRequest } from '../types';
 
 import { getHeaderButtonBindings } from './header_commands';
 import { getPostMenuBindings } from './post_menu';

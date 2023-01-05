@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import manifest from '../manifest.json';
-import { ExtendedAppCallRequest, ExpandAppCallResponse, ExtendedAppContext } from '../types';
+import { ExpandAppCallResponse, ExtendedAppCallRequest, ExtendedAppContext } from '../types';
 import { newOKCallResponseWithMarkdown } from '../utils/call-responses';
 import { configureI18n } from '../utils/translations';
 

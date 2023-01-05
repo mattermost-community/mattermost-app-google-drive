@@ -1,7 +1,7 @@
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
-import { ExtendedAppCallRequest, MattermostOptions, Params$Resource$Replies$Create, PostCreate, ExpandAppForm } from '../types';
+import { ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Params$Resource$Replies$Create, PostCreate } from '../types';
 import { CommentState, ReplyCommentFormType } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';

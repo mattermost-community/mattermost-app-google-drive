@@ -1,7 +1,7 @@
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { ExceptionType, GooglePermissionRoleByOption, optFileShare } from '../constant';
-import { ExtendedAppCallRequest, ChannelMember, MattermostOptions, Schema$File, User } from '../types';
+import { ChannelMember, ExtendedAppCallRequest, MattermostOptions, Schema$File, User } from '../types';
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';
 import { configureI18n } from '../utils/translations';

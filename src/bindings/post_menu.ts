@@ -3,9 +3,9 @@ import {
     CommandTrigger,
 } from '../constant';
 import {
+    ExtendedAppBinding,
     ExtendedAppCallRequest,
     ExtendedAppContext,
-    ExtendedAppBinding,
     Oauth2App,
 } from '../types';
 import {

@@ -1,11 +1,11 @@
-import { AppSelectOption, AppField } from '@mattermost/types/lib/apps';
+import { AppField, AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExtendedAppCallRequest, ExpandAppForm, MattermostOptions, PostCreate, Schema$File, Schema$User, ExpandAppField } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise } from '../utils/utils';

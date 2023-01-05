@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { getAppBindings } from '../bindings';
-import { ExtendedAppBinding, ExpandAppCallResponse } from '../types';
+import { ExpandAppCallResponse, ExtendedAppBinding } from '../types';
 import { newOKCallResponseWithData } from '../utils/call-responses';
 
 export const getBindings = async (request: Request, response: Response) => {

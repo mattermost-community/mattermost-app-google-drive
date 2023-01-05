@@ -1,6 +1,6 @@
 import { AppExpandLevels } from '../constant/apps';
 import { MattermostClient } from '../clients';
-import { ExtendedAppCallRequest, Channel, MattermostOptions } from '../types';
+import { Channel, ExtendedAppCallRequest, MattermostOptions } from '../types';
 import manifest from '../manifest.json';
 
 export const callBindingByApp = async (call: ExtendedAppCallRequest, path: string) => {

@@ -4,7 +4,7 @@ import { KVStoreClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { ExceptionType, KVStoreGoogleData, Routes, StoreKeys } from '../constant';
 import { GoogleKindsAPI } from '../constant/google-kinds';
-import { ExtendedAppCallRequest, ChannelNotification, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
+import { ChannelNotification, ExtendedAppCallRequest, KVStoreOptions, Schema$Channel, StartPageToken } from '../types';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise } from '../utils/utils';
 
@@ -47,7 +47,7 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
     const appPath: string = call.context.app_path!;
     const actingUserId: string = call.context.acting_user.id!;
     const i18nObj = configureI18n(call.context);
-    const webhookSecret: string = call.context.app?.webhook_secret!;
+    const webhookSecret: string = call.context.app?.webhook_secret as string;
 
     const drive = await getGoogleDriveClient(call);
 
