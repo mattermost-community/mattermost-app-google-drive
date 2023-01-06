@@ -9,7 +9,6 @@ export class Exception extends Error {
         public readonly message: string,
         public readonly call: ExtendedAppCallRequest,
         public readonly error: object = {},
-        public readonly status: number = 200,
     ) {
         super(message);
 
@@ -17,6 +16,6 @@ export class Exception extends Error {
         const requestPath: string = call.path;
         const messageError = Object.keys(error).length ? JSON.stringify(error) : message;
 
-        logger.error({ message: messageError, siteUrl, status, requestPath });
+        logger.error({ message: messageError, siteUrl, requestPath });
     }
 }

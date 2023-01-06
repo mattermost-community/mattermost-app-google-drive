@@ -44,11 +44,11 @@ export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, mes
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call, error);
         });
 }
 
-export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest, status = 200) {
+export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
     throw new Exception(exceptionType, `${message}`, call);
 }
 
