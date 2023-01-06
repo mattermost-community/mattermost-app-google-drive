@@ -35,7 +35,8 @@
     "query-string": "^7.1.1",
     "request": "^2.88.2",
     "serverless-http": "^3.0.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.46.0",

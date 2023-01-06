@@ -10,6 +10,7 @@ import { KVStoreClient } from '../clients/kvstore';
 
 import { Exception } from './exception';
 import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
+import { logger } from './logger';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);
@@ -36,19 +37,19 @@ export function errorDataMessage(error: Exception | Error | any): string {
     return `${errorMessage}`;
 }
 
-export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string) {
+export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
     return p.
         then((response) => {
             return <T>response.data;
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
         });
 }
 
-export function throwException(exceptionType: ExceptionType, message: string) {
-    throw new Exception(exceptionType, `${message}`);
+export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest, status = 200) {
+    throw new Exception(exceptionType, `${message}`, call);
 }
 
 export function showMessageToMattermost(exception: Exception | Error): AppCallResponse {

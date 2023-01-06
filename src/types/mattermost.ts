@@ -1,3 +1,4 @@
+import { ExtendedAppContext } from './apps';
 import { ChannelWatchHeaders } from './google';
 
 export type UserNotifyProps = {
@@ -235,7 +236,7 @@ export type GoogleWebhook = {
 export type WebhookRequest = {
     path: '/webhook',
     values: GoogleWebhook,
-    context: any
+    context: ExtendedAppContext;
 }
 
 export type ObjectId = {

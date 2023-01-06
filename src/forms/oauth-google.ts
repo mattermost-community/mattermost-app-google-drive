@@ -7,12 +7,11 @@ import { ExceptionType, GoogleConstants, KVStoreGoogleData, Routes } from '../co
 import GeneralConstants from '../constant/general';
 import { ExtendedAppCallRequest, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters } from '../types';
 import { callBindingByApp } from '../utils/call-binding';
-import { Exception } from '../utils/exception';
 import { hyperlink } from '../utils/markdown';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
 import { postBotChannel } from '../utils/post-in-channel';
 import { configureI18n } from '../utils/translations';
-import { isConnected, tryPromise } from '../utils/utils';
+import { isConnected, throwException, tryPromise } from '../utils/utils';
 
 const { google } = require('googleapis');
 
@@ -75,7 +74,7 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
     const aboutParams: StandardParameters = {
         fields: `${GoogleConstants.USER}`,
     };
-    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const storedToken: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
@@ -117,9 +116,10 @@ export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<st
     const actingUserId: string = call.context.acting_user.id!;
     const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
+    const requestPath = call.context.app_path;
 
     if (!isConnected(oauth2)) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'));
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'), call);
     }
 
     const kvOptionsOauth: KVStoreOptions = {
