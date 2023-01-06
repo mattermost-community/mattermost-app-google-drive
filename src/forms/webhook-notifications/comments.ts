@@ -37,7 +37,6 @@ async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$F
 
 async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;
@@ -93,7 +92,6 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
 
 async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;
@@ -144,7 +142,6 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
 async function funCommentResolved(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;
@@ -180,7 +177,6 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
 
 async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;

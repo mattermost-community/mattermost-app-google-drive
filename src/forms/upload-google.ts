@@ -13,7 +13,6 @@ import { throwException, tryPromise } from '../utils/utils';
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const requestPath = call.context.app_path;
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const postId: string = call.context.post?.id as string;

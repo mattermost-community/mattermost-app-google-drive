@@ -17,7 +17,6 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
         return;
     }
 
-    const mattermostUrl: string = call.context.mattermost_site_url;
     const paramsd = new URLSearchParams(call.values.rawQuery);
     const userId = paramsd.get('userId');
 

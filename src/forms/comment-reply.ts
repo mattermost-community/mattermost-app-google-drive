@@ -39,7 +39,6 @@ export async function openFormReplyComment(call: ExtendedAppCallRequest): Promis
 
 export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const drive = await getGoogleDriveClient(call);
     const comment: CommentState = call.state as CommentState;
@@ -58,8 +57,8 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
 
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
-    const actingUserId: string = call.context.acting_user.id;
     const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,

@@ -19,7 +19,6 @@ export const SHARE_FILE_ACTIONS: { [key: string]: ShareFileFunction } = {
 
 async function shareWithAnyone(call: ExtendedAppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
-    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const values = call.values as CreateFileForm;
     const role = GooglePermissionRoleByOption[values.google_file_access.value];
