@@ -42,7 +42,7 @@ export const getGoogleOAuth = async (call: ExtendedAppCallRequest): Promise<Auth
 
     const oauth2Client = await getOAuthGoogleClient(call);
     oauth2Client.setCredentials(oauth2Token);
-    await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, i18nObj.__('general.google-error'));
+    await tryPromise(oauth2Client.refreshAccessToken(), ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
     return oauth2Client;
 };
 

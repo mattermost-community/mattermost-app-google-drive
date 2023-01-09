@@ -126,7 +126,7 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
             title: values.google_file_title,
         },
     };
-    const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -134,7 +134,7 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;
@@ -273,7 +273,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
             title: values.google_file_title,
         },
     };
-    const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -281,7 +281,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;
@@ -419,7 +419,7 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
             },
         },
     };
-    const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -427,7 +427,7 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;

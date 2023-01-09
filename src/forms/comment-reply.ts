@@ -53,13 +53,12 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
         },
     };
 
-    await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
-    const mattermostUrl: string = call.context.mattermost_site_url;
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
-    const actingUserId: string = call.context.acting_user.id;
     const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
