@@ -49,12 +49,13 @@ To install, as a Mattermost system admin user, run the command ``/apps install l
     - Google Docs API
     - Google Slides API
     - Google Sheets API
+    - Google Drive Activity API
 4. Go back to **APIs & Services** menu.
 5. Create a new OAuth consent screen. Select the option **OAuth consent screen**  on the menu bar. If you would like to limit your application to organization-only users, select **Internal**, otherwise, select **External** option, then, fill the form with the data you would use for your project.
 6. Go back to **APIs & Services** menu.
 7. Create a new Client. Select the option **Credentials**, and on the menu bar, select **Create credentials**, a dropdown menu will be displayed, then, select **OAuth Client ID** option. 
 8. Then, a select input will ask the type of Application type that will be used, select **Web application**, then, fill the form, and on **Authorized redirect URIs** introduce this URI:
-    https://<your_mattermost_instance>/plugins/com.mattermost.apps/apps/Drive/oauth2/remote/complete
+    https://<your_mattermost_instance>/plugins/com.mattermost.apps/apps/google-drive/oauth2/remote/complete
 9. After the Client has been configured, on the main page of **Credentials**, on the submenu **OAuth 2.0 Client IDs** will be displayed the new Client and the info can be accessible whenever you need it.
 
 ## Configuration
