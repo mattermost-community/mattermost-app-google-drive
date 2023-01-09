@@ -44,7 +44,7 @@ export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, mes
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`, call, error);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
         });
 }
 
