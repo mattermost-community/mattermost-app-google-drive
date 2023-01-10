@@ -1,3 +1,4 @@
+import { ClientConfig } from '@mattermost/types/lib/config';
 import { head } from 'lodash';
 import moment from 'moment';
 
@@ -23,19 +24,32 @@ import {
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';
 import { configureI18n } from '../utils/translations';
-import { tryPromise } from '../utils/utils';
+import { tryPromise, tryPromiseMattermost } from '../utils/utils';
 
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
 export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
     const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
+
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
+
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -68,7 +82,7 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),
@@ -176,13 +190,25 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
 export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
     const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
 
-    /*eslint no-negated-condition: "error"*/
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
+
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
+
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -215,7 +241,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),
@@ -321,12 +347,25 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
 export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
     const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
+
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
+
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -359,7 +398,7 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),

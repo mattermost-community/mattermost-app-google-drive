@@ -60,6 +60,7 @@ const MattermostPaths = {
     ApiVersionV1: '/api/v1',
     UsersIdPath: '/users/ids',
     FilePath: `/files/${PathsVariable.Identifier}`,
+    ConfigClientPath: '/config/client',
 };
 
 export const Routes = {

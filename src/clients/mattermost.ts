@@ -1,6 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 
 import {
+    ClientConfig,
+} from '@mattermost/types/lib/config';
+
+import {
     Channel,
     ChannelMember,
     MattermostOptions,
@@ -140,5 +144,12 @@ export class MattermostClient {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
         }).then((response: AxiosResponse<any>) => response.data);
+    }
+
+    public getConfigClient(): Promise<ClientConfig> {
+        const url = new URL(`${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ConfigClientPath}`);
+        url.searchParams.append('format','old');
+        
+        return axios.get(url.href).then((response: AxiosResponse<ClientConfig>) => response.data);
     }
 }
