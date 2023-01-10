@@ -136,20 +136,10 @@ export class MattermostClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public callBinding(call: any): Promise<PostResponse> {
-        const url = `${this.config.mattermostUrl}${Routes.MM.PluginsPath}/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.CallPath}`;
-
-        return axios.post(url, call, {
-            headers: {
-                Authorization: `Bearer ${this.config.accessToken}`,
-            },
-        }).then((response: AxiosResponse<any>) => response.data);
-    }
-
     public getConfigClient(): Promise<ClientConfig> {
         const url = new URL(`${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ConfigClientPath}`);
-        url.searchParams.append('format','old');
-        
+        url.searchParams.append('format', 'old');
+
         return axios.get(url.href).then((response: AxiosResponse<ClientConfig>) => response.data);
     }
 }

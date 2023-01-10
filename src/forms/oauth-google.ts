@@ -6,7 +6,6 @@ import { KVStoreClient } from '../clients/kvstore';
 import { ExceptionType, GoogleConstants, KVStoreGoogleData, Routes } from '../constant';
 import GeneralConstants from '../constant/general';
 import { ExtendedAppCallRequest, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters } from '../types';
-import { callBindingByApp } from '../utils/call-binding';
 import { hyperlink } from '../utils/markdown';
 import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
 import { postBotChannel } from '../utils/post-in-channel';
@@ -105,7 +104,6 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
 
     const message = i18nObj.__('connect-binding.response.success');
     await postBotChannel(call, message);
-    await callBindingByApp(call, Routes.App.CallPathStartNotifications);
     return message;
 }
 
