@@ -5,10 +5,10 @@ import moment from 'moment';
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, Schema$File, Schema$User } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
-import { throwException, tryPromise } from '../utils/utils';
+import { throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
 
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
@@ -23,7 +23,8 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
-    const Post = await mmClient.getPost(postId);
+    const Post: PostResponse = await tryPromiseMattermost<PostResponse>(mmClient.getPost(postId), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+
     const fileIds = Post.file_ids;
     if (!fileIds || !fileIds.length) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
@@ -44,6 +45,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             modal_label: i18nObj.__('upload-google.confirmation-call.label-modal'),
             options,
             multiselect: true,
+            is_required: true,
         },
     ];
 
@@ -68,7 +70,7 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
     const i18nObj = configureI18n(call.context);
 
     const mattermostUrl: string = call.context.mattermost_site_url as string;
-    const botAccessToken: string = call.context.bot_access_token as string;
+    const userAccessToken: string = call.context.acting_user_access_token as string;
     const postId: string = call.context.post?.id as string;
     const channelId: string = call.context.post?.channel_id as string;
     const values = call.values as SelectedUploadFilesForm;
@@ -76,13 +78,14 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
-        accessToken: botAccessToken,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
-    const Post = await mmClient.getPost(postId);
-    const fileIds = Post.file_ids;
-    const filesMetadata = Post.metadata?.files;
+    const post: PostResponse = await tryPromiseMattermost<PostResponse>(mmClient.getPost(postId), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+
+    const fileIds = post.file_ids;
+    const filesMetadata = post.metadata?.files;
     const responseArray: Schema$File[] = [];
 
     const drive = await getGoogleDriveClient(call);
@@ -125,8 +128,11 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         };
     });
 
-    const message = `${i18nObj.__('upload-google.confirmation-submit.file')}${attachments.length > 1 ? 's' : ''} ${i18nObj.__('upload-google.confirmation-submit.file-continue')}!`;
-    const post: PostCreate = {
+    const message = attachments.length > 1 ?
+        i18nObj.__('upload-google.confirmation-submit.multiple-files') :
+        i18nObj.__('upload-google.confirmation-submit.single-file');
+
+    const postCreate: PostCreate = {
         message,
         channel_id: channelId,
         props: {
@@ -134,7 +140,8 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         },
         root_id: postId,
     };
-    await mmClient.createPost(post);
+
+    await tryPromiseMattermost<PostResponse>(mmClient.createPost(postCreate), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
 
     return message;
 }

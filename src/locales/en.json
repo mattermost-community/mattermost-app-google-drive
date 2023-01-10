@@ -1,6 +1,7 @@
 {
 	"general": {
 		"google-error": "Google failed: ",
+		"mattermost-error": "Mattermost failed: ",
 		"validation-user": {
 			"system-admin": "Error: This command is only available for Mattermost System Admin",
 			"oauth-user": "Error: You haven't linked your Google Drive account. You need it to perform this action",
@@ -98,10 +99,10 @@
 			"title": "Create a document in Google",
 			"fields": {
 				"title": {
-					"title": "Title (optional)"
+					"title": "Title"
 				},
 				"message": {
-					"title": "Message (optional)",
+					"title": "Message",
 					"placeholder": "Add a message, if you'd like."
 				},
 				"fileAccess": {
@@ -188,8 +189,8 @@
 		},
 		"confirmation-submit": {
 			"footer": "Google Drive for Mattermost | {{ date }}",
-			"file": "File",
-			"file-continue": "uploaded to Google Drive!"
+			"multiple-files": "File uploaded to Google Drive!",
+			"single-file": "Files uploaded to Google Drive!"
 		}
 	},
 	"install": {

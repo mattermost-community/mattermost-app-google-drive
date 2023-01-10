@@ -48,6 +48,17 @@ export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, mes
         });
 }
 
+export function tryPromiseMattermost<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
+    return p.
+        then((response) => {
+            return <T>response;
+        }).
+        catch((error) => {
+            const errorMessage: string = errorDataMessage(error);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
+        });
+}
+
 export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
     throw new Exception(exceptionType, `${message}`, call);
 }
