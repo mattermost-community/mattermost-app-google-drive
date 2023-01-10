@@ -1,6 +1,6 @@
 {
   "name": "mattermost-app-google-drive",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Connect with Google service through the Mattermost platform to receive comments from Google Drive files",
   "main": "src/index.js",
   "scripts": {
