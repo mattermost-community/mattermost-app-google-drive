@@ -1,3 +1,5 @@
+import stream from 'stream';
+
 import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
@@ -5,7 +7,7 @@ import moment from 'moment';
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Metadata_File, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
@@ -86,9 +88,23 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const fileIds = post.file_ids;
     const filesMetadata = post.metadata?.files;
-    const responseArray: Schema$File[] = [];
-
     const drive = await getGoogleDriveClient(call);
+    const promiseArray: Promise<Schema$File>[] = [];
+
+    const uploadFile = async (streamFile: Promise<stream>, metadata: Metadata_File): Promise<Schema$File> => {
+        const { data } = await drive.files.create({
+            media: {
+                mimeType: metadata.mime_type,
+                body: await streamFile,
+            },
+            requestBody: {
+                name: metadata.name,
+            },
+            fields: 'id,name,webViewLink,iconLink,owners,createdTime',
+        });
+        return data;
+    };
+
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
 
@@ -96,27 +112,10 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             continue;
         }
 
-        const file = await mmClient.getFileUploaded(metadata.id); // eslint-disable-line no-await-in-loop
-
-        const requestBody = {
-            name: metadata.name,
-        };
-
-        const media = {
-            mimeType: metadata.mime_type,
-            body: file,
-        };
-
-        const fileUploaded = await tryPromise<Schema$File>(drive.files.create({ // eslint-disable-line no-await-in-loop
-            requestBody,
-            media,
-            fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-        }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-
-        responseArray.push(fileUploaded);
+        promiseArray.push(uploadFile(mmClient.getFileUploaded(metadata.id), metadata));
     }
 
-    const attachments = responseArray.map((fileUp) => {
+    const attachments = (await Promise.all(promiseArray)).map((fileUp) => {
         const owner = head(fileUp.owners) as Schema$User;
         return {
             author_name: `${owner.displayName}`,

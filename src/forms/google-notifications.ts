@@ -72,6 +72,8 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
         },
     };
 
+    console.log(urlWithParams.href);
+
     const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const options: KVStoreOptions = {
