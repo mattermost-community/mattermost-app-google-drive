@@ -1,13 +1,16 @@
+import { AppCallResponse } from '@mattermost/types/lib/apps';
+
 import GeneralConstants from '../constant/general';
-import {AppActingUser, AppCallRequest, AppCallResponse, KVGoogleData, KVStoreOptions, Oauth2App, Oauth2CurrentUser} from '../types';
-import {ExceptionType, KVStoreGoogleData} from '../constant';
+import { AppActingUser, ExtendedAppCallRequest, KVGoogleData, KVStoreOptions, Oauth2App } from '../types';
+import { ExceptionType, KVStoreGoogleData } from '../constant';
 
 import config from '../config';
 
-import {KVStoreClient} from '../clients/kvstore';
+import { KVStoreClient } from '../clients/kvstore';
 
-import {Exception} from './exception';
-import {newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown} from './call-responses';
+import { Exception } from './exception';
+import { newErrorCallResponseWithMessage, newOKCallResponseWithMarkdown } from './call-responses';
+import { logger } from './logger';
 
 export function replace(value: string, searchValue: string, replaceValue: string): string {
     return value.replace(searchValue, replaceValue);
@@ -34,19 +37,30 @@ export function errorDataMessage(error: Exception | Error | any): string {
     return `${errorMessage}`;
 }
 
-export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string) {
+export function tryPromise<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
     return p.
         then((response) => {
             return <T>response.data;
         }).
         catch((error) => {
             const errorMessage: string = errorDataMessage(error);
-            throw new Exception(exceptionType, `${message} ${errorMessage}`);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
         });
 }
 
-export function throwException(exceptionType: ExceptionType, message: string) {
-    throw new Exception(exceptionType, `${message}`);
+export function tryPromiseMattermost<T>(p: Promise<any>, exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
+    return p.
+        then((response) => {
+            return <T>response;
+        }).
+        catch((error) => {
+            const errorMessage: string = errorDataMessage(error);
+            throw new Exception(exceptionType, `${message} ${errorMessage}`, call);
+        });
+}
+
+export function throwException(exceptionType: ExceptionType, message: string, call: ExtendedAppCallRequest) {
+    throw new Exception(exceptionType, `${message}`, call);
 }
 
 export function showMessageToMattermost(exception: Exception | Error): AppCallResponse {
@@ -72,13 +86,13 @@ export function getHTTPPath(): string {
     return config.APP.HOST;
 }
 
-export async function getKVGoogleData(call: AppCallRequest): Promise<KVGoogleData> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
+export async function getKVGoogleData(call: ExtendedAppCallRequest): Promise<KVGoogleData> {
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const botAccessToken: string = call.context.bot_access_token!;
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
     const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);

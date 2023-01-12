@@ -1,33 +1,32 @@
-import {head} from 'lodash';
+import { AppCallValues } from '@mattermost/types/lib/apps';
+import { head } from 'lodash';
 
-import {getGoogleDriveClient, getOAuthGoogleClient} from '../clients/google-client';
-import {KVStoreClient} from '../clients/kvstore';
-import {ExceptionType, GoogleConstants, KVStoreGoogleData, Routes} from '../constant';
+import { getGoogleDriveClient, getOAuthGoogleClient } from '../clients/google-client';
+import { KVStoreClient } from '../clients/kvstore';
+import { ExceptionType, GoogleConstants, KVStoreGoogleData, Routes } from '../constant';
 import GeneralConstants from '../constant/general';
-import {AppCallRequest, AppCallValues, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters} from '../types';
-import {callBindingByApp} from '../utils/call-binding';
-import {Exception} from '../utils/exception';
-import {hyperlink} from '../utils/markdown';
-import {getGoogleOAuthScopes} from '../utils/oauth-scopes';
-import {postBotChannel} from '../utils/post-in-channel';
-import {configureI18n} from '../utils/translations';
-import {isConnected, tryPromise} from '../utils/utils';
+import { ExtendedAppCallRequest, GoogleTokenResponse, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser, Schema$About, StandardParameters } from '../types';
+import { hyperlink } from '../utils/markdown';
+import { getGoogleOAuthScopes } from '../utils/oauth-scopes';
+import { postBotChannel } from '../utils/post-in-channel';
+import { configureI18n } from '../utils/translations';
+import { isConnected, throwException, tryPromise } from '../utils/utils';
 
-const {google} = require('googleapis');
+const { google } = require('googleapis');
 
-export async function getConnectLink(call: AppCallRequest): Promise<string> {
+export async function getConnectLink(call: ExtendedAppCallRequest): Promise<string> {
     const connectUrl: string = call.context.oauth2?.connect_url as string;
-    const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
+    const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
     const link = hyperlink('link', connectUrl);
 
     const message: string = isConnected(oauth2) ?
         i18nObj.__('connect-binding.response.alreadyLoggedIn') :
-        i18nObj.__('connect-binding.response.generateLink', {link});
+        i18nObj.__('connect-binding.response.generateLink', { link });
     return message;
 }
 
-export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
+export async function oAuth2Connect(call: ExtendedAppCallRequest): Promise<string> {
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
     const state: string = call.values?.state as string;
 
@@ -47,12 +46,12 @@ export async function oAuth2Connect(call: AppCallRequest): Promise<string> {
     });
 }
 
-export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
-    const accessToken: string | undefined = call.context.acting_user_access_token;
-    const userID: string | undefined = call.context.acting_user?.id;
-    const values: AppCallValues | undefined = call.values;
+export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<string> {
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const botAccessToken: string = call.context.bot_access_token!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const actingUserId: string = call.context.acting_user.id!;
+    const values: AppCallValues = call.values!;
     const i18nObj = configureI18n(call.context);
 
     if (!values?.code) {
@@ -74,7 +73,7 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     const aboutParams: StandardParameters = {
         fields: `${GoogleConstants.USER}`,
     };
-    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const storedToken: Oauth2CurrentUser = {
         refresh_token: <string>tokenBody.tokens?.refresh_token,
@@ -82,20 +81,20 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
     };
 
     const kvOptionsOauth: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>accessToken,
+        mattermostUrl,
+        accessToken: userAccessToken,
     };
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
     await kvStoreClientOauth.storeOauth2User(storedToken);
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
     const kvGoogleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     const googleUser: KVGoogleUser = {
-        [<string>userID]: storedToken,
+        [<string>actingUserId]: storedToken,
     };
     const googleData: KVGoogleData = {
         userData: Boolean(kvGoogleData?.userData?.length) ? kvGoogleData.userData : [],
@@ -105,36 +104,36 @@ export async function oAuth2Complete(call: AppCallRequest): Promise<void> {
 
     const message = i18nObj.__('connect-binding.response.success');
     await postBotChannel(call, message);
-    await callBindingByApp(call, Routes.App.CallPathStartNotifications);
+    return message;
 }
 
-export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const accessToken: string | undefined = call.context.acting_user_access_token;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
-    const userID: string | undefined = call.context.acting_user?.id;
-    const oauth2: Oauth2App | undefined = call.context.oauth2 as Oauth2App;
+export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<string> {
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const botAccessToken: string = call.context.bot_access_token!;
+    const actingUserId: string = call.context.acting_user.id!;
+    const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
 
     if (!isConnected(oauth2)) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'));
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('disconnect-binding.response.noSession'), call);
     }
 
     const kvOptionsOauth: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>accessToken,
+        mattermostUrl,
+        accessToken: userAccessToken,
     };
     const kvStoreClientOauth = new KVStoreClient(kvOptionsOauth);
     await kvStoreClientOauth.storeOauth2User({});
 
     const kvOptions: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: botAccessToken,
     };
     const kvStoreClient = new KVStoreClient(kvOptions);
 
     const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-    const remove = googleData?.userData?.findIndex((user) => head(Object.keys(user)) === <string>userID);
+    const remove = googleData?.userData?.findIndex((user) => head(Object.keys(user)) === <string>actingUserId);
     if (remove >= GeneralConstants.HAS_VALUE) {
         googleData.userData.splice(remove, GeneralConstants.REMOVE_ONE);
     }
@@ -142,4 +141,5 @@ export async function oAuth2Disconnect(call: AppCallRequest): Promise<void> {
 
     const message = i18nObj.__('disconnect-binding.response.success');
     await postBotChannel(call, message);
+    return message;
 }

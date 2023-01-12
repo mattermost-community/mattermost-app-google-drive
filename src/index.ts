@@ -1,10 +1,11 @@
-import express, {Express} from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 
 import morgan from 'morgan';
 
 import config from './config';
 import apiRoutes from './api';
+import { logger } from './utils/logger';
 
 const serverless = require('serverless-http');
 
@@ -23,7 +24,8 @@ app.post('/ping', (req, res) => {
 // App released via HTTP and docker
 if (config.APP.HOST) {
     const port: number = config.APP.PORT;
-    app.listen(port, () => console.log('Listening on ' + port));
+    app.listen(port);
+    logger.info({ message: 'Listening on ' + port, siteUrl: '', requestPath: 'none', status: 200 });
 } else {
     // App released via AWS Lambda
     module.exports.handler = serverless(app);

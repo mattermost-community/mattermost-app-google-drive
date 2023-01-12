@@ -28,7 +28,15 @@
   },
   "settings": {
     "import/resolver": {
-         "typescript": {}
+         "typescript": {},
+          "node": {
+            "extensions": [
+              ".js",
+              ".jsx",
+              ".ts",
+              ".tsx"
+            ]
+          }
     }
   },
   "rules": {
@@ -387,7 +395,7 @@
     "object-curly-newline": 0,
     "object-curly-spacing": [
       2,
-      "never"
+      "always"
     ],
     "object-property-newline": [
       2,

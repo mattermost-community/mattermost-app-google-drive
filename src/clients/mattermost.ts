@@ -1,9 +1,12 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, { AxiosResponse } from 'axios';
+
+import {
+    ClientConfig,
+} from '@mattermost/types/lib/config';
 
 import {
     Channel,
     ChannelMember,
-    DialogProps,
     MattermostOptions,
     PostCreate,
     PostEphemeralCreate,
@@ -11,8 +14,8 @@ import {
     PostUpdate,
     User,
 } from '../types';
-import {AppsPluginName, Routes} from '../constant';
-import {replace} from '../utils/utils';
+import { AppsPluginName, Routes } from '../constant';
+import { replace } from '../utils/utils';
 
 export class MattermostClient {
     private readonly config: MattermostOptions;
@@ -26,7 +29,7 @@ export class MattermostClient {
     public updateRolesByUser(userId: string, roles: string): Promise<any> {
         const url = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.UsersUpdateRolePath}`;
 
-        return axios.put(replace(url, Routes.PV.Identifier, userId), {roles}, {
+        return axios.put(replace(url, Routes.PV.Identifier, userId), { roles }, {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
@@ -96,15 +99,6 @@ export class MattermostClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public showDialog(dialog: DialogProps): Promise<any> {
-        const url = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.DialogsOpenPath}`;
-        return axios.post(url, dialog, {
-            headers: {
-                Authorization: `Bearer ${this.config.accessToken}`,
-            },
-        }).then((response: AxiosResponse<any>) => response.data);
-    }
-
     public createDirectChannel(ids: string[]): Promise<any> {
         const url = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ChannelDirectPath}`;
         return axios.post(url, ids, {
@@ -142,13 +136,10 @@ export class MattermostClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public callBinding(call: any): Promise<PostResponse> {
-        const url = `${this.config.mattermostUrl}${Routes.MM.PluginsPath}/${AppsPluginName}${Routes.MM.ApiVersionV1}${Routes.MM.CallPath}`;
+    public getConfigClient(): Promise<ClientConfig> {
+        const url = new URL(`${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.ConfigClientPath}`);
+        url.searchParams.append('format', 'old');
 
-        return axios.post(url, call, {
-            headers: {
-                Authorization: `Bearer ${this.config.accessToken}`,
-            },
-        }).then((response: AxiosResponse<any>) => response.data);
+        return axios.get(url.href).then((response: AxiosResponse<ClientConfig>) => response.data);
     }
 }

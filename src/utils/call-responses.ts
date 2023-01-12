@@ -1,7 +1,8 @@
-import {Request, Response} from 'express';
+import { AppForm } from '@mattermost/types/lib/apps';
+import { Request, Response } from 'express';
 
-import {AppCallResponseTypes} from '../constant';
-import {AppCallResponse, AppForm} from '../types';
+import { AppCallResponseTypes } from '../constant';
+import { ExpandAppCallResponse } from '../types';
 
 export type FieldValidationErrors = {[name: string]: string};
 
@@ -9,46 +10,46 @@ export type CallResponseHandler = (
     req: Request,
     res: Response & {
         json: (
-            callResponse: AppCallResponse
+            callResponse: ExpandAppCallResponse
         ) => void,
     }
 ) => Promise<void>;
 
-export function newOKCallResponse(): AppCallResponse {
+export function newOKCallResponse(): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.OK,
     };
 }
 
-export function newOKCallResponseWithMarkdown(markdown: string): AppCallResponse {
+export function newOKCallResponseWithMarkdown(markdown: string): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.OK,
         text: markdown,
     };
 }
 
-export function newOKCallResponseWithData(data: unknown): AppCallResponse {
+export function newOKCallResponseWithData(data: unknown): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.OK,
         data,
     };
 }
 
-export function newFormCallResponse(form: AppForm): AppCallResponse {
+export function newFormCallResponse(form: AppForm): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.FORM,
         form,
     };
 }
 
-export function newErrorCallResponseWithMessage(message: string): AppCallResponse {
+export function newErrorCallResponseWithMessage(message: string): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.ERROR,
         text: message,
     };
 }
 
-export function newErrorCallResponseWithFieldErrors(errors: FieldValidationErrors): AppCallResponse {
+export function newErrorCallResponseWithFieldErrors(errors: FieldValidationErrors): ExpandAppCallResponse {
     return {
         type: AppCallResponseTypes.ERROR,
         data: {

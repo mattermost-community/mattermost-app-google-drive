@@ -1,13 +1,14 @@
-import {KVStoreClient} from '../clients/kvstore';
-import {AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ConfigureClientForm, GoogleDriveIcon, Routes, modeConfiguration, optConfigure} from '../constant';
+import { AppCallValues, AppField, AppSelectOption } from '@mattermost/types/lib/apps';
+
+import { KVStoreClient } from '../clients/kvstore';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import {AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data} from '../types';
-import {configureI18n} from '../utils/translations';
+import { ExpandAppForm, ExtendedAppCallRequest, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { configureI18n } from '../utils/translations';
 
-export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
+export async function googleClientConfigForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
-
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
@@ -20,11 +21,11 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
     const apiKey = values?.google_drive_api_key || oauth2App?.data?.google_drive_api_key;
     const saJson = values?.google_drive_service_account || oauth2App?.data?.google_drive_service_account;
 
-    const defValue: AppSelectOption | undefined = modeConfiguration(call.context).find((mode) => mode.value === modeConfig);
+    const defValue: AppSelectOption = modeConfiguration(call.context).find((mode) => mode.value === modeConfig)!;
 
-    const form: AppForm = {
+    const form: ExpandAppForm = {
         title: i18nObj.__('configure-binding.form.title'),
-        header: i18nObj.__('configure-binding.form.header', {homepageUrl}),
+        header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
         fields: [
             {
@@ -60,6 +61,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
         source: {
@@ -67,14 +69,13 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
     };
 
-    let extraField: AppField = {
-        name: '',
-        type: '',
-    };
+    let extraField: AppField | undefined;
+
     switch (modeConfig) {
     case optConfigure.fAPIKey:
         extraField = {
@@ -104,16 +105,18 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    form.fields.push(extraField);
+    if (extraField && form.fields) {
+        form.fields.push(extraField);
+    }
 
     return form;
 }
 
-export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
+export async function googleClientConfigFormSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string | undefined = call.context.mattermost_site_url;
-    const botAccessToken: string | undefined = call.context.bot_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const values: AppCallValues = <any>call.values;
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
@@ -123,8 +126,8 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
     const gApiKey: string = values[ConfigureClientForm.API_KEY];
 
     const options: KVStoreOptions = {
-        mattermostUrl: <string>mattermostUrl,
-        accessToken: <string>botAccessToken,
+        mattermostUrl,
+        accessToken: userAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
 

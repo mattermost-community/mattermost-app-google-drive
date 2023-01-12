@@ -1,10 +1,10 @@
-import {AppBindingLocations, CommandTrigger} from '../constant';
+import { AppBindingLocations, CommandTrigger } from '../constant';
 import manifest from '../manifest.json';
-import {AppBinding, AppCallRequest, AppContext, AppsState} from '../types';
+import { ExtendedAppBinding, ExtendedAppCallRequest, ExtendedAppContext } from '../types';
 
-import {getHelpBinding} from './bindings';
+import { getHelpBinding } from './bindings';
 
-const newHeaderButtonBindings = (bindings: AppBinding[]): AppsState => {
+const newHeaderButtonBindings = (bindings: ExtendedAppBinding[]): ExtendedAppBinding => {
     const m = manifest;
     return {
         app_id: m.app_id,
@@ -14,9 +14,9 @@ const newHeaderButtonBindings = (bindings: AppBinding[]): AppsState => {
     };
 };
 
-export const getHeaderButtonBindings = async (call: AppCallRequest): Promise<AppsState> => {
-    const bindings: AppBinding[] = [];
-    const context = call.context as AppContext;
+export const getHeaderButtonBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
+    const bindings: ExtendedAppBinding[] = [];
+    const context = call.context as ExtendedAppContext;
 
     bindings.push(getHelpBinding(context));
 

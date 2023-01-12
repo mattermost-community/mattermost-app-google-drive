@@ -1,13 +1,11 @@
-import {AppExpandLevels, Commands, GoogleDriveIcon, Routes} from '../constant';
-import manifest from '../manifest.json';
-import {AppBinding, AppContext} from '../types';
-import {configureI18n} from '../utils/translations';
+import { AppExpandLevels, Commands, GoogleDriveIcon, Routes } from '../constant';
+import { ExtendedAppBinding, ExtendedAppContext } from '../types';
+import { configureI18n } from '../utils/translations';
 
-export const getHelpBinding = (context: AppContext): AppBinding => {
+export const getHelpBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.HELP,
         icon: GoogleDriveIcon,
         description: i18nObj.__('bindings-descriptions.help'),
@@ -23,11 +21,10 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getConfigureBinding = (context: AppContext): AppBinding => {
+export const getConfigureBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CONFIGURE,
         description: i18nObj.__('bindings-descriptions.configure'),
@@ -42,11 +39,10 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getConnectBinding = (context: AppContext): AppBinding => {
+export const getConnectBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CONNECT,
         description: i18nObj.__('bindings-descriptions.connect'),
@@ -62,11 +58,10 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getDisconnectBinding = (context: AppContext): AppBinding => {
+export const getDisconnectBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.DISCONNECT,
         description: i18nObj.__('bindings-descriptions.disconnect'),
@@ -83,7 +78,7 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getNotificationBinding = (context: AppContext): AppBinding => {
+export const getNotificationBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     const subCommands: string[] = [
@@ -91,12 +86,11 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
         Commands.STOP,
     ];
 
-    const bindings: AppBinding[] = [];
+    const bindings: ExtendedAppBinding[] = [];
     bindings.push(getNotificationStartBinding(context));
     bindings.push(getNotificationStopBinding(context));
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.NOTIFICATION,
         description: i18nObj.__('bindings-descriptions.notification'),
@@ -105,11 +99,10 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getNotificationStartBinding = (context: AppContext): AppBinding => {
+export const getNotificationStartBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.START,
         description: i18nObj.__('bindings-descriptions.notification-start'),
@@ -117,7 +110,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
             path: Routes.App.CallPathStartNotifications,
             expand: {
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
-                app: AppExpandLevels.EXPAND_SUMMARY,
+                app: AppExpandLevels.EXPAND_ALL,
                 oauth2_app: AppExpandLevels.EXPAND_ALL,
                 oauth2_user: AppExpandLevels.EXPAND_ALL,
                 locale: AppExpandLevels.EXPAND_SUMMARY,
@@ -126,11 +119,10 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const getNotificationStopBinding = (context: AppContext): AppBinding => {
+export const getNotificationStopBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.STOP,
         description: i18nObj.__('bindings-descriptions.notification-stop'),
@@ -147,7 +139,7 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => {
+export const getCreateGoogleFilesBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     const commands: string[] = [
@@ -156,13 +148,12 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
         Commands.SPREADSHEET,
     ];
 
-    const bindings: AppBinding[] = [];
+    const bindings: ExtendedAppBinding[] = [];
     bindings.push(getCreateDocumentBinding(context));
     bindings.push(getCreatePresentationBinding(context));
     bindings.push(getCreateSpreadsheetBinding(context));
 
     return {
-        app_id: manifest.app_id,
         icon: GoogleDriveIcon,
         label: Commands.CREATE,
         description: i18nObj.__('bindings-descriptions.create'),
@@ -171,11 +162,10 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
+export const getCreateDocumentBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.DOCUMENT,
         description: i18nObj.__('bindings-descriptions.create-document'),
         icon: GoogleDriveIcon,
@@ -192,11 +182,10 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getCreatePresentationBinding = (context: AppContext): AppBinding => {
+export const getCreatePresentationBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.PRESENTATION,
         description: i18nObj.__('bindings-descriptions.create-slide'),
         icon: GoogleDriveIcon,
@@ -213,11 +202,10 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
     };
 };
 
-export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => {
+export const getCreateSpreadsheetBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: Commands.SPREADSHEET,
         description: i18nObj.__('bindings-descriptions.create-sheet'),
         icon: GoogleDriveIcon,
@@ -234,11 +222,10 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
+export const saveFileOnDriveBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
-        app_id: manifest.app_id,
         label: i18nObj.__('bindings-descriptions.save-file'),
         icon: GoogleDriveIcon,
         submit: {

@@ -12,19 +12,19 @@ import {
     createGoogleSlidesSubmit,
 } from '../forms/create-google-files';
 import {
-    AppCallResponse,
+    ExpandAppCallResponse,
 } from '../types';
 import {
     CallResponseHandler,
     newFormCallResponse,
-    newOKCallResponse,
+    newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
 import {
     showMessageToMattermost,
 } from '../utils/utils';
 
 export const openFormGoogleDocs: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleDocForm(req.body);
@@ -36,11 +36,11 @@ export const openFormGoogleDocs: CallResponseHandler = async (req: Request, res:
 };
 
 export const executeFormGoogleDocs: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleDocSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleDocSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -48,7 +48,7 @@ export const executeFormGoogleDocs: CallResponseHandler = async (req: Request, r
 };
 
 export const openFormGoogleSlides: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleSlidesForm(req.body);
@@ -60,11 +60,11 @@ export const openFormGoogleSlides: CallResponseHandler = async (req: Request, re
 };
 
 export const executeFormGoogleSlides: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleSlidesSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleSlidesSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -72,7 +72,7 @@ export const executeFormGoogleSlides: CallResponseHandler = async (req: Request,
 };
 
 export const openFormGoogleSheets: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await createGoogleSheetsForm(req.body);
@@ -84,11 +84,11 @@ export const openFormGoogleSheets: CallResponseHandler = async (req: Request, re
 };
 
 export const executeFormGoogleSheets: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await createGoogleSheetsSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await createGoogleSheetsSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

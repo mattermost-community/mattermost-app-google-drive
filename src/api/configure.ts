@@ -1,16 +1,16 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
 import {
     CallResponseHandler,
     newFormCallResponse,
     newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
-import {AppCallResponse} from '../types';
-import {googleClientConfigForm, googleClientConfigFormSubmit} from '../forms/configure-google-client';
-import {showMessageToMattermost} from '../utils/utils';
+import { ExpandAppCallResponse } from '../types';
+import { googleClientConfigForm, googleClientConfigFormSubmit } from '../forms/configure-google-client';
+import { showMessageToMattermost } from '../utils/utils';
 
 export const configureGoogleClient: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await googleClientConfigForm(req.body);
@@ -22,7 +22,7 @@ export const configureGoogleClient: CallResponseHandler = async (req: Request, r
 };
 
 export const configureGoogleClientSubmit: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const message = await googleClientConfigFormSubmit(req.body);

@@ -1,6 +1,12 @@
 {
   "general": {
-    "google-error": "Google falló: "
+    "google-error": "Google falló: ",
+    "mattermost-error": "Mattermost falló: ",
+    "validation-user": {
+			"system-admin": "Error: Este comando esta únicamente disponible a usuarios Mattermost System Admin",
+      "oauth-user": "Error: No has vinculado tu cuenta de Google Drive. La necesitas para realizar esta acción",
+			"not-provided": "El usuario no fue provisto"
+		}
   },
   "bindings-descriptions": {
     "bindings": "Administrar Google Drive",
@@ -62,6 +68,9 @@
     },
     "response": {
       "success": "¡Se ha actualizado correctamente la configuración del Cliente de Google!"
+    },
+    "error": {
+      "system-admin": "Error: Este comando esta únicamente disponible a usuarios Mattermost System Admin"
     }
   },
   "connect-binding": {
@@ -79,6 +88,7 @@
     }
   },
   "notifications-binding": {
+    "already-disabled": "Google notifications are already disabled",
     "response": {
       "disabled": "Las notificaciones de Google se han detenido",
       "enabled": "Las notificaciones de Google se han encendido"
@@ -89,10 +99,10 @@
       "title": "Crear un Documento en Google",
       "fields": {
         "title": {
-          "title": "Título (optional)"
+          "title": "Título"
         },
         "message": {
-          "title": "Mensaje (optional)",
+          "title": "Mensaje",
           "placeholder": "Agrega un mensaje que se mostrará al compartit el archivo"
         },
         "fileAccess": {
@@ -118,19 +128,22 @@
       "footer": "Google Drive para Mattermost | {{ date }}"
     },
     "docs": {
-      "title": "Crear un Documento en Google"
+      "title": "Crear un Documento en Google",
+      "success": "¡El archivo Google Doc {{ file }} fue creado!"
     },
     "slides": {
-      "title": "Crear una Presentación en Google"
+      "title": "Crear una Presentación en Google",
+      "success": "¡El archivo Google Slides {{ file }} fue creado!"
     },
     "sheets": {
-      "title": "Crear una Hoja de Cálculo en Google"
+      "title": "Crear una Hoja de Cálculo en Google",
+      "success": "¡El archivo Google Sheets {{ file }} fue creado!"
     }
   },
   "comments": {
     "file-icon": "Icono de archivo",
     "add": {
-      "text-mentioned": "{{ userDisplay }} te mencioné en {{ image }} {{ link }}",
+      "text-mentioned": "{{ userDisplay }} te mencionó en {{ image }} {{ link }}",
       "text-comment": "{{ userDisplay }} ha comentado en {{ image }} {{ link }}"
     },
     "reply": {
@@ -152,20 +165,20 @@
     },
     "new": {
       "label": "Responder al comentario"
+    },
+    "comment-reply": {
+      "open-form-reply": {
+        "title": "Responder al comentario",
+        "label": "Respuesta de mensaje",
+        "description": "Agregue un mensaje que se publicará como hilo en la publicación seleccionada"
+      }
+    },
+    "permission-change": {
+      "message": "{{ userDisplay }} compartió un artículo contigo"
+    },
+    "manage-reply-comment": {
+      "message": "Respondiste a este comentario con"
     }
-  },
-  "permission-change": {
-    "message": "{{ userDisplay }} compartió un artículo contigo"
-  },
-  "comment-reply": {
-    "open-form-reply": {
-      "title": "Responder al comentario",
-      "label": "Respuesta de mensaje",
-      "description": "Agregue un mensaje que se publicará como hilo en la publicación seleccionada"
-    }
-  },
-  "manage-reply-comment": {
-    "message": "Respondiste a este comentario con"
   },
   "upload-google": {
     "confirmation-call": {
@@ -175,8 +188,8 @@
     },
     "confirmation-submit": {
       "footer": "Google Drive para Mattermost | {{ date }}",
-      "file": "Archivo",
-      "file-continue": "subido a Google Drive!"
+      "multiple-files": "¡Archivo subido a Google Drive!",
+      "single-file": "¡Archivos subidos a Google Drive!"
     }
   },
   "install": {
