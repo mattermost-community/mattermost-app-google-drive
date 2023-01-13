@@ -1,6 +1,6 @@
 {
    "app_id": "google-drive",
-   "version": "1.0.0",
+   "version": "0.1.0",
    "homepage_url": "https://github.com/mattermost/mattermost-app-google-drive#readme",
    "display_name": "Google Drive",
    "description": "Google Drive App for Mattermost",
@@ -43,13 +43,13 @@
       }
    },
    "aws_lambda": {
-        "functions": [
-            {
-                "path": "/",
-                "name": "bundle",
-                "handler": "bundle/index.handler",
-                "runtime": "nodejs16.x"
-            }
-        ]
+      "functions": [
+         {
+            "path": "/",
+            "name": "bundle",
+            "handler": "bundle/index.handler",
+            "runtime": "nodejs16.x"
+         }  
+      ]
     }
 }
