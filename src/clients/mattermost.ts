@@ -1,3 +1,5 @@
+import stream from 'stream';
+
 import axios, { AxiosResponse } from 'axios';
 
 import {
@@ -126,7 +128,7 @@ export class MattermostClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public getFileUploaded(fileID: string): Promise<any> {
+    public getFileUploaded(fileID: string): Promise<stream> {
         const url = `${this.config.mattermostUrl}${Routes.MM.ApiVersionV4}${Routes.MM.FilePath}`;
         return axios.get(replace(url, Routes.PV.Identifier, fileID), {
             headers: {

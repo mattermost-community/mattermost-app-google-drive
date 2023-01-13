@@ -189,8 +189,8 @@
 		},
 		"confirmation-submit": {
 			"footer": "Google Drive for Mattermost | {{ date }}",
-			"multiple-files": "File uploaded to Google Drive!",
-			"single-file": "Files uploaded to Google Drive!"
+			"multiple-files": "Files uploaded to Google Drive!",
+			"single-file": "File uploaded to Google Drive!"
 		}
 	},
 	"install": {
