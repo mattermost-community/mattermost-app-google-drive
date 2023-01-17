@@ -14,24 +14,7 @@ DEFAULT_BUNDLE_NAME := bundle
 # should be the same as the one in tsconfig.json
 TS_DIST_DIR := dist-ts
 
-.PHONY: run-server stop-server restart-server build dist watch clean help
-
-## run-server: starts the server.
-run-server:
-		@echo Running Google Drive app for development
-		./run-server.sh
-
-## stop-server: stops the server
-stop-server:
-		@echo Stopping Google Drive app for development
-		./stop-server.sh
-
-## restart-server: restarts the server.
-restart-server:
-		@echo Stopping Google Drive app for development
-		./stop-server.sh
-		@echo Running Google Drive app for development
-		./run-server.sh
+.PHONY: build dist watch clean help
 
 ## build: build the app
 build: node_modules
@@ -39,16 +22,16 @@ build: node_modules
 
 ## dist: creates the bundle file for dev deployment
 dist-dev: build
-	rm -rf $(DIST_DIR)/$(BUNDLE_NAME) && mkdir -p $(DIST_DIR)/$(BUNDLE_NAME)
-	mv $(TS_DIST_DIR)/* $(DIST_DIR)/$(BUNDLE_NAME)
+	rm -rf $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME) && mkdir -p $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)	
+	mv $(TS_DIST_DIR)/* $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
 	rm -r $(TS_DIST_DIR)
-	mv node_modules $(DIST_DIR)/$(BUNDLE_NAME)
-	cp -r src/locales $(DIST_DIR)/$(BUNDLE_NAME)
+	mv node_modules $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
+	cp -r src/locales $(DIST_DIR)/$(DEFAULT_BUNDLE_NAME)
 	cp src/manifest.json $(DIST_DIR)
 	cp -r static $(DIST_DIR)
 	cd $(DIST_DIR) ; \
-		zip -rm $(BUNDLE_NAME).zip $(BUNDLE_NAME) ; \
-		zip -rm ../$(BUNDLE_NAME).zip manifest.json static $(BUNDLE_NAME).zip
+		zip -rm $(DEFAULT_BUNDLE_NAME).zip $(DEFAULT_BUNDLE_NAME) ; \
+		zip -rm ../$(BUNDLE_NAME).zip manifest.json static $(DEFAULT_BUNDLE_NAME).zip
 	rm -rf ./$(DIST_DIR)/* && mv ./$(BUNDLE_NAME).zip ./$(DIST_DIR)	
 
 ## dist: creates the bundle file for deployment

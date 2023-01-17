@@ -1,7 +1,7 @@
 import { MattermostClient } from '../clients';
-import { AppCallRequest, Channel, MattermostOptions, PostCreate } from '../types';
+import { Channel, ExtendedAppCallRequest, MattermostOptions, PostCreate } from '../types';
 
-export const postBotChannel = async (call: AppCallRequest, message: string, props: any = {}) => {
+export const postBotChannel = async (call: ExtendedAppCallRequest, message: string, props: any = {}) => {
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
     const botUserId: string = call.context.bot_user_id!;
@@ -17,7 +17,6 @@ export const postBotChannel = async (call: AppCallRequest, message: string, prop
 
     const post: PostCreate = {
         message,
-        user_id: <string>actingUserId,
         channel_id: channel.id,
         props,
     };

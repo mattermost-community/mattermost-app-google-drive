@@ -1,26 +1,25 @@
 {
   "name": "mattermost-app-google-drive",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Connect with Google service through the Mattermost platform to receive comments from Google Drive files",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "clean": "rm -rf dist node_modules",
+    "clean": "rm -rf dist dist-ts node_modules",
     "build": "tsc -p .",
-    "start": "tsc -p . && cp -r src/locales dist/ && node dist/index.js",
+    "start": "tsc -p . && cp -r src/locales dist-ts/ && node dist-ts/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --cache",
-    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext ts . --quiet --fix --cache",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist-ts --ignore-pattern dist  --ext ts . --quiet --cache",
+    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist-ts --ignore-pattern dist --ext ts . --quiet --fix --cache",
     "check-types": "tsc -p . --skipLibCheck"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:mattermost/mattermost-app-google-drive.git"
   },
-  "author": "Lizeth García Segura <lizeth.garcia@ancient.mx>",
-  "license": "ISC",
   "homepage": "https://github.com/mattermost/mattermost-app-google-drive#readme",
   "dependencies": {
+    "@mattermost/types": "^7.4.0",
     "axios": "^0.27.2",
     "blob": "^0.1.0",
     "body-parser": "^1.20.0",
@@ -30,12 +29,14 @@
     "googleapis": "^105.0.0",
     "i18n": "^0.15.1",
     "lodash": "^4.17.21",
+    "mattermost": "^3.4.0",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
     "query-string": "^7.1.1",
     "request": "^2.88.2",
     "serverless-http": "^3.0.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.46.0",

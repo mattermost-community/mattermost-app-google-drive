@@ -1,19 +1,14 @@
+import { AppCallValues, AppField, AppSelectOption } from '@mattermost/types/lib/apps';
+
 import { KVStoreClient } from '../clients/kvstore';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
-import { AppActingUser, AppCallRequest, AppCallValues, AppField, AppForm, AppSelectOption, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
+import { ExpandAppForm, ExtendedAppCallRequest, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
 import { configureI18n } from '../utils/translations';
-import { isUserSystemAdmin, throwException } from '../utils/utils';
 
-export async function googleClientConfigForm(call: AppCallRequest): Promise<AppForm> {
+export async function googleClientConfigForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
-    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
-
-    if (!isUserSystemAdmin(actingUser)) {
-        throwException(ExceptionType.MARKDOWN, i18nObj.__('configure-binding.error.system-admin'));
-    }
-
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
@@ -28,7 +23,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
 
     const defValue: AppSelectOption = modeConfiguration(call.context).find((mode) => mode.value === modeConfig)!;
 
-    const form: AppForm = {
+    const form: ExpandAppForm = {
         title: i18nObj.__('configure-binding.form.title'),
         header: i18nObj.__('configure-binding.form.header', { homepageUrl }),
         icon: GoogleDriveIcon,
@@ -66,6 +61,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
         source: {
@@ -73,6 +69,7 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
             expand: {
                 locale: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
+                acting_user_access_token: AppExpandLevels.EXPAND_ALL,
             },
         },
     };
@@ -108,23 +105,18 @@ export async function googleClientConfigForm(call: AppCallRequest): Promise<AppF
         break;
     }
 
-    if (extraField) {
+    if (extraField && form.fields) {
         form.fields.push(extraField);
     }
 
     return form;
 }
 
-export async function googleClientConfigFormSubmit(call: AppCallRequest): Promise<string> {
+export async function googleClientConfigFormSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
-    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
-
-    if (!isUserSystemAdmin(actingUser)) {
-        throwException(ExceptionType.TEXT_ERROR, i18nObj.__('configure-binding.error.system-admin'));
-    }
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
-    const botAccessToken: string = call.context.bot_access_token!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const values: AppCallValues = <any>call.values;
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
@@ -135,7 +127,7 @@ export async function googleClientConfigFormSubmit(call: AppCallRequest): Promis
 
     const options: KVStoreOptions = {
         mattermostUrl,
-        accessToken: botAccessToken,
+        accessToken: userAccessToken,
     };
     const kvStoreClient = new KVStoreClient(options);
 

@@ -4,12 +4,12 @@ import {
     manageReplyCommentSubmit,
     openFormReplyComment,
 } from '../forms/comment-reply';
-import { AppCallResponse } from '../types';
-import { CallResponseHandler, newFormCallResponse, newOKCallResponse } from '../utils/call-responses';
+import { ExpandAppCallResponse } from '../types';
+import { CallResponseHandler, newFormCallResponse, newOKCallResponseWithMarkdown } from '../utils/call-responses';
 import { showMessageToMattermost } from '../utils/utils';
 
 export const replyToCommentForm: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const form = await openFormReplyComment(req.body);
@@ -21,11 +21,11 @@ export const replyToCommentForm: CallResponseHandler = async (req: Request, res:
 };
 
 export const replyToCommentSubmit: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await manageReplyCommentSubmit(req.body);
-        callResponse = newOKCallResponse();
+        const message = await manageReplyCommentSubmit(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

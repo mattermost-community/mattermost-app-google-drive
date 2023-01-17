@@ -1,6 +1,12 @@
 {
 	"general": {
-		"google-error": "Google failed: "
+		"google-error": "Google failed: ",
+		"mattermost-error": "Mattermost failed: ",
+		"validation-user": {
+			"system-admin": "Error: This command is only available for Mattermost System Admin",
+			"oauth-user": "Error: You haven't linked your Google Drive account. You need it to perform this action",
+			"not-provided": "Not acting user provided"
+		}
 	},
 	"bindings-descriptions": {
 		"bindings": "Manage Google Drive",
@@ -93,10 +99,10 @@
 			"title": "Create a document in Google",
 			"fields": {
 				"title": {
-					"title": "Title (optional)"
+					"title": "Title"
 				},
 				"message": {
-					"title": "Message (optional)",
+					"title": "Message",
 					"placeholder": "Add a message, if you'd like."
 				},
 				"fileAccess": {
@@ -122,13 +128,16 @@
 			"footer": "Google Drive for Mattermost | {{ date }}"
 		},
 		"docs": {
-			"title": "Create a Google Document"
+			"title": "Create a Google Document",
+			"success": "New Google Doc {{ file }} created!"
 		},
 		"slides": {
-			"title": "Create a Google Presentation"
+			"title": "Create a Google Presentation",
+			"success": "New Google Slides {{ file }} created!"
 		},
 		"sheets": {
-			"title": "Create a Google Spreadsheet"
+			"title": "Create a Google Spreadsheet",
+			"success": "New Google Sheets {{ file }} created!"
 		}
 	},
 	"comments": {
@@ -180,8 +189,8 @@
 		},
 		"confirmation-submit": {
 			"footer": "Google Drive for Mattermost | {{ date }}",
-			"file": "File",
-			"file-continue": "uploaded to Google Drive!"
+			"multiple-files": "File uploaded to Google Drive!",
+			"single-file": "Files uploaded to Google Drive!"
 		}
 	},
 	"install": {

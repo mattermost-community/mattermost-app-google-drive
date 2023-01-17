@@ -1,3 +1,4 @@
+import { ClientConfig } from '@mattermost/types/lib/config';
 import { head } from 'lodash';
 import moment from 'moment';
 
@@ -6,11 +7,11 @@ import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGo
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
-    AppCallRequest,
-    AppContext,
-    AppField,
-    AppForm,
     Channel,
+    ExpandAppField,
+    ExpandAppForm,
+    ExtendedAppCallRequest,
+    ExtendedAppContext,
     MattermostOptions,
     Params$Resource$Files$Get,
     PostCreate,
@@ -23,21 +24,34 @@ import {
 import { CreateFileForm } from '../types/forms';
 import { ShareFileFunction } from '../types/functions';
 import { configureI18n } from '../utils/translations';
-import { tryPromise } from '../utils/utils';
+import { tryPromise, tryPromiseMattermost } from '../utils/utils';
 
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
-export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
+
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -68,7 +82,7 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),
@@ -103,10 +117,10 @@ export async function createGoogleDocForm(call: AppCallRequest): Promise<AppForm
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -126,7 +140,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
             title: values.google_file_title,
         },
     };
-    const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -134,7 +148,7 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;
@@ -147,7 +161,6 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -170,20 +183,34 @@ export async function createGoogleDocSubmit(call: AppCallRequest): Promise<any> 
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.docs.success', { file: `${file.name}` });
 }
 
-export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
 
-    /*eslint no-negated-condition: "error"*/
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
+
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -214,7 +241,7 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),
@@ -249,10 +276,10 @@ export async function createGoogleSlidesForm(call: AppCallRequest): Promise<AppF
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -272,7 +299,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
             title: values.google_file_title,
         },
     };
-    const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -280,7 +307,7 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;
@@ -292,7 +319,6 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -314,19 +340,34 @@ export async function createGoogleSlidesSubmit(call: AppCallRequest): Promise<an
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.slides.success', { file: `${file.name}` });
 }
 
-export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppForm> {
+export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
-    const context = call.context as AppContext;
+    const botAccessToken: string = call.context.bot_access_token!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
+    const context = call.context as ExtendedAppContext;
     const values = call.values as CreateFileForm;
+
+    const mattermostOpts: MattermostOptions = {
+        mattermostUrl,
+        accessToken: botAccessToken,
+    };
+    const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
 
     const willShare = values?.google_file_will_share === undefined ?
         true :
         values?.google_file_will_share;
 
-    const fields: AppField[] = [
+    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+
+    const fields: ExpandAppField[] = [
         {
             type: AppFieldTypes.TEXT,
             name: CreateGoogleDocument.TITLE,
@@ -357,7 +398,7 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
             modal_label: i18nObj.__('create-binding.form.fields.fileAccess.title'),
             description: i18nObj.__('create-binding.form.fields.fileAccess.description'),
             is_required: true,
-            options: willShare ? shareFileOnChannel(context) : notShareFileOnChannel(context),
+            options: showWithMembers ? shareFileOnChannel(context) : notShareFileOnChannel(context),
         },
         {
             modal_label: i18nObj.__('create-binding.form.fields.share.title'),
@@ -392,10 +433,10 @@ export async function createGoogleSheetsForm(call: AppCallRequest): Promise<AppF
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    } as AppForm;
+    } as ExpandAppForm;
 }
 
-export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<any> {
+export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
@@ -417,7 +458,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
             },
         },
     };
-    const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
@@ -425,7 +466,7 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
-    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const file = await tryPromise<Schema$File>(drive.files.get(paramExport), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const owner = head(file.owners) as Schema$User;
 
     let channelId: string = call.context.channel?.id as string;
@@ -437,7 +478,6 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
 
     const post: PostCreate = {
         message: <string>values.google_file_message,
-        user_id: <string>actingUserId,
         channel_id: channelId,
         props: {
             attachments: [
@@ -460,4 +500,6 @@ export async function createGoogleSheetsSubmit(call: AppCallRequest): Promise<an
     if (shareFile) {
         await shareFile(call, file, channelId);
     }
+
+    return i18nObj.__('create-binding.sheets.success', { file: `${file.name}` });
 }

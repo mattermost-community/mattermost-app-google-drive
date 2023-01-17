@@ -6,17 +6,16 @@ import {
     oAuth2Connect,
     oAuth2Disconnect,
 } from '../forms/oauth-google';
-import { AppCallResponse } from '../types';
+import { ExpandAppCallResponse } from '../types';
 import {
     CallResponseHandler,
-    newOKCallResponse,
     newOKCallResponseWithData,
     newOKCallResponseWithMarkdown,
 } from '../utils/call-responses';
 import { showMessageToMattermost } from '../utils/utils';
 
 export const getConnectGoogleURL: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const url: string = await getConnectLink(req.body);
@@ -28,7 +27,7 @@ export const getConnectGoogleURL: CallResponseHandler = async (req: Request, res
 };
 
 export const fOauth2Connect: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
         const url: string = await oAuth2Connect(req.body);
@@ -40,11 +39,11 @@ export const fOauth2Connect: CallResponseHandler = async (req: Request, res: Res
 };
 
 export const fOauth2Complete: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await oAuth2Complete(req.body);
-        callResponse = newOKCallResponse();
+        const message = await oAuth2Complete(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }
@@ -52,11 +51,11 @@ export const fOauth2Complete: CallResponseHandler = async (req: Request, res: Re
 };
 
 export const doDisconnectGoogle: CallResponseHandler = async (req: Request, res: Response) => {
-    let callResponse: AppCallResponse;
+    let callResponse: ExpandAppCallResponse;
 
     try {
-        await oAuth2Disconnect(req.body);
-        callResponse = newOKCallResponse();
+        const message = await oAuth2Disconnect(req.body);
+        callResponse = newOKCallResponseWithMarkdown(message);
     } catch (error: any) {
         callResponse = showMessageToMattermost(error);
     }

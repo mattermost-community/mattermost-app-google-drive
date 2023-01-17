@@ -1,9 +1,8 @@
 import { AppExpandLevels, Commands, GoogleDriveIcon, Routes } from '../constant';
-import manifest from '../manifest.json';
-import { AppBinding, AppContext } from '../types';
+import { ExtendedAppBinding, ExtendedAppContext } from '../types';
 import { configureI18n } from '../utils/translations';
 
-export const getHelpBinding = (context: AppContext): AppBinding => {
+export const getHelpBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -22,7 +21,7 @@ export const getHelpBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getConfigureBinding = (context: AppContext): AppBinding => {
+export const getConfigureBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -40,7 +39,7 @@ export const getConfigureBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getConnectBinding = (context: AppContext): AppBinding => {
+export const getConnectBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -59,7 +58,7 @@ export const getConnectBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getDisconnectBinding = (context: AppContext): AppBinding => {
+export const getDisconnectBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -79,7 +78,7 @@ export const getDisconnectBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getNotificationBinding = (context: AppContext): AppBinding => {
+export const getNotificationBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     const subCommands: string[] = [
@@ -87,7 +86,7 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
         Commands.STOP,
     ];
 
-    const bindings: AppBinding[] = [];
+    const bindings: ExtendedAppBinding[] = [];
     bindings.push(getNotificationStartBinding(context));
     bindings.push(getNotificationStopBinding(context));
 
@@ -100,7 +99,7 @@ export const getNotificationBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getNotificationStartBinding = (context: AppContext): AppBinding => {
+export const getNotificationStartBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -120,7 +119,7 @@ export const getNotificationStartBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const getNotificationStopBinding = (context: AppContext): AppBinding => {
+export const getNotificationStopBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -140,7 +139,7 @@ export const getNotificationStopBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => {
+export const getCreateGoogleFilesBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     const commands: string[] = [
@@ -149,7 +148,7 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
         Commands.SPREADSHEET,
     ];
 
-    const bindings: AppBinding[] = [];
+    const bindings: ExtendedAppBinding[] = [];
     bindings.push(getCreateDocumentBinding(context));
     bindings.push(getCreatePresentationBinding(context));
     bindings.push(getCreateSpreadsheetBinding(context));
@@ -163,7 +162,7 @@ export const getCreateGoogleFilesBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
+export const getCreateDocumentBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -183,7 +182,7 @@ export const getCreateDocumentBinding = (context: AppContext): AppBinding => {
     };
 };
 
-export const getCreatePresentationBinding = (context: AppContext): AppBinding => {
+export const getCreatePresentationBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -203,7 +202,7 @@ export const getCreatePresentationBinding = (context: AppContext): AppBinding =>
     };
 };
 
-export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => {
+export const getCreateSpreadsheetBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {
@@ -223,7 +222,7 @@ export const getCreateSpreadsheetBinding = (context: AppContext): AppBinding => 
     };
 };
 
-export const saveFileOnDriveBinding = (context: AppContext): AppBinding => {
+export const saveFileOnDriveBinding = (context: ExtendedAppContext): ExtendedAppBinding => {
     const i18nObj = configureI18n(context);
 
     return {

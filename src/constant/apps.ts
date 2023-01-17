@@ -1,4 +1,4 @@
-import { AppCallResponseType, AppCallType, AppExpandLevel, AppFieldType } from '../types';
+import { AppCallResponseType, AppExpandLevel, AppFieldType } from '@mattermost/types/lib/apps';
 
 export const AppBindingLocations = {
     POST_MENU_ITEM: '/post_menu',
@@ -20,7 +20,7 @@ export const AppCallResponseTypes: { [name: string]: AppCallResponseType } = {
     NAVIGATE: 'navigate',
 };
 
-export const AppCallTypes: { [name: string]: AppCallType } = {
+export const AppCallTypes: { [name: string]: string } = {
     SUBMIT: 'submit',
     LOOKUP: 'lookup',
     FORM: 'form',

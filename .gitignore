@@ -6,9 +6,11 @@
 # Node artifact files
 node_modules/
 dist/
+dist-ts/
 .idea
 /node_modules/
 /dist/
+/dist-ts/
 /.idea/
 
 

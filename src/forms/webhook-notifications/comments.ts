@@ -41,7 +41,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     const drive = await getGoogleDriveClient(call);
     const target = head(activity.targets) as GA$Target;
     const urlToComment = target.fileComment?.linkToDiscussion as string;
-    const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const commentParam = {
         fileId: <string>file.id,
@@ -49,16 +49,15 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const author = comment.author;
     const actorEmail = <string>file.lastModifyingUser?.emailAddress;
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser?.username}`;
     }
 
@@ -104,7 +103,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const lastReply = last(comment.replies) as Schema$Reply;
     const oneBeforeLast = (comment.replies as Schema$Reply[]).at(-2) as Schema$Reply;
     const author = lastReply.author;
@@ -112,10 +111,11 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
+
     const message = h5(i18nObj.__('comments.reply.comment',
         {
             userDisplay,
@@ -153,14 +153,14 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const author = comment.author;
     const actorEmail = <string>file.lastModifyingUser?.emailAddress;
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
 
@@ -188,15 +188,15 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'));
+    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const lastReply = last(comment.replies) as Schema$Reply;
     const author = lastReply.author;
     const actorEmail = <string>file.lastModifyingUser?.emailAddress;
 
     let userDisplay = `${author?.displayName} (${actorEmail})`;
 
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail) as User;
-    if (Boolean(mmUser)) {
+    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
+    if (mmUser) {
         userDisplay = `@${mmUser.username}`;
     }
 

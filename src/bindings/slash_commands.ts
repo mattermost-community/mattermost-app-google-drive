@@ -6,10 +6,9 @@ import {
 } from '../constant';
 import {
     AppActingUser,
-    AppBinding,
-    AppCallRequest,
-    AppContext,
-    AppsState,
+    ExtendedAppBinding,
+    ExtendedAppCallRequest,
+    ExtendedAppContext,
     Oauth2App,
 } from '../types';
 import {
@@ -30,7 +29,7 @@ import {
     getNotificationBinding,
 } from './bindings';
 
-const newCommandBindings = (context: AppContext, bindings: AppBinding[], commands: string[]): AppsState => {
+const newCommandBindings = (context: ExtendedAppContext, bindings: ExtendedAppBinding[], commands: string[]): ExtendedAppBinding => {
     const m = manifest;
     const i18nObj = configureI18n(context);
 
@@ -51,12 +50,12 @@ const newCommandBindings = (context: AppContext, bindings: AppBinding[], command
     };
 };
 
-export const getCommandBindings = async (call: AppCallRequest): Promise<AppsState> => {
+export const getCommandBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
     const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
     const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
-    const context = call.context as AppContext;
+    const context = call.context as ExtendedAppContext;
 
-    const bindings: AppBinding[] = [getHelpBinding(context)];
+    const bindings: ExtendedAppBinding[] = [getHelpBinding(context)];
     const commands: string[] = [Commands.HELP];
 
     if (isUserSystemAdmin(actingUser)) {
