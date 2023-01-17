@@ -1,8 +1,11 @@
+import axios, { AxiosResponse } from 'axios';
 import { Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1 } from 'googleapis';
 import { head } from 'lodash';
+import stream from 'stream';
+var slice = require('stream-slice').slice;
 
 import { ExceptionType, KVStoreGoogleData } from '../constant';
-import { ExtendedAppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
+import { ExtendedAppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Metadata_File, Oauth2App, Oauth2CurrentUser } from '../types';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
 
@@ -90,3 +93,96 @@ export const getGoogleSheetsClient = async (call: ExtendedAppCallRequest): Promi
         auth,
     });
 };
+
+//TODO: Make the file upload using multiple PUT request
+export const uploadFilesGoogleClient = async (file: stream, metadata: Metadata_File, token: string): Promise<any> => {
+    const url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
+    return axios.post(url, { name: metadata.name }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            'X-Upload-Content-Length': metadata.size,
+            'X-Upload-Content-Type': "application/octet-stream"
+        },
+    }).then((response: AxiosResponse<any>) => {
+
+        const fullSize = metadata.size;
+        const byteSplit = (256 * 1024 * 2);
+
+/*
+        let readBytes = 0;
+        file.on('data', (chunk) => {
+            readBytes += chunk.length;
+        });
+
+
+        file.on('end', () => {
+            console.log('All done.', readBytes, ' -> ', metadata.size);
+        });
+        */
+
+        let readBytes = 0;
+        const sliceFile: any = []
+
+        //for (let index = 0; index < fullSize; index += byteSplit) {
+        file.pipe(slice(0, 524288))
+            .on('data', (data: any) => {
+                readBytes += data.length;
+                sliceFile.push(data);
+            });
+
+        file.on('end', () => {
+            console.log('All done.', readBytes, ' -> ', metadata.size);
+            console.log(sliceFile.length);
+            const file = Buffer.from(new Int8Array(sliceFile))
+            axios.put(response['headers'].location, file, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Range": `bytes 0-${524288}/${fullSize}`,
+                    'Content-Type': "application/octet-stream",
+                },
+            }).then((response: AxiosResponse<any>) => {
+                console.log('done');
+                console.log(response.data);
+            }).catch(err => console.log(err));
+        });
+            
+        //}
+
+        /*
+        file.pipe(slice(0, byteSplit))
+        .on('data', (data: any) => {
+            axios.put(response['headers'].location, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Range": `bytes 0-${byteSplit}/${fullSize}`,
+                    'Content-Type': "application/octet-stream",
+                },
+            }).then((response: AxiosResponse<any>) => {
+                console.log(response.data);
+            }).catch(err => console.log(err));
+        });
+        */
+
+        /*
+        for (let index = 0; index < fullSize + 1; index++) {
+            const element = array[index];
+            
+        }
+        */
+
+        /*
+        axios.put(response['headers'].location, file, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Range": `bytes 0-${metadata.size - 1}/${metadata.size}`,
+                'Content-Type': "application/octet-stream",
+            },
+        }).then((response: AxiosResponse<any>) => {
+            console.log(response.data);
+        }).catch(err => console.log(err));
+        */
+        
+    }).catch(err => console.log('err POST'));
+
+}

@@ -5,7 +5,7 @@ import { head } from 'lodash';
 import moment from 'moment';
 
 import { MattermostClient } from '../clients';
-import { getGoogleDriveClient } from '../clients/google-client';
+import { getGoogleDriveClient, getGoogleOAuth, uploadFilesGoogleClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
 import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Metadata_File, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
@@ -88,10 +88,13 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const fileIds = post.file_ids;
     const filesMetadata = post.metadata?.files;
-    const drive = await getGoogleDriveClient(call);
-    const promiseArray: Promise<Schema$File>[] = [];
+    //const drive = await getGoogleDriveClient(call);
+    const promiseArray: Promise<Schema$File | void>[] = [];
+    const google = await getGoogleOAuth(call);
+    const token = await google.getAccessToken();
 
-    const uploadFile = async (streamFile: Promise<stream>, metadata: Metadata_File): Promise<Schema$File> => {
+    const uploadFile = async (streamFile: Promise<stream>, metadata: Metadata_File): Promise<Schema$File | void> => {
+        /*
         const { data } = await drive.files.create({
             media: {
                 mimeType: metadata.mime_type,
@@ -103,6 +106,9 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             fields: 'id,name,webViewLink,iconLink,owners,createdTime',
         });
         return data;
+        */
+
+        uploadFilesGoogleClient(await streamFile, metadata, token.token as string)
     };
 
     for (let index = 0; index < fileIds.length; index++) {
@@ -115,6 +121,8 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         promiseArray.push(uploadFile(mmClient.getFileUploaded(metadata.id), metadata));
     }
 
+    await Promise.all(promiseArray)
+    /*
     const attachments = (await Promise.all(promiseArray)).map((fileUp) => {
         const owner = head(fileUp.owners) as Schema$User;
         return {
@@ -143,4 +151,6 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
     await tryPromiseMattermost<PostResponse>(mmClient.createPost(postCreate), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
 
     return message;
+    */ 
+   return 'up'
 }

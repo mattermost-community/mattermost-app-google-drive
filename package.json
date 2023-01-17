@@ -36,6 +36,7 @@
     "request": "^2.88.2",
     "serverless-http": "^3.0.3",
     "stream": "^0.0.2",
+    "stream-slice": "^0.1.2",
     "uuid": "^8.3.2",
     "winston": "^3.8.2"
   },
