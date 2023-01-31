@@ -141,6 +141,7 @@
 		}
 	},
 	"comments": {
+		"someone": "Someone",
 		"file-icon": "File icon",
 		"add": {
 			"text-mentioned": "{{ userDisplay }} mentioned you in {{ image }} {{ link }}",
@@ -148,7 +149,8 @@
 		},
 		"reply": {
 			"comment": "{{ userDisplay }} replied to a comment in {{ image }} {{ link }}",
-			"previous": "Previous reply:"
+			"previous": "Previous reply:",
+			"suggestion": "{{ userDisplay }} added a new suggestion in {{ image }} {{ link }}"
 		},
 		"resolved": {
 			"message": "{{ userDisplay }} marked a thread as resolved in {{ image }} {{ link }}"

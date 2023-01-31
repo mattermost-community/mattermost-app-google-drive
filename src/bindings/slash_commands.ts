@@ -50,10 +50,10 @@ const newCommandBindings = (context: ExtendedAppContext, bindings: ExtendedAppBi
     };
 };
 
-export const getCommandBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
-    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
-    const context = call.context as ExtendedAppContext;
+export const getCommandBindings = (call: ExtendedAppCallRequest): ExtendedAppBinding => {
+    const actingUser: AppActingUser = call.context.acting_user;
+    const oauth2App: Oauth2App = call.context.oauth2;
+    const context = call.context;
 
     const bindings: ExtendedAppBinding[] = [getHelpBinding(context)];
     const commands: string[] = [Commands.HELP];
@@ -63,7 +63,7 @@ export const getCommandBindings = async (call: ExtendedAppCallRequest): Promise<
         commands.push(Commands.CONFIGURE);
     }
 
-    if (await existsOauth2AppConfig(oauth2App)) {
+    if (existsOauth2AppConfig(oauth2App)) {
         if (isConnected(oauth2App)) {
             commands.push(Commands.NOTIFICATION);
             bindings.push(getNotificationBinding(context));

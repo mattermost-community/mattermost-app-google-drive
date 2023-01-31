@@ -9,7 +9,7 @@ import { configureI18n } from '../utils/translations';
 import { existsOauth2AppConfig, isConnected, isUserSystemAdmin } from '../utils/utils';
 
 export const getHelp = async (request: Request, response: Response) => {
-    const context = request.body.context as ExtendedAppContext;
+    const context: ExtendedAppContext = request.body.context;
 
     const helpText: string = await getCommands(context);
     const callResponse: ExpandAppCallResponse = newOKCallResponseWithMarkdown(helpText);
@@ -24,8 +24,8 @@ function getHeader(context: ExtendedAppContext): string {
 async function getCommands(context: ExtendedAppContext): Promise<string> {
     const i18nObj = configureI18n(context);
     const homepageUrl: string = manifest.homepage_url;
-    const actingUser: AppActingUser = context.acting_user as AppActingUser;
-    const oauth2App: Oauth2App = context.oauth2 as Oauth2App;
+    const actingUser: AppActingUser = context.acting_user;
+    const oauth2App: Oauth2App = context.oauth2;
     const commands: string[] = [];
 
     commands.push(addBulletSlashCommand(Commands.HELP, i18nObj.__('help-binding.descriptions.help', { homepageUrl })));

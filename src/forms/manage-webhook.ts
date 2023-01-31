@@ -6,7 +6,7 @@ import { getGoogleDriveActivityClient, getGoogleDriveClient } from '../clients/g
 import { ExceptionType } from '../constant';
 import GeneralConstants from '../constant/general';
 import { GoogleResourceState } from '../constant/google-kinds';
-import { AppActingUser, Change, ChangeList, GA$DriveActivity, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest } from '../types';
+import { AppActingUser, Change, ChangeList, GA$Comment, GA$DriveActivity, GA$PermissionDetails, GA$QueryDriveActivityResponse, Schema$File, StartPageToken, WebhookRequest } from '../types';
 import { tryPromise } from '../utils/utils';
 
 import { manageCommentOnFile } from './webhook-notifications/comments';
@@ -19,7 +19,9 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
 
     const paramsd = new URLSearchParams(call.values.rawQuery);
     const userId = paramsd.get('userId');
-
+    if (!userId) {
+        return;
+    }
     const acting_user = {
         id: userId,
     } as AppActingUser;
@@ -33,8 +35,11 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
     };
 
     const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ', call);
-    const lastChange = head(list.changes) as Change;
-    const file = lastChange?.file as Schema$File;
+    const lastChange: Change | undefined = head(list.changes);
+    const file: Schema$File | undefined = lastChange?.file;
+    if (!file) {
+        return;
+    }
     if (Boolean(file.lastModifyingUser?.me)) {
         return;
     }
@@ -55,14 +60,20 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
         itemName: `items/${file.id}`,
     };
 
-    const activityRes = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ', call);
-    const activity = head(activityRes?.activities) as GA$DriveActivity;
-    if (Boolean(activity.primaryActionDetail?.permissionChange)) {
-        await permissionsChanged(call, file, activity);
+    const activityRes: GA$QueryDriveActivityResponse = await tryPromise<GA$QueryDriveActivityResponse>(activityClient.activity.query({ requestBody: paramsActivity }), ExceptionType.TEXT_ERROR, 'Google failed: ', call);
+    const activity: GA$DriveActivity | undefined = head(activityRes?.activities);
+
+    if (!activity) {
         return;
     }
 
-    if (Boolean(activity.primaryActionDetail?.comment)) {
+    const permission: GA$PermissionDetails | undefined = activity.primaryActionDetail?.permissionChange;
+    if (permission) {
+        await permissionsChanged(call, file, activity);
+    }
+
+    const comment: GA$Comment | undefined = activity.primaryActionDetail?.comment;
+    if (comment) {
         await manageCommentOnFile(call, file, activity);
     }
 }

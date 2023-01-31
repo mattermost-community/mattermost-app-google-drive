@@ -8,9 +8,9 @@ import { configureI18n } from '../utils/translations';
 import { isConnected, isUserSystemAdmin, showMessageToMattermost } from '../utils/utils';
 
 export const requireSystemAdmin = (req: Request, res: Response, next: () => void) => {
-    const call: ExtendedAppCallRequest = req.body as ExtendedAppCallRequest;
+    const call: ExtendedAppCallRequest = req.body;
     const i18nObj = configureI18n(call.context);
-    const actingUser: AppActingUser = call.context.acting_user as AppActingUser;
+    const actingUser: AppActingUser = call.context.acting_user;
 
     if (!actingUser) {
         res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.not-provided'), call)));
@@ -26,9 +26,9 @@ export const requireSystemAdmin = (req: Request, res: Response, next: () => void
 };
 
 export const requireUserOAuthConnected = (req: Request, res: Response, next: () => void) => {
-    const call: ExtendedAppCallRequest = req.body as ExtendedAppCallRequest;
+    const call: ExtendedAppCallRequest = req.body;
     const i18nObj = configureI18n(call.context);
-    const oauth2: Oauth2App = call.context.oauth2 as Oauth2App;
+    const oauth2: Oauth2App = call.context.oauth2;
 
     if (!isConnected(oauth2)) {
         res.json(showMessageToMattermost(new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), call)));

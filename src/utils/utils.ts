@@ -24,7 +24,7 @@ export function isUserSystemAdmin(actingUser: AppActingUser): boolean {
     return Boolean(actingUser.roles && actingUser.roles.includes(GeneralConstants.SYSTEM_ADMIN_ROLE));
 }
 
-export async function existsOauth2AppConfig(oauth2App: Oauth2App): Promise<boolean> {
+export function existsOauth2AppConfig(oauth2App: Oauth2App): boolean {
     return Boolean(oauth2App.client_id) && Boolean(oauth2App.client_secret);
 }
 

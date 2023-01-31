@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { Exception } from '../utils/exception';
+
 import { KVStoreClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { ExceptionType, KVStoreGoogleData, Routes, StoreKeys } from '../constant';
@@ -39,26 +41,27 @@ export async function stopNotificationsCall(call: ExtendedAppCallRequest): Promi
 }
 
 export async function startNotificationsCall(call: ExtendedAppCallRequest): Promise<string> {
-    const mattermostUrl: string = process.env.LOCAL === 'TRUE' ?
-        process.env.MATTERMOST_URL as string :
-        call.context.mattermost_site_url!;
+    const mattermostUrl: string = call.context.mattermost_site_url;
 
     const botAccessToken: string = call.context.bot_access_token!;
     const appPath: string = call.context.app_path!;
     const actingUserId: string = call.context.acting_user.id!;
     const i18nObj = configureI18n(call.context);
-    const webhookSecret: string = call.context.app?.webhook_secret as string;
+    const webhookSecret: string = call.context.app?.webhook_secret;
 
     const drive = await getGoogleDriveClient(call);
 
     const pageToken = await tryPromise<StartPageToken>(drive.changes.getStartPageToken(), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
+    if (!pageToken.startPageToken) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
     const urlWithParams = new URL(`${mattermostUrl}${appPath}${Routes.App.CallPathIncomingWebhookPath}`);
     urlWithParams.searchParams.append(KVStoreGoogleData.USER_ID, actingUserId);
     urlWithParams.searchParams.append(KVStoreGoogleData.SECRET, webhookSecret);
 
     const params = {
-        pageToken: <string>pageToken.startPageToken,
+        pageToken: pageToken.startPageToken,
         fields: '*',
         requestBody: {
             kind: GoogleKindsAPI.CHANNEL,
@@ -73,6 +76,9 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
     };
 
     const watchChannel = await tryPromise<Schema$Channel>(drive.changes.watch(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    if (!watchChannel.id || !watchChannel.resourceId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
 
     const options: KVStoreOptions = {
         mattermostUrl,
@@ -81,8 +87,8 @@ export async function startNotificationsCall(call: ExtendedAppCallRequest): Prom
     const kvStoreClient = new KVStoreClient(options);
 
     const currentChannel: ChannelNotification = {
-        channelId: <string>watchChannel.id,
-        resourceId: <string>watchChannel.resourceId,
+        channelId: watchChannel.id,
+        resourceId: watchChannel.resourceId,
     };
 
     await kvStoreClient.kvSet(`drive_notifications-${actingUserId}`, currentChannel);
