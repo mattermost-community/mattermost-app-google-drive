@@ -1,6 +1,8 @@
 import { Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1 } from 'googleapis';
 import { head } from 'lodash';
 
+import { Exception } from '../utils/exception';
+
 import { ExceptionType, KVStoreGoogleData } from '../constant';
 import { ExtendedAppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
 import { configureI18n } from '../utils/translations';
@@ -9,7 +11,7 @@ import { tryPromise } from '../utils/utils';
 import { KVStoreClient } from './kvstore';
 
 export const getOAuthGoogleClient = async (call: ExtendedAppCallRequest): Promise<Auth.OAuth2Client> => {
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
+    const oauth2App: Oauth2App = call.context.oauth2;
     const oAuth2Client = new google.auth.OAuth2(
         oauth2App.client_id,
         oauth2App.client_secret,
@@ -25,7 +27,7 @@ export const getGoogleOAuth = async (call: ExtendedAppCallRequest): Promise<Auth
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const botAccessToken: string = call.context.bot_access_token!;
     const actingUserId: string = call.context.acting_user.id!;
-    let oauth2Token = call.context.oauth2?.user as Oauth2CurrentUser;
+    let oauth2Token: Oauth2CurrentUser | undefined = call.context.oauth2?.user;
 
     if (!oauth2Token?.refresh_token) {
         const kvOptions: KVStoreOptions = {
@@ -34,10 +36,14 @@ export const getGoogleOAuth = async (call: ExtendedAppCallRequest): Promise<Auth
         };
         const kvStoreClient = new KVStoreClient(kvOptions);
         const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-        const kvGUser: KVGoogleUser = googleData?.userData?.find((user) => head(Object.keys(user)) === actingUserId) as KVGoogleUser;
-        if (Boolean(kvGUser)) {
-            oauth2Token = head(Object.values(<KVGoogleUser>kvGUser)) as Oauth2CurrentUser;
+        const kvGUser: KVGoogleUser | undefined = googleData?.userData?.find((user) => head(Object.keys(user)) === actingUserId);
+        if (kvGUser) {
+            oauth2Token = head(Object.values(kvGUser));
         }
+    }
+
+    if (!oauth2Token) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), call);
     }
 
     const oauth2Client = await getOAuthGoogleClient(call);

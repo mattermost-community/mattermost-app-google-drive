@@ -141,14 +141,16 @@
     }
   },
   "comments": {
+    "someone": "Alguien",
     "file-icon": "Icono de archivo",
     "add": {
       "text-mentioned": "{{ userDisplay }} te mencionó en {{ image }} {{ link }}",
       "text-comment": "{{ userDisplay }} ha comentado en {{ image }} {{ link }}"
     },
     "reply": {
-      "comment": "{{ userDisplay }}  respondió a un comentario en {{ image }} {{ link }}",
-      "previous": "Respuesta anterior:"
+      "comment": "{{ userDisplay }} respondió a un comentario en {{ image }} {{ link }}",
+      "previous": "Respuesta anterior:",
+      "suggestion": "{{ userDisplay }} agregó una nueva sugerencia a {{ image }} {{ link }}"
     },
     "resolved": {
       "message": "{{ userDisplay }} marcó un hilo como resuelto en {{ image }} {{ link }}"

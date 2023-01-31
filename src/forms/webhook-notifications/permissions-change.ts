@@ -5,21 +5,15 @@ import { h5, hyperlink, inLineImage } from '../../utils/markdown';
 import { postBotChannel } from '../../utils/post-in-channel';
 import { configureI18n } from '../../utils/translations';
 
-import { getMattermostUserFromGoogleEmail } from './get-mm-username';
+import { displayUserActor } from './get-mm-username';
 
 export async function permissionsChanged(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
-    const author = file.sharingUser as Schema$User;
-    const actorEmail = <string>author.emailAddress;
-    let userDisplay = `${author?.displayName} (${actorEmail})`;
+    const author: Schema$User | undefined = file.sharingUser;
+    const userDisplay: string = await displayUserActor(call, author);
 
-    const mmUser: User | null = await getMattermostUserFromGoogleEmail(call, actorEmail);
-    if (mmUser) {
-        userDisplay = `@${mmUser.username}`;
-    }
-
-    const message = h5(i18nObj.__('permission-change.message', { userDisplay }));
+    const message: string = h5(i18nObj.__('permission-change.message', { userDisplay }));
     const description = `${inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`)} ${hyperlink(`${file?.name}`, `${file?.webViewLink}`)}`;
 
     const props = {

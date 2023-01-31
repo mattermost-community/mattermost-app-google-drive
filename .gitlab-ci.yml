@@ -1,0 +1,15 @@
+# This will run on the internal gitlab
+# Will run only when have a tag pushed
+# Internal GitLab repo: https://git.internal.mattermost.com/mattermost/ci/mattermost-apps
+
+stages:
+  - build
+  - publish
+
+include:
+  - project: mattermost/ci/mattermost-apps
+    ref: main
+    file: private.yml
+
+variables:
+  IMAGE_TO_BUILD: cimg/node:15.6.0

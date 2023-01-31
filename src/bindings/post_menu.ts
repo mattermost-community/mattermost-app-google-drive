@@ -31,9 +31,9 @@ const newPostMenuBindings = (bindings: ExtendedAppBinding[]): ExtendedAppBinding
 };
 
 export const getPostMenuBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
+    const oauth2App: Oauth2App = call.context.oauth2;
     const bindings: ExtendedAppBinding[] = [];
-    const context = call.context as ExtendedAppContext;
+    const context: ExtendedAppContext = call.context;
 
     if (await existsOauth2AppConfig(oauth2App)) {
         if (isConnected(oauth2App)) {

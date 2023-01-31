@@ -13,7 +13,7 @@ export const postBotChannel = async (call: ExtendedAppCallRequest, message: stri
     };
 
     const mattermostClient: MattermostClient = new MattermostClient(mattermostOption);
-    const channel: Channel = await mattermostClient.createDirectChannel([<string>botUserId, <string>actingUserId]);
+    const channel: Channel = await mattermostClient.createDirectChannel([botUserId, actingUserId]);
 
     const post: PostCreate = {
         message,
