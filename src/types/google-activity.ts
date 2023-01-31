@@ -51,6 +51,8 @@ export type GA$CommentSubtype =
     'RESOLVED' |	// A posted comment was resolved.
     'REOPENED'; // A posted comment was reopened.
 
+export type GA$SuggestionSubtype = 'REPLY_ADDED'// A reply was added.
+
 export interface GA$Assignment {
     assignedUser?: GA$User;
     subtype?: string | null;
@@ -63,7 +65,7 @@ export interface GA$Comment {
         subtype?: GA$CommentSubtype;
     },
     suggestion?: {
-        subtype?: string | null;
+        subtype?: GA$SuggestionSubtype | null;
     }
 }
 

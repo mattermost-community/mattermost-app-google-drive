@@ -1,23 +1,41 @@
+import { drive_v3 } from 'googleapis';
 import { head, last } from 'lodash';
 
 import { getGoogleDriveClient } from '../../clients/google-client';
 import { ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes } from '../../constant';
 import manifest from '../../manifest.json';
-import { GA$CommentSubtype, GA$DriveActivity, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, StateCommentPost, User, WebhookRequest } from '../../types';
+import { GA$Comment, GA$CommentSubtype, GA$DriveActivity, GA$SuggestionSubtype, GA$Target, PostBasicData, Schema$About, Schema$Comment, Schema$File, Schema$Reply, Schema$User, StateCommentPost, User, WebhookRequest } from '../../types';
 import { bold, h5, hyperlink, inLineImage } from '../../utils/markdown';
 import { postBotChannel } from '../../utils/post-in-channel';
 import { configureI18n } from '../../utils/translations';
 import { tryPromise } from '../../utils/utils';
 
-import { getMattermostUserFromGoogleEmail } from './get-mm-username';
+import { displayUserActor } from './get-mm-username';
 type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) => void;
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
-    const subtype = activity.primaryActionDetail?.comment?.post?.subtype as GA$CommentSubtype;
+    const activityComment: GA$Comment | undefined = activity.primaryActionDetail?.comment;
+    const post = activityComment?.post;
+    const postSubtype: GA$CommentSubtype | null | undefined = post?.subtype;
 
-    const action: CallbackFunction = COMMENT_ACTIONS[subtype];
-    if (action) {
-        await action(call, file, activity);
+    if (postSubtype) {
+        const postAction: CallbackFunction | null = COMMENT_ACTIONS[postSubtype];
+
+        if (postAction) {
+            await postAction(call, file, activity);
+            return;
+        }
+    }
+
+    const suggestion = activityComment?.suggestion;
+    const suggestionSubtype: GA$SuggestionSubtype | null | undefined = suggestion?.subtype;
+
+    if (suggestionSubtype) {
+        const suggestionAction: CallbackFunction = SUGGESTIONS_ACTIONS[suggestionSubtype];
+
+        if (suggestionAction) {
+            await suggestionAction(call, file, activity);
+        }
     }
 }
 
@@ -31,6 +49,36 @@ const COMMENT_ACTIONS: { [key in GA$CommentSubtype]: CallbackFunction } = {
     REOPENED: funCommentReOpened,
 };
 
+const SUGGESTIONS_ACTIONS: { [key in GA$SuggestionSubtype]: CallbackFunction } = {
+    REPLY_ADDED: funSuggestionReplyAdded,
+};
+
+async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+    const i18nObj = configureI18n(call.context);
+
+    const target = head(activity.targets) as GA$Target;
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
+
+    const fileId: string | null | undefined = file.id;
+    const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
+    const lastModifyingUser: Schema$User | undefined = file.lastModifyingUser;
+
+    if (!fileId || !commentId) {
+        return;
+    }
+
+    const userDisplay: string = await displayUserActor(call, lastModifyingUser);
+    const message = h5(i18nObj.__('comments.reply.suggestion',
+        {
+            userDisplay,
+            image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
+        })
+    );
+
+    await postBotChannel(call, message, {});
+}
+
 async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
 }
@@ -38,34 +86,37 @@ async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$F
 async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
 
-    const drive = await getGoogleDriveClient(call);
-    const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const drive: drive_v3.Drive = await getGoogleDriveClient(call);
+    const target: GA$Target | undefined = head(activity.targets);
+
+    if (!target) {
+        return;
+    }
+
+    const commentId: string | null | undefined = target.fileComment?.legacyCommentId;
+    const fileId: string | null | undefined = file.id;
+    if (!commentId || !fileId) {
+        return;
+    }
+
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
     const about: Schema$About = await tryPromise<Schema$About>(drive.about.get({ fields: 'user' }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const commentParam = {
-        fileId: <string>file.id,
-        commentId: <string>target.fileComment?.legacyCommentId,
+        fileId,
+        commentId,
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    const comment: Schema$Comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    const author: Schema$User | undefined = comment.author;
+    const userDisplay: string = await displayUserActor(call, author);
 
-    const author = comment.author;
-    const actorEmail = <string>file.lastModifyingUser?.emailAddress;
-
-    let userDisplay = `${author?.displayName} (${actorEmail})`;
-
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
-    if (mmUser) {
-        userDisplay = `@${mmUser?.username}`;
-    }
-
-    const mentions = comment.content?.includes(<string>about.user.emailAddress) ?
+    const mentions: string = comment.content?.includes(<string>about.user.emailAddress) ?
         'comments.add.text-mentioned' :
         'comments.add.text-comment';
 
-    const message = h5(i18nObj.__(mentions,
+    const message: string = h5(i18nObj.__(mentions,
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
@@ -79,12 +130,13 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
         message,
         description,
     };
+
     const state: StateCommentPost = {
         comment: {
-            id: <string>target.fileComment?.legacyCommentId,
+            id: commentId,
         },
         file: {
-            id: <string>file.id,
+            id: fileId,
         },
     };
     await postNewCommentOnMattermost(call, postData, state);
@@ -94,29 +146,41 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
-    const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const target: GA$Target | undefined = head(activity.targets);
+    if (!target) {
+        return;
+    }
+
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
+    const fileId: string | null | undefined = file.id;
+    const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
+
+    if (!fileId || !commentId) {
+        return;
+    }
 
     const commentParam = {
-        fileId: <string>file.id,
-        commentId: <string>target.fileComment?.legacyDiscussionId,
+        fileId,
+        commentId,
+        includeDeleted: true,
         fields: '*',
     };
 
-    const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-    const lastReply = last(comment.replies) as Schema$Reply;
-    const oneBeforeLast = (comment.replies as Schema$Reply[]).at(-2) as Schema$Reply;
-    const author = lastReply.author;
-    const actorEmail = <string>file.lastModifyingUser?.emailAddress;
+    const comment: Schema$Comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    const replies: Schema$Reply[] | undefined = comment.replies;
 
-    let userDisplay = `${author?.displayName} (${actorEmail})`;
-
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
-    if (mmUser) {
-        userDisplay = `@${mmUser.username}`;
+    if (!replies) {
+        return;
     }
 
-    const message = h5(i18nObj.__('comments.reply.comment',
+    const lastReply: Schema$Reply | undefined = last(comment.replies);
+    const oneBeforeLast: Schema$Reply | undefined = (comment.replies as Schema$Reply[]).at(-2);
+    if (!lastReply || !oneBeforeLast) {
+        return;
+    }
+
+    const userDisplay: string = await displayUserActor(call, lastReply.author);
+    const message: string = h5(i18nObj.__('comments.reply.comment',
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
@@ -134,7 +198,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
             id: <string>target.fileComment?.legacyDiscussionId,
         },
         file: {
-            id: <string>file.id,
+            id: fileId,
         },
     };
     await postNewCommentOnMattermost(call, postData, state);
@@ -144,25 +208,27 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
-    const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const target: GA$Target | undefined = head(activity.targets);
+
+    if (!target) {
+        return;
+    }
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
+    const fileId: string | null | undefined = file.id;
+    const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
+
+    if (!fileId || !commentId) {
+        return;
+    }
 
     const commentParam = {
-        fileId: <string>file.id,
-        commentId: <string>target.fileComment?.legacyDiscussionId,
+        fileId,
+        commentId,
         fields: '*',
     };
 
     const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-    const author = comment.author;
-    const actorEmail = <string>file.lastModifyingUser?.emailAddress;
-
-    let userDisplay = `${author?.displayName} (${actorEmail})`;
-
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
-    if (mmUser) {
-        userDisplay = `@${mmUser.username}`;
-    }
+    const userDisplay: string = await displayUserActor(call, comment.author);
 
     const message = h5(i18nObj.__('comments.resolved.message',
         {
@@ -179,26 +245,30 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
-    const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const target: GA$Target | undefined = head(activity.targets);
+    if (!target) {
+        return;
+    }
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
+    const fileId: string | null | undefined = file.id;
+    const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
+
+    if (!fileId || !commentId) {
+        return;
+    }
 
     const commentParam = {
-        fileId: <string>file.id,
-        commentId: <string>target.fileComment?.legacyDiscussionId,
+        fileId,
+        commentId,
         fields: '*',
     };
 
     const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-    const lastReply = last(comment.replies) as Schema$Reply;
-    const author = lastReply.author;
-    const actorEmail = <string>file.lastModifyingUser?.emailAddress;
-
-    let userDisplay = `${author?.displayName} (${actorEmail})`;
-
-    const mmUser = await getMattermostUserFromGoogleEmail(call, actorEmail);
-    if (mmUser) {
-        userDisplay = `@${mmUser.username}`;
+    const lastReply: Schema$Reply | undefined = last(comment.replies);
+    if (!lastReply) {
+        return;
     }
+    const userDisplay: string = await displayUserActor(call, lastReply.author);
 
     const message = h5(i18nObj.__('comments.reopened.message',
         {
@@ -219,7 +289,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
             id: <string>target.fileComment?.legacyDiscussionId,
         },
         file: {
-            id: <string>file.id,
+            id: fileId,
         },
     };
     await postNewCommentOnMattermost(call, postData, state);
@@ -228,13 +298,16 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
 async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
 
-    const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const target: GA$Target | undefined = head(activity.targets);
+    if (!target) {
+        return;
+    }
 
+    const urlToComment: string | undefined | null = target.fileComment?.linkToDiscussion;
     const message = h5(i18nObj.__('comments.delete.messsage',
         {
             image: inLineImage(i18nObj.__('general.google-error'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         }));
     await postBotChannel(call, message, {});
 }
@@ -243,12 +316,12 @@ async function funCommentReplyDeleted(call: WebhookRequest, file: Schema$File, a
     const i18nObj = configureI18n(call.context);
 
     const target = head(activity.targets) as GA$Target;
-    const urlToComment = target.fileComment?.linkToDiscussion as string;
+    const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
 
     const message = h5(i18nObj.__('comments.delete-reply.message',
         {
             image: inLineImage(i18nObj.__('general.google-error'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         }));
     await postBotChannel(call, message, {});
 }
