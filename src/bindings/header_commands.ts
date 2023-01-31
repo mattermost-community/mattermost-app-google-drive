@@ -16,7 +16,7 @@ const newHeaderButtonBindings = (bindings: ExtendedAppBinding[]): ExtendedAppBin
 
 export const getHeaderButtonBindings = async (call: ExtendedAppCallRequest): Promise<ExtendedAppBinding> => {
     const bindings: ExtendedAppBinding[] = [];
-    const context = call.context as ExtendedAppContext;
+    const context: ExtendedAppContext = call.context;
 
     bindings.push(getHelpBinding(context));
 

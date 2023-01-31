@@ -11,7 +11,7 @@ export async function googleClientConfigForm(call: ExtendedAppCallRequest): Prom
     const i18nObj = configureI18n(call.context);
     const homepageUrl: string = manifest.homepage_url;
     const values: KVStoreProps = call.values as KVStoreProps;
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
+    const oauth2App: Oauth2App = call.context.oauth2;
 
     const clientID = values?.google_drive_client_id || oauth2App?.client_id;
     const clientSecret = values?.google_drive_client_secret || oauth2App?.client_secret;

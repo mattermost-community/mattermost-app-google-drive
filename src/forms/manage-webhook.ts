@@ -19,7 +19,9 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
 
     const paramsd = new URLSearchParams(call.values.rawQuery);
     const userId = paramsd.get('userId');
-
+    if (!userId) {
+        return;
+    }
     const acting_user = {
         id: userId,
     } as AppActingUser;
@@ -33,8 +35,11 @@ export async function manageWebhookCall(call: WebhookRequest): Promise<void> {
     };
 
     const list = await tryPromise<ChangeList>(drive.changes.list(params), ExceptionType.TEXT_ERROR, 'Google failed: ', call);
-    const lastChange = head(list.changes) as Change;
-    const file = lastChange?.file as Schema$File;
+    const lastChange: Change | undefined = head(list.changes);
+    const file: Schema$File | undefined = lastChange?.file;
+    if (!file) {
+        return;
+    }
     if (Boolean(file.lastModifyingUser?.me)) {
         return;
     }

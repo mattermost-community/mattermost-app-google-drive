@@ -85,7 +85,7 @@ After [installing](#installation)) the app and [creating a project](#create-a-go
     - Title: Name of the file to be created.
     - Message: Optional. Applicable only if a file is shared in the channel.
     - File Access: Choose to share with members in the channel, with anyone who has the link, or choose to keep it private.
-- ``/drive notifications [start | stop]``: This command will start or stop notification. After a user runs the ``/drive connect`` command, notifications will be posted to the private channel with the user.
+- ``/drive notifications [start | stop]``: This command will start or stop notification. After a user runs the ``/drive connect`` command, notifications will be posted to bot's DM channel with the user.
 
 
 ## Post menu bindings

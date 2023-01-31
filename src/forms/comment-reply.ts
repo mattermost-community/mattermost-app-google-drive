@@ -41,7 +41,7 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
-    const comment: CommentState = call.state as CommentState;
+    const comment: CommentState = call.state;
     const values = call.values as ReplyCommentFormType;
 
     const newReply: Params$Resource$Replies$Create = {
@@ -55,8 +55,8 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
 
     await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
-    const postId: string = call.context.post?.id as string;
-    const channelId: string = call.context.post?.channel_id as string;
+    const postId: string = call.context.post?.id;
+    const channelId: string = call.context.post?.channel_id;
     const botAccessToken: string = call.context.bot_access_token!;
     const mattermostUrl: string = call.context.mattermost_site_url;
 

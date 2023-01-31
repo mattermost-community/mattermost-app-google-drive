@@ -56,7 +56,10 @@ const SUGGESTIONS_ACTIONS: { [key in GA$SuggestionSubtype]: CallbackFunction } =
 async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
 
-    const target = head(activity.targets) as GA$Target;
+    const target: GA$Target | undefined = head(activity.targets);
+    if (!target) {
+        return;
+    }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
 
     const fileId: string | null | undefined = file.id;
@@ -112,7 +115,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     const author: Schema$User | undefined = comment.author;
     const userDisplay: string = await displayUserActor(call, author);
 
-    const mentions: string = comment.content?.includes(<string>about.user.emailAddress) ?
+    const mentions: string = comment.content?.includes(`${about.user.emailAddress}`) ?
         'comments.add.text-mentioned' :
         'comments.add.text-comment';
 
@@ -120,7 +123,7 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         })
     );
 
@@ -173,8 +176,8 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
         return;
     }
 
-    const lastReply: Schema$Reply | undefined = last(comment.replies);
-    const oneBeforeLast: Schema$Reply | undefined = (comment.replies as Schema$Reply[]).at(-2);
+    const lastReply: Schema$Reply | undefined = last(replies);
+    const oneBeforeLast: Schema$Reply | undefined = (replies).at(-2);
     if (!lastReply || !oneBeforeLast) {
         return;
     }
@@ -184,7 +187,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         }));
 
     const description = `${bold(i18nObj.__('comments.reply.previous'))}\n ${oneBeforeLast.content || ' '}\n ___ \n> ${lastReply.content}`;
@@ -195,7 +198,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
     };
     const state: StateCommentPost = {
         comment: {
-            id: <string>target.fileComment?.legacyDiscussionId,
+            id: commentId,
         },
         file: {
             id: fileId,
@@ -234,7 +237,7 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         }
     ));
 
@@ -274,7 +277,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
         {
             userDisplay,
             image: inLineImage(i18nObj.__('comments.file-icon'), `${file?.iconLink} =15x15`),
-            link: hyperlink(`${file?.name}`, <string>urlToComment),
+            link: hyperlink(`${file?.name}`, `${urlToComment}`),
         }
     ));
 
@@ -286,7 +289,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
     };
     const state: StateCommentPost = {
         comment: {
-            id: <string>target.fileComment?.legacyDiscussionId,
+            id: commentId,
         },
         file: {
             id: fileId,
@@ -315,7 +318,10 @@ async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activi
 async function funCommentReplyDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
     const i18nObj = configureI18n(call.context);
 
-    const target = head(activity.targets) as GA$Target;
+    const target: GA$Target | undefined = head(activity.targets);
+    if (!target) {
+        return;
+    }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
 
     const message = h5(i18nObj.__('comments.delete-reply.message',

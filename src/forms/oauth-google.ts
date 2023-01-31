@@ -15,10 +15,10 @@ import { isConnected, throwException, tryPromise } from '../utils/utils';
 const { google } = require('googleapis');
 
 export async function getConnectLink(call: ExtendedAppCallRequest): Promise<string> {
-    const connectUrl: string = call.context.oauth2?.connect_url as string;
+    const connectUrl: string | undefined = call.context.oauth2?.connect_url;
     const oauth2: Oauth2App = call.context.oauth2!;
     const i18nObj = configureI18n(call.context);
-    const link = hyperlink('link', connectUrl);
+    const link = hyperlink('link', `${connectUrl}`);
 
     const message: string = isConnected(oauth2) ?
         i18nObj.__('connect-binding.response.alreadyLoggedIn') :
@@ -27,8 +27,8 @@ export async function getConnectLink(call: ExtendedAppCallRequest): Promise<stri
 }
 
 export async function oAuth2Connect(call: ExtendedAppCallRequest): Promise<string> {
-    const oauth2App: Oauth2App = call.context.oauth2 as Oauth2App;
-    const state: string = call.values?.state as string;
+    const oauth2App: Oauth2App = call.context.oauth2;
+    const state: string = call.values?.state;
 
     const oAuth2Client = new google.auth.OAuth2(
         oauth2App.client_id,
