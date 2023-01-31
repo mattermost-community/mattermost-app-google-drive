@@ -6,9 +6,20 @@ import { getCommandBindings } from './slash_commands';
 
 export async function getAppBindings(callRequest: ExtendedAppCallRequest): Promise<ExtendedAppBinding[]> {
     const bindings: ExtendedAppBinding[] = [];
-    bindings.push(await getCommandBindings(callRequest));
-    bindings.push(await getHeaderButtonBindings(callRequest));
-    bindings.push(await getPostMenuBindings(callRequest));
+    const commands: ExtendedAppBinding = getCommandBindings(callRequest);
+    if (commands.bindings?.length) {
+        bindings.push(commands);
+    }
+
+    const headers = getHeaderButtonBindings(callRequest);
+    if (headers.bindings?.length) {
+        bindings.push(headers);
+    }
+
+    const postMenu = getPostMenuBindings(callRequest);
+    if (postMenu.bindings?.length) {
+        bindings.push(postMenu);
+    }
 
     return bindings;
 }
