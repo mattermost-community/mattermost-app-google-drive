@@ -23,9 +23,14 @@ async function shareWithAnyone(call: ExtendedAppCallRequest, file: Schema$File, 
     const values = call.values as CreateFileForm;
     const role = GooglePermissionRoleByOption[values.google_file_access.value];
     const drive = await getGoogleDriveClient(call);
+    const fileId: string | null | undefined = file.id;
+
+    if (!fileId) {
+        return;
+    }
 
     const body = {
-        fileId: <string>file.id,
+        fileId,
         requestBody: {
             role,
             type: 'anyone',
@@ -37,6 +42,11 @@ async function shareWithAnyone(call: ExtendedAppCallRequest, file: Schema$File, 
 async function shareWithChannel(call: ExtendedAppCallRequest, file: Schema$File, channelId: string,): Promise<void> {
     const i18nObj = configureI18n(call.context);
 
+    const fileId: string | null | undefined = file.id;
+    if (!fileId) {
+        return;
+    }
+
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const values = call.values as CreateFileForm;
@@ -45,7 +55,7 @@ async function shareWithChannel(call: ExtendedAppCallRequest, file: Schema$File,
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
-        accessToken: <string>userAccessToken,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
@@ -60,7 +70,7 @@ async function shareWithChannel(call: ExtendedAppCallRequest, file: Schema$File,
         }
 
         const body = {
-            fileId: <string>file.id,
+            fileId,
             requestBody: {
                 role,
                 type: 'user',

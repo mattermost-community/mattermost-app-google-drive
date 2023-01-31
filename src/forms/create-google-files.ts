@@ -2,6 +2,8 @@ import { ClientConfig } from '@mattermost/types/lib/config';
 import { head } from 'lodash';
 import moment from 'moment';
 
+import { Exception } from '../utils/exception';
+
 import { MattermostClient } from '../clients';
 import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
@@ -129,7 +131,7 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
-        accessToken: <string>userAccessToken,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
@@ -140,10 +142,13 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
         },
     };
     const newDoc = await tryPromise<Schema$Document>(docs.documents.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    if (!newDoc?.documentId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
 
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
-        fileId: <string>newDoc.documentId,
+        fileId: newDoc.documentId,
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
@@ -159,7 +164,7 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
     const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
     const post: PostCreate = {
-        message: <string>values.google_file_message,
+        message: values.google_file_message || '',
         channel_id: channelId,
         props: {
             attachments: [
@@ -287,7 +292,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
-        accessToken: <string>userAccessToken,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
@@ -299,9 +304,13 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     };
     const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
+    if (!newSlide.presentationId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
+
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
-        fileId: <string>newSlide.presentationId,
+        fileId: newSlide.presentationId,
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
@@ -316,7 +325,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
     const post: PostCreate = {
-        message: <string>values.google_file_message,
+        message: values.google_file_message || '',
         channel_id: channelId,
         props: {
             attachments: [
@@ -443,7 +452,7 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
-        accessToken: <string>userAccessToken,
+        accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
@@ -456,10 +465,12 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
         },
     };
     const newSheets = await tryPromise<Schema$Spreadsheet>(sheets.spreadsheets.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-
+    if (!newSheets.spreadsheetId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
     const drive = await getGoogleDriveClient(call);
     const paramExport: Params$Resource$Files$Get = {
-        fileId: <string>newSheets.spreadsheetId,
+        fileId: newSheets.spreadsheetId,
         fields: 'webViewLink,id,owners,permissions,name,iconLink,thumbnailLink,createdTime',
     };
 
@@ -474,7 +485,7 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
     const date = moment(file?.createdTime).format('MMM Do, YYYY');
 
     const post: PostCreate = {
-        message: <string>values.google_file_message,
+        message: values.google_file_message || '',
         channel_id: channelId,
         props: {
             attachments: [

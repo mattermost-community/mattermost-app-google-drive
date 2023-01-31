@@ -60,8 +60,11 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
 
     const oAuth2Client = await getOAuthGoogleClient(call);
     const tokenBody: GoogleTokenResponse = await oAuth2Client.getToken(values?.code);
+    if (!tokenBody.tokens?.refresh_token) {
+        throw new Error(values?.error_description || i18nObj.__('connect-binding.response.codeNotProvided'));
+    }
     const oauth2Token: Oauth2CurrentUser = {
-        refresh_token: <string>tokenBody.tokens?.refresh_token,
+        refresh_token: tokenBody.tokens.refresh_token,
     };
 
     call.context.oauth2 = {
@@ -76,8 +79,8 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
     const aboutUser = await tryPromise<Schema$About>(drive.about.get(aboutParams), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const storedToken: Oauth2CurrentUser = {
-        refresh_token: <string>tokenBody.tokens?.refresh_token,
-        user_email: <string>aboutUser.user.emailAddress,
+        refresh_token: tokenBody.tokens?.refresh_token,
+        user_email: aboutUser?.user?.emailAddress || '',
     };
 
     const kvOptionsOauth: KVStoreOptions = {
@@ -94,7 +97,7 @@ export async function oAuth2Complete(call: ExtendedAppCallRequest): Promise<stri
     const kvStoreClient = new KVStoreClient(kvOptions);
     const kvGoogleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     const googleUser: KVGoogleUser = {
-        [<string>actingUserId]: storedToken,
+        [actingUserId]: storedToken,
     };
     const googleData: KVGoogleData = {
         userData: Boolean(kvGoogleData?.userData?.length) ? kvGoogleData.userData : [],
@@ -133,7 +136,7 @@ export async function oAuth2Disconnect(call: ExtendedAppCallRequest): Promise<st
     const kvStoreClient = new KVStoreClient(kvOptions);
 
     const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
-    const remove = googleData?.userData?.findIndex((user) => head(Object.keys(user)) === <string>actingUserId);
+    const remove: number = googleData?.userData?.findIndex((user) => head(Object.keys(user)) === actingUserId);
     if (remove >= GeneralConstants.HAS_VALUE) {
         googleData.userData.splice(remove, GeneralConstants.REMOVE_ONE);
     }

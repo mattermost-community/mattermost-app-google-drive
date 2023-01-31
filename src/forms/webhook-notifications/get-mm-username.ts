@@ -31,7 +31,7 @@ export async function displayUserActor(call: WebhookRequest, author: Schema$User
             const kvGUser: KVGoogleUser | undefined = kvGoogleData?.userData?.find((user) => head(Object.values(user))?.user_email === authorEmail);
 
             if (kvGUser) {
-                const userId: string = head(Object.keys(<KVGoogleUser>kvGUser))!;
+                const userId: string = head(Object.keys(kvGUser))!;
                 const mattermostUrl: string = call.context.mattermost_site_url!;
                 const botAccessToken: string = call.context.bot_access_token!;
 

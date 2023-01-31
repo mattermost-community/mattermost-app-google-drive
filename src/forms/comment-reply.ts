@@ -1,7 +1,7 @@
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
-import { ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Params$Resource$Replies$Create, PostCreate } from '../types';
+import { ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Params$Resource$Replies$Create, PostCreate, Schema$Reply } from '../types';
 import { CommentState, ReplyCommentFormType } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
@@ -53,7 +53,7 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
         },
     };
 
-    await tryPromise<any>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    await tryPromise<Schema$Reply>(drive.replies.create(newReply), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     const postId: string = call.context.post?.id;
     const channelId: string = call.context.post?.channel_id;
@@ -69,7 +69,7 @@ export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Pr
     const message = `${i18nObj.__('comments.manage-reply-comment.message')}: \n"${values.google_response_comment}"`;
     const post: PostCreate = {
         message,
-        channel_id: <string>channelId,
+        channel_id: channelId,
         root_id: postId,
     };
     await mmClient.createPost(post);

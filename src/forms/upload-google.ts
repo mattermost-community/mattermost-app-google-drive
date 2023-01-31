@@ -5,7 +5,7 @@ import moment from 'moment';
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Metadata_File, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
@@ -84,8 +84,8 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const post: PostResponse = await tryPromiseMattermost<PostResponse>(mmClient.getPost(postId), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
 
-    const fileIds = post.file_ids;
-    const filesMetadata = post.metadata?.files;
+    const fileIds: string[] = post.file_ids;
+    const filesMetadata: Metadata_File[] = post.metadata?.files;
     const responseArray: Schema$File[] = [];
 
     const drive = await getGoogleDriveClient(call);

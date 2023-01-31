@@ -1,5 +1,7 @@
 import { AppCallValues, AppField, AppSelectOption } from '@mattermost/types/lib/apps';
 
+import { Exception } from '../utils/exception';
+
 import { KVStoreClient } from '../clients/kvstore';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, Commands, ConfigureClientForm, ExceptionType, GoogleDriveIcon, Routes, modeConfiguration, optConfigure } from '../constant';
 import GeneralConstants from '../constant/general';
@@ -117,7 +119,10 @@ export async function googleClientConfigFormSubmit(call: ExtendedAppCallRequest)
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const values: AppCallValues = <any>call.values;
+    const values: AppCallValues | undefined = call.values;
+    if (!values) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+    }
 
     const gClientID: string = values[ConfigureClientForm.CLIENT_ID];
     const gClientSecret: string = values[ConfigureClientForm.CLIENT_SECRET];

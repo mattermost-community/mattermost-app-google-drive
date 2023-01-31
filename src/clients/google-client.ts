@@ -38,7 +38,7 @@ export const getGoogleOAuth = async (call: ExtendedAppCallRequest): Promise<Auth
         const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
         const kvGUser: KVGoogleUser | undefined = googleData?.userData?.find((user) => head(Object.keys(user)) === actingUserId);
         if (kvGUser) {
-            oauth2Token = head(Object.values(<KVGoogleUser>kvGUser));
+            oauth2Token = head(Object.values(kvGUser));
         }
     }
 
