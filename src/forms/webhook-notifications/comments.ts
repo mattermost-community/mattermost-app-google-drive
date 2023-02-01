@@ -1,6 +1,8 @@
 import { drive_v3 } from 'googleapis';
 import { head, last } from 'lodash';
 
+import { logger } from '../../utils/logger';
+
 import { getGoogleDriveClient } from '../../clients/google-client';
 import { ActionsEvents, AppBindingLocations, AppExpandLevels, ExceptionType, Routes } from '../../constant';
 import manifest from '../../manifest.json';
@@ -11,7 +13,7 @@ import { configureI18n } from '../../utils/translations';
 import { tryPromise } from '../../utils/utils';
 
 import { displayUserActor } from './get-mm-username';
-type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) => void;
+type CallbackFunction = (call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: GA$CommentSubtype | GA$SuggestionSubtype) => void;
 
 export async function manageCommentOnFile(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity): Promise<void> {
     const activityComment: GA$Comment | undefined = activity.primaryActionDetail?.comment;
@@ -22,7 +24,7 @@ export async function manageCommentOnFile(call: WebhookRequest, file: Schema$Fil
         const postAction: CallbackFunction | null = COMMENT_ACTIONS[postSubtype];
 
         if (postAction) {
-            await postAction(call, file, activity);
+            await postAction(call, file, activity, postSubtype);
             return;
         }
     }
@@ -34,7 +36,7 @@ export async function manageCommentOnFile(call: WebhookRequest, file: Schema$Fil
         const suggestionAction: CallbackFunction = SUGGESTIONS_ACTIONS[suggestionSubtype];
 
         if (suggestionAction) {
-            await suggestionAction(call, file, activity);
+            await suggestionAction(call, file, activity, suggestionSubtype);
         }
     }
 }
@@ -53,11 +55,12 @@ const SUGGESTIONS_ACTIONS: { [key in GA$SuggestionSubtype]: CallbackFunction } =
     REPLY_ADDED: funSuggestionReplyAdded,
 };
 
-async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const target: GA$Target | undefined = head(activity.targets);
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
@@ -67,6 +70,7 @@ async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, 
     const lastModifyingUser: Schema$User | undefined = file.lastModifyingUser;
 
     if (!fileId || !commentId) {
+        logger.error({ message: `Returned: File or comment id not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -82,23 +86,25 @@ async function funSuggestionReplyAdded(call: WebhookRequest, file: Schema$File, 
     await postBotChannel(call, message, {});
 }
 
-async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentSubtypeUnspecified(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 }
 
-async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const drive: drive_v3.Drive = await getGoogleDriveClient(call);
     const target: GA$Target | undefined = head(activity.targets);
 
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
     const commentId: string | null | undefined = target.fileComment?.legacyCommentId;
     const fileId: string | null | undefined = file.id;
     if (!commentId || !fileId) {
+        logger.error({ message: `Returned: File or comment id not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -145,12 +151,13 @@ async function funCommentAdded(call: WebhookRequest, file: Schema$File, activity
     await postNewCommentOnMattermost(call, postData, state);
 }
 
-async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
     const target: GA$Target | undefined = head(activity.targets);
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -159,6 +166,7 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
     const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
 
     if (!fileId || !commentId) {
+        logger.error({ message: `Returned: File or comment id not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -173,12 +181,14 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
     const replies: Schema$Reply[] | undefined = comment.replies;
 
     if (!replies) {
+        logger.error({ message: `Returned: Replies array not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
     const lastReply: Schema$Reply | undefined = last(replies);
     const oneBeforeLast: Schema$Reply | undefined = (replies).at(-2);
     if (!lastReply || !oneBeforeLast) {
+        logger.error({ message: `Returned: Not replies were found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -207,13 +217,14 @@ async function funCommentReplyAdded(call: WebhookRequest, file: Schema$File, act
     await postNewCommentOnMattermost(call, postData, state);
 }
 
-async function funCommentResolved(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentResolved(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
     const target: GA$Target | undefined = head(activity.targets);
 
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
@@ -221,6 +232,7 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
     const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
 
     if (!fileId || !commentId) {
+        logger.error({ message: `Returned: File or comment id not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -244,12 +256,13 @@ async function funCommentResolved(call: WebhookRequest, file: Schema$File, activ
     await postBotChannel(call, message, {});
 }
 
-async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const drive = await getGoogleDriveClient(call);
     const target: GA$Target | undefined = head(activity.targets);
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
@@ -257,6 +270,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
     const commentId: string | null | undefined = target.fileComment?.legacyDiscussionId;
 
     if (!fileId || !commentId) {
+        logger.error({ message: `Returned: File or comment id not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -269,6 +283,7 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
     const comment = await tryPromise<Schema$Comment>(drive.comments.get(commentParam), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
     const lastReply: Schema$Reply | undefined = last(comment.replies);
     if (!lastReply) {
+        logger.error({ message: `Returned: Last reply not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
     const userDisplay: string = await displayUserActor(call, lastReply.author);
@@ -298,11 +313,12 @@ async function funCommentReOpened(call: WebhookRequest, file: Schema$File, activ
     await postNewCommentOnMattermost(call, postData, state);
 }
 
-async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const target: GA$Target | undefined = head(activity.targets);
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
 
@@ -315,11 +331,12 @@ async function funCommentDeleted(call: WebhookRequest, file: Schema$File, activi
     await postBotChannel(call, message, {});
 }
 
-async function funCommentReplyDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity) {
+async function funCommentReplyDeleted(call: WebhookRequest, file: Schema$File, activity: GA$DriveActivity, action: string) {
     const i18nObj = configureI18n(call.context);
 
     const target: GA$Target | undefined = head(activity.targets);
     if (!target) {
+        logger.error({ message: `Returned: Target not found (${action})`, siteUrl: call.context.mattermost_site_url, requestPath: call.context.app_path });
         return;
     }
     const urlToComment: string | null | undefined = target.fileComment?.linkToDiscussion;
