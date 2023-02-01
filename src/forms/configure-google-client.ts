@@ -8,6 +8,7 @@ import GeneralConstants from '../constant/general';
 import manifest from '../manifest.json';
 import { ExpandAppForm, ExtendedAppCallRequest, KVStoreOptions, KVStoreProps, Oauth2App, Oauth2Data } from '../types';
 import { configureI18n } from '../utils/translations';
+import { AppFormValidator } from '../utils/validator';
 
 export async function googleClientConfigForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
@@ -75,6 +76,10 @@ export async function googleClientConfigForm(call: ExtendedAppCallRequest): Prom
             },
         },
     };
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+    }
 
     let extraField: AppField | undefined;
 
