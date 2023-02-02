@@ -2,6 +2,9 @@ import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
 
+import { Exception } from 'src/utils/exception';
+import { AppFormValidator } from 'src/utils/validator';
+
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
@@ -49,7 +52,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
         },
     ];
 
-    return {
+    const form = {
         title: i18nObj.__('upload-google.confirmation-call.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -64,6 +67,12 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             },
         },
     };
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+    }
+
+    return form;
 }
 
 export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<string> {

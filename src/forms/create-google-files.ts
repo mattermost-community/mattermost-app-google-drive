@@ -28,6 +28,8 @@ import { ShareFileFunction } from '../types/functions';
 import { configureI18n } from '../utils/translations';
 import { tryPromise, tryPromiseMattermost } from '../utils/utils';
 
+import { AppFormValidator, ExtendedAppFormValidator } from '../utils/validator';
+
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
 export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
@@ -96,7 +98,7 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
         }
     );
 
-    return {
+    const form = {
         title: i18nObj.__('create-binding.docs.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -119,6 +121,12 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
             },
         },
     };
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
+    }
+
+    return form;
 }
 
 export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promise<string> {
@@ -257,7 +265,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
         }
     );
 
-    return {
+    const form = {
         title: i18nObj.__('create-binding.slides.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -280,6 +288,12 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
             },
         },
     };
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
+    }
+
+    return form;
 }
 
 export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Promise<string> {
@@ -305,7 +319,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     if (!newSlide.presentationId) {
-        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     const drive = await getGoogleDriveClient(call);
@@ -417,7 +431,7 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
         }
     );
 
-    return {
+    const form = {
         title: i18nObj.__('create-binding.sheets.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -440,6 +454,12 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
             },
         },
     } as ExpandAppForm;
+
+    if (!ExtendedAppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+    }
+
+    return form;
 }
 
 export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Promise<string> {

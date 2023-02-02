@@ -1,3 +1,5 @@
+import { Exception } from 'src/utils/exception';
+import { AppFormValidator } from '../utils/validator';
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
 import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, ExceptionType, GoogleDriveIcon, ReplyCommentForm, Routes } from '../constant';
@@ -10,7 +12,7 @@ export async function openFormReplyComment(call: ExtendedAppCallRequest): Promis
     const i18nObj = configureI18n(call.context);
 
     const state = call.state;
-    return {
+    const form = {
         title: i18nObj.__('comments.comment-reply.open-form-reply.title'),
         icon: GoogleDriveIcon,
         fields: [
@@ -35,6 +37,12 @@ export async function openFormReplyComment(call: ExtendedAppCallRequest): Promis
             state,
         },
     };
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
+    }
+
+    return form;
 }
 
 export async function manageReplyCommentSubmit(call: ExtendedAppCallRequest): Promise<string> {

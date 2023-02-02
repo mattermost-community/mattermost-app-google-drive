@@ -98,3 +98,7 @@ export async function getKVGoogleData(call: ExtendedAppCallRequest): Promise<KVG
     const googleData: KVGoogleData = await kvStoreClient.kvGet(KVStoreGoogleData.GOOGLE_DATA);
     return googleData;
 }
+
+export function routesJoin(routes: Array<string>) {
+    return ''.concat(...routes);
+}
