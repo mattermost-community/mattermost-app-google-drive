@@ -1,6 +1,7 @@
 {
   "general": {
     "google-error": "Google falló: ",
+    "error-validation-form": "El formulario es invalido",
     "mattermost-error": "Mattermost falló: ",
     "validation-user": {
 			"system-admin": "Error: Este comando esta únicamente disponible a usuarios Mattermost System Admin",

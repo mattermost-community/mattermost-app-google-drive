@@ -39,7 +39,7 @@ export async function openFormReplyComment(call: ExtendedAppCallRequest): Promis
     };
 
     if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     return form;

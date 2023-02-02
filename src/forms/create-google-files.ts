@@ -123,7 +123,7 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
     };
 
     if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     return form;
@@ -290,7 +290,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
     };
 
     if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     return form;
@@ -319,7 +319,7 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     const newSlide = await tryPromise<Schema$Presentation>(slides.presentations.create(params), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
 
     if (!newSlide.presentationId) {
-        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     const drive = await getGoogleDriveClient(call);
