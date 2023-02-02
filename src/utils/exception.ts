@@ -1,4 +1,4 @@
-import { ExtendedAppCallRequest } from 'src/types';
+import { ExtendedAppCallRequest } from '../types';
 import { ExceptionType } from '../constant';
 
 import { logger } from './logger';

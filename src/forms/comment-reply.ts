@@ -1,4 +1,4 @@
-import { Exception } from 'src/utils/exception';
+import { Exception } from '../utils/exception';
 import { AppFormValidator } from '../utils/validator';
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';

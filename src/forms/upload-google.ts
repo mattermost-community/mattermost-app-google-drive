@@ -2,8 +2,8 @@ import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
 
-import { Exception } from 'src/utils/exception';
-import { AppFormValidator } from 'src/utils/validator';
+import { Exception } from '../utils/exception';
+import { AppFormValidator } from '../utils/validator';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
