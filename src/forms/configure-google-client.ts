@@ -77,10 +77,6 @@ export async function googleClientConfigForm(call: ExtendedAppCallRequest): Prom
         },
     };
 
-    if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
-    }
-
     let extraField: AppField | undefined;
 
     switch (modeConfig) {
@@ -114,6 +110,10 @@ export async function googleClientConfigForm(call: ExtendedAppCallRequest): Prom
 
     if (extraField && form.fields) {
         form.fields.push(extraField);
+    }
+
+    if (!AppFormValidator.safeParse(form).success) {
+        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
 
     return form;

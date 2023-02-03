@@ -12,25 +12,25 @@ export const AppFormFieldValidator = z.object({
     position: z.number().int().optional(),
     modal_label: z.string().optional(),
     refresh: z.boolean().optional(),
-    options: z.tuple([
+    options: z.array(
         z.object({
             label: z.string(),
             value: z.string(),
             icon_data: z.string().optional(),
         }),
-    ]).optional(),
+    ).optional(),
     multiselect: z.boolean().optional(),
     lookup: z.any().optional(),
     subtype: z.string().optional(),
     min_length: z.number().int().optional(),
     max_length: z.number().int().optional(),
-});
+}).optional();
 
 export const AppFormValidator = z.object({
     title: z.string(),
     header: z.string().optional(),
     icon: z.string(),
-    fields: z.array(AppFormFieldValidator).optional(),
+    fields: z.union([z.array(AppFormFieldValidator), z.tuple([])]),
     submit: z.object({
         path: z.string(),
         expand: z.any(),
