@@ -1,9 +1,8 @@
+import stream from 'stream';
+
 import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 import moment from 'moment';
-
-import { Exception } from '../utils/exception';
-import { AppFormValidator } from '../utils/validator';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient } from '../clients/google-client';
@@ -18,7 +17,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const postId: string = call.context.post?.id;
+    const postId: string = call.context.post?.id as string;
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
@@ -52,7 +51,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
         },
     ];
 
-    const form = {
+    return {
         title: i18nObj.__('upload-google.confirmation-call.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -66,22 +65,16 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
                 post: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    };
-
-    if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
-    }
-
-    return form;
+    } as ExpandAppForm;
 }
 
 export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
-    const postId: string = call.context.post?.id;
-    const channelId: string = call.context.post?.channel_id;
+    const mattermostUrl: string = call.context.mattermost_site_url as string;
+    const userAccessToken: string = call.context.acting_user_access_token as string;
+    const postId: string = call.context.post?.id as string;
+    const channelId: string = call.context.post?.channel_id as string;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
 
@@ -93,11 +86,25 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const post: PostResponse = await tryPromiseMattermost<PostResponse>(mmClient.getPost(postId), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
 
-    const fileIds: string[] = post.file_ids;
-    const filesMetadata: Metadata_File[] = post.metadata?.files;
-    const responseArray: Schema$File[] = [];
-
+    const fileIds = post.file_ids;
+    const filesMetadata = post.metadata?.files;
     const drive = await getGoogleDriveClient(call);
+    const promiseArray: Promise<Schema$File>[] = [];
+
+    const uploadFile = async (streamFile: Promise<stream>, metadata: Metadata_File): Promise<Schema$File> => {
+        const { data } = await drive.files.create({
+            media: {
+                mimeType: metadata.mime_type,
+                body: await streamFile,
+            },
+            requestBody: {
+                name: metadata.name,
+            },
+            fields: 'id,name,webViewLink,iconLink,owners,createdTime',
+        });
+        return data;
+    };
+
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
 
@@ -105,30 +112,13 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             continue;
         }
 
-        const file = await mmClient.getFileUploaded(metadata.id); // eslint-disable-line no-await-in-loop
-
-        const requestBody = {
-            name: metadata.name,
-        };
-
-        const media = {
-            mimeType: metadata.mime_type,
-            body: file,
-        };
-
-        const fileUploaded = await tryPromise<Schema$File>(drive.files.create({ // eslint-disable-line no-await-in-loop
-            requestBody,
-            media,
-            fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-        }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-
-        responseArray.push(fileUploaded);
+        promiseArray.push(uploadFile(mmClient.getFileUploaded(metadata.id), metadata));
     }
 
-    const attachments = responseArray.map((fileUp) => {
-        const owner: Schema$User | undefined = head(fileUp.owners);
+    const attachments = (await Promise.all(promiseArray)).map((fileUp) => {
+        const owner = head(fileUp.owners) as Schema$User;
         return {
-            author_name: `${owner?.displayName}`,
+            author_name: `${owner.displayName}`,
             author_icon: `${owner?.photoLink}`,
             title: `${fileUp.name}`,
             title_link: `${fileUp.webViewLink}`,

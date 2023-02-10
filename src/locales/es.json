@@ -191,8 +191,8 @@
     },
     "confirmation-submit": {
       "footer": "Google Drive para Mattermost | {{ date }}",
-      "multiple-files": "¡Archivo subido a Google Drive!",
-      "single-file": "¡Archivos subidos a Google Drive!"
+      "multiple-files": "¡Archivos subido a Google Drive!",
+      "single-file": "¡Archivo subidos a Google Drive!"
     }
   },
   "install": {
