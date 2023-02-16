@@ -31,6 +31,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.3.0",
     "query-string": "^7.1.1",
     "request": "^2.88.2",
     "serverless-http": "^3.0.3",
@@ -38,6 +39,8 @@
     "stream-slice": "^0.1.2",
     "uuid": "^8.3.2",
     "winston": "^3.8.2",
+    "xhr": "^2.6.0",
+    "xhr2": "^0.2.1",
     "zod": "^3.20.2"
   },
   "devDependencies": {

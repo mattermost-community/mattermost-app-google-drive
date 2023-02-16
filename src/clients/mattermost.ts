@@ -127,14 +127,14 @@ export class MattermostClient {
         }).then((response: AxiosResponse<any>) => response.data);
     }
 
-    public getFileUploaded(fileID: string): Promise<stream> {
+    public getFileUploaded(fileID: string) {
         const url = routesJoin([this.config.mattermostUrl, Routes.MM.ApiVersionV4, Routes.MM.FilePath]);
         return axios.get(replace(url, Routes.PV.Identifier, fileID), {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
             responseType: 'stream',
-        }).then((response: AxiosResponse<any>) => response.data);
+        });
     }
 
     public getConfigClient(): Promise<ClientConfig> {
