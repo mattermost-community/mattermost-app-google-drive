@@ -116,12 +116,14 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
         source: {
             path: Routes.App.CallPathUpdateDocumentForm,
             expand: {
+                acting_user_access_token: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_SUMMARY,
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
     };
 
+    console.log(AppFormValidator.safeParse(form));
     if (!AppFormValidator.safeParse(form).success) {
         throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.error-validation-form'), call);
     }
@@ -283,6 +285,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
         source: {
             path: Routes.App.CallPathUpdatePresentationForm,
             expand: {
+                acting_user_access_token: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_ALL,
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
@@ -449,6 +452,7 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
         source: {
             path: Routes.App.CallPathUpdateSpreadsheetForm,
             expand: {
+                acting_user_access_token: AppExpandLevels.EXPAND_SUMMARY,
                 acting_user: AppExpandLevels.EXPAND_ALL,
                 locale: AppExpandLevels.EXPAND_SUMMARY,
             },
