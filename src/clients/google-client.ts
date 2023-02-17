@@ -100,95 +100,36 @@ export const getGoogleSheetsClient = async (call: ExtendedAppCallRequest): Promi
     });
 };
 
-//TODO: Make the file upload using multiple PUT request
-export const uploadFilesGoogleClient = async (file: stream, metadata: Metadata_File, token: string): Promise<any> => {
-    const url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
+export const sendFirstFileRequest = async (metadata: Metadata_File, token: string): Promise<any> => {
+    const url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name,webViewLink,iconLink,owners,createdTime";
     return axios.post(url, { name: metadata.name }, {
         headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "application/json; charset=UTF-8",
             'X-Upload-Content-Length': metadata.size,
-            'X-Upload-Content-Type': "application/octet-stream"
+            'X-Upload-Content-Type': "application/octet-stream",
         },
-    }).then((response: AxiosResponse<any>) => {
-
-        const fullSize = metadata.size;
-        const byteSplit = (256 * 1024 * 2);
-
-/*
-        let readBytes = 0;
-        file.on('data', (chunk) => {
-            readBytes += chunk.length;
-        });
+        responseType: 'stream'
+    }).then((response: AxiosResponse<any>) => response['headers']);
+}
 
 
-        file.on('end', () => {
-            console.log('All done.', readBytes, ' -> ', metadata.size);
-        });
-        */
-
-        let readBytes = 0;
-        const sliceFile: any = []
-
-        //for (let index = 0; index < fullSize; index += byteSplit) {
-        file.pipe(slice(0, 524288))
-            .on('data', (data: any) => {
-                readBytes += data.length;
-                sliceFile.push(data);
+export const sendFileData = async (locationURI: string, startByte: number, endByte: number, metadata: Metadata_File, token: string, file: string): Promise<any> => {
+    const delay = (t: any) => new Promise(resolve => setTimeout(resolve, t));
+    return delay(2000).then(() => {
+            return axios.put(locationURI, file, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "text/plain",
+                    'X-Upload-Content-Type': "application/octet-stream",
+                    'Content-Range': `bytes ${startByte}-${endByte - 1}/${metadata.size}`,
+                    "Content-Length": endByte - startByte
+                },
+            }).then((response: AxiosResponse<any>) => {
+                return response['data'];
+            })
+            .catch((err) => {
+                console.log({ message: `[${startByte} - ${endByte - 1}], ${err.response.status} ${err.response.statusText}, ${err.response.data}` });
             });
-
-        file.on('end', () => {
-            console.log('All done.', readBytes, ' -> ', metadata.size);
-            console.log(sliceFile.length);
-            const file = Buffer.from(new Int8Array(sliceFile))
-            axios.put(response['headers'].location, file, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Range": `bytes 0-${524288}/${fullSize}`,
-                    'Content-Type': "application/octet-stream",
-                },
-            }).then((response: AxiosResponse<any>) => {
-                console.log('done');
-                console.log(response.data);
-            }).catch(err => console.log(err));
-        });
-            
-        //}
-
-        /*
-        file.pipe(slice(0, byteSplit))
-        .on('data', (data: any) => {
-            axios.put(response['headers'].location, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Range": `bytes 0-${byteSplit}/${fullSize}`,
-                    'Content-Type': "application/octet-stream",
-                },
-            }).then((response: AxiosResponse<any>) => {
-                console.log(response.data);
-            }).catch(err => console.log(err));
-        });
-        */
-
-        /*
-        for (let index = 0; index < fullSize + 1; index++) {
-            const element = array[index];
-            
-        }
-        */
-
-        /*
-        axios.put(response['headers'].location, file, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Range": `bytes 0-${metadata.size - 1}/${metadata.size}`,
-                'Content-Type': "application/octet-stream",
-            },
-        }).then((response: AxiosResponse<any>) => {
-            console.log(response.data);
-        }).catch(err => console.log(err));
-        */
-        
-    }).catch(err => console.log('err POST'));
-
+    });
 }

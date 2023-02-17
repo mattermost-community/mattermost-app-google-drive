@@ -1,15 +1,17 @@
 import stream from 'stream';
 
 import { AppSelectOption } from '@mattermost/types/lib/apps';
-import { head, replace } from 'lodash';
+import { head } from 'lodash';
 
 import { MattermostClient } from '../clients';
-import { getGoogleDriveClient } from '../clients/google-client';
+import { getGoogleDriveClient, getGoogleOAuth, sendFileData, sendFirstFileRequest } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Metadata_File, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, PostResumableHeaders, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
 import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '../utils/utils'; 
+import { Exception } from '../utils/exception';
+import moment from 'moment';
 
 
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
@@ -88,8 +90,15 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const fileIds = post.file_ids;
     const filesMetadata = post.metadata?.files;
-    const drive = await getGoogleDriveClient(call);
-    const promiseArray: Promise<Schema$File>[] = [];
+    const auth = await getGoogleOAuth(call);
+    const { token } = await auth.getAccessToken();
+
+    if (!token) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), call);
+    }
+
+    const promiseArray: Promise<Schema$File[]>[] = [];
+    const googleToken = token;
 
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
@@ -98,146 +107,66 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             continue;
         }
 
-        const writer = fs.createWriteStream(metadata.name);
+        const fileReq: PostResumableHeaders = await sendFirstFileRequest(metadata, googleToken);
+        const location = fileReq.location;
+        const uploadFileRequest = new Promise<Schema$File[]>((res, rej) => {
+            return mmClient.getFileUploaded(metadata.id).then(async (response) => {
+                const fullSize = metadata.size;
+                const step = fullSize; // This needs to be used a step, instead of full length
+                let start = 0;
 
-        const here = await mmClient.getFileUploaded(metadata.id).then(response => {
+                const sendChunkReq: any[] = [];
 
-            //ensure that the user can call `then()` only when the file has
-            //been downloaded entirely.
-
-            return new Promise((resolve, reject) => {
-                response.data.pipe(writer);
-                let error: any = null;
-                writer.on('error', (err: any) => {
-                    error = err;
-                    writer.close();
-                    reject(err);
-                });
-                writer.on('close', () => {
-                    console.log('close');
-                    if (!error) {
-                        resolve(true);
+                function getChunk(): void {
+                    var data = response.read(step);
+                    if (data != null) {
+                        const startByte = start;
+                        const endByte = startByte + step > fullSize ? fullSize : startByte + step;
+                        sendChunkReq.push(sendFileData(location, startByte, endByte, metadata, googleToken, data), startByte, endByte);
+                        start += step;
+                        setImmediate(getChunk);
                     }
-                });
+                }
 
+                response.on('readable', getChunk);
+
+                response.on('end', async function () {
+                    const sendChunkRes = await Promise.all(sendChunkReq);
+                    const fileData: Schema$File[] = sendChunkRes.filter((val) => typeof val === 'object');
+                    res(fileData);
+                });
             });
         });
-
-        //writer.write('GeeksforGeeks');
-        const chunk = fs.createReadStream(metadata.name);
-        chunk.pipe(writer);
-        const fileMetadata = {
-            name: 'photo.jpg',
-        };
-        const media = {
-            mimeType: metadata.mime_type,
-            body: chunk,
-        };
-        try {
-            const file = await drive.files.create({
-                media: media,
-                fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-                requestBody: {
-                    name: metadata.name,
-                },
-            });
-            
-        } catch (err) {
-            // TODO(developer) - Handle error
-            throw err;
-        }
-
+        promiseArray.push(uploadFileRequest);
     }
-    
-    return 'message';
-}
 
+    const promiseAwait = await Promise.all(promiseArray);
+    const attachments = promiseAwait.flat().map((fileUp: Schema$File) => {
+        const owner: Schema$User | undefined = head(fileUp.owners);
+        return {
+            author_name: `${owner?.displayName}`,
+            author_icon: `${owner?.photoLink}`,
+            title: `${fileUp.name}`,
+            title_link: `${fileUp.webViewLink}`,
+            footer: i18nObj.__('upload-google.confirmation-submit.footer', { date: moment(fileUp?.createdTime).format('MMM Do, YYYY') }),
+            footer_icon: `${fileUp.iconLink}`,
+        };
+    });
 
-var XMLHttpRequest = require('xhr2');
-import { Blob } from 'node:buffer';
-const fs = require('fs');
+    const message = attachments.length > 1 ?
+        i18nObj.__('upload-google.confirmation-submit.multiple-files') :
+        i18nObj.__('upload-google.confirmation-submit.single-file');
 
-const getFile = async (mattermostOpts: MattermostOptions, metadata: Metadata_File, drive: any) => {
-    const url = routesJoin([mattermostOpts.mattermostUrl, Routes.MM.ApiVersionV4, Routes.MM.FilePath]);
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', replace(url, Routes.PV.Identifier, metadata.id), true);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + mattermostOpts.accessToken);
-    xhr.responseType = 'blob';
-
-    xhr.onload = async function (e: any) {
-        if (this.status == 200) {
-            console.log(this.status);
-            var data = this.response.pipe
-            const { resp } = await drive.files.create({
-                media: {
-                    mimeType: metadata.mime_type,
-                    body: data,
-                },
-                requestBody: {
-                    name: metadata.name,
-                },
-                fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-            });
-            return resp;
-            console.log(data);
-            //console.log(file);
-        }
+    const postCreate: PostCreate = {
+        message,
+        channel_id: channelId,
+        props: {
+            attachments,
+        },
+        root_id: postId,
     };
 
-    xhr.send();
+    await tryPromiseMattermost<PostResponse>(mmClient.createPost(postCreate), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+
+    return message;
 }
-/*
-
-async function resumableUpload() {
-    const accessToken = localStorage.getItem("accessToken");
-    const file = document.getElementById("file").files[0];
-    const fileObj = await getData(file);
-    if (Object.keys(fileObj).length == 0) {
-        console.log("No file.");
-        return;
-    }
-
-    // 1. Create the session for the resumable upload..
-    const metadata = { mimeType: fileObj.mimeType, name: fileObj.filename };
-    $.ajax({
-        type: "POST",
-        beforeSend: function (request) {
-            request.setRequestHeader("Authorization", "Bearer" + " " + accessToken);
-            request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-        },
-        url: "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
-        success: function (data, _, r) {
-            const location = r.getResponseHeader("location");
-
-            // 2. Upload the data using the retrieved endpoint.
-            $.ajax({
-                type: "PUT",
-                beforeSend: function (request) {
-                    request.setRequestHeader("Content-Range", `bytes 0-${fileObj.fileSize - 1}\/${fileObj.fileSize}`);
-                },
-                url: location,
-                success: function (data) {
-                    console.log(data)
-                },
-                error: function (error) {
-                    console.log(error);
-                },
-                async: true,
-                data: fileObj.data,
-                cache: false,
-                processData: false,
-                timeout: 60000
-            });
-
-        },
-        error: function (error) {
-            console.log(error);
-        },
-        async: true,
-        data: JSON.stringify(metadata),
-        cache: false,
-        processData: false,
-        timeout: 60000
-    });
-}  
-*/
