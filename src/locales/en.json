@@ -195,6 +195,9 @@
 			"footer": "Google Drive for Mattermost | {{ date }}",
 			"multiple-files": "Files uploaded to Google Drive! \n{{ extra }}",
 			"single-file": "File uploaded to Google Drive! \n{{ extra }}"
+		},
+		"errors": {
+			"no-post-id": "No Mattermost post was selected"
 		}
 	},
 	"install": {

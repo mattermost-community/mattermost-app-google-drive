@@ -13,8 +13,6 @@ import { tryPromise } from '../utils/utils';
 
 import { KVStoreClient } from './kvstore';
 
-var slice = require('stream-slice').slice;
-
 export const getOAuthGoogleClient = async (call: ExtendedAppCallRequest): Promise<Auth.OAuth2Client> => {
     const oauth2App: Oauth2App = call.context.oauth2;
     const oAuth2Client = new google.auth.OAuth2(

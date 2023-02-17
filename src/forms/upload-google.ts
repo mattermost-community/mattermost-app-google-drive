@@ -21,7 +21,10 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
 
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
-    const postId: string = call.context.post?.id as string;
+    const postId: string = call.context.post?.id;
+    if (!postId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('upload-google.errors.no-post-id'), call);
+    }
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
@@ -81,10 +84,14 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
 export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string = call.context.mattermost_site_url as string;
-    const userAccessToken: string = call.context.acting_user_access_token as string;
-    const postId: string = call.context.post?.id as string;
-    const channelId: string = call.context.post?.channel_id as string;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
+    const postId: string = call.context.post?.id;
+    if (!postId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('upload-google.errors.no-post-id'), call);
+    }
+
+    const channelId: string = call.context.post?.channel_id;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
 
