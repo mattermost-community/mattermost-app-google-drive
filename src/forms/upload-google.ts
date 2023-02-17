@@ -13,6 +13,7 @@ import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '..
 import { Exception } from '../utils/exception';
 import moment from 'moment';
 
+const maxSize = 5242880;
 
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
@@ -33,7 +34,11 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     if (!fileIds || !fileIds.length) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
     }
-    const fileMetadata = Post.metadata.files;
+    // Added this validation, only files under 5MB could be uploaded (by this release)
+    const fileMetadata = Post.metadata.files//.filter(singleFile => singleFile.size <= maxSize);
+    if (!fileMetadata.length) {
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }), call);
+    }
 
     const options: AppSelectOption[] = fileMetadata.map((file) => {
         return {
@@ -50,6 +55,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             options,
             multiselect: true,
             is_required: true,
+            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB'}),
         },
     ];
 
@@ -99,11 +105,17 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const promiseArray: Promise<Schema$File[]>[] = [];
     const googleToken = token;
+    let hasSizeBigger = false;
 
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
 
         if (!saveFiles.includes(metadata.id)) {
+            continue;
+        }
+
+        if (metadata.size > maxSize) {
+            hasSizeBigger = true;
             continue;
         }
 
@@ -153,9 +165,11 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         };
     });
 
+    const extra = hasSizeBigger ? i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }) : '';
+    
     const message = attachments.length > 1 ?
-        i18nObj.__('upload-google.confirmation-submit.multiple-files') :
-        i18nObj.__('upload-google.confirmation-submit.single-file');
+        i18nObj.__('upload-google.confirmation-submit.multiple-files', { extra }) :
+        i18nObj.__('upload-google.confirmation-submit.single-file', { extra })
 
     const postCreate: PostCreate = {
         message,
