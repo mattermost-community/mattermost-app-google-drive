@@ -1,17 +1,20 @@
+import stream from 'stream';
+
 import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
+
 import moment from 'moment';
 
-import { Exception } from '../utils/exception';
-import { AppFormValidator } from '../utils/validator';
-
 import { MattermostClient } from '../clients';
-import { getGoogleDriveClient } from '../clients/google-client';
+import { getGoogleDriveClient, getGoogleOAuth, sendFileData, sendFirstFileRequest } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
-import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, Metadata_File, PostCreate, PostResponse, Schema$File, Schema$User } from '../types';
+import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, PostResumableHeaders, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
-import { throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
+import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
+import { Exception } from '../utils/exception';
+
+const maxSize = 5242880;
 
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
@@ -19,6 +22,9 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     const mattermostUrl: string = call.context.mattermost_site_url!;
     const userAccessToken: string = call.context.acting_user_access_token!;
     const postId: string = call.context.post?.id;
+    if (!postId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('upload-google.errors.no-post-id'), call);
+    }
 
     const mattermostOpts: MattermostOptions = {
         mattermostUrl,
@@ -32,7 +38,12 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     if (!fileIds || !fileIds.length) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
     }
-    const fileMetadata = Post.metadata.files;
+
+    // Added this validation, only files under 5MB could be uploaded (by this release)
+    const fileMetadata = Post.metadata.files.filter((singleFile) => singleFile.size <= maxSize);
+    if (!fileMetadata.length) {
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }), call);
+    }
 
     const options: AppSelectOption[] = fileMetadata.map((file) => {
         return {
@@ -49,10 +60,11 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             options,
             multiselect: true,
             is_required: true,
+            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }),
         },
     ];
 
-    const form = {
+    return {
         title: i18nObj.__('upload-google.confirmation-call.title'),
         icon: GoogleDriveIcon,
         fields,
@@ -66,21 +78,19 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
                 post: AppExpandLevels.EXPAND_SUMMARY,
             },
         },
-    };
-
-    if (!AppFormValidator.safeParse(form).success) {
-        throw new Exception(ExceptionType.MARKDOWN, i18nObj.__('general.google-error'), call);
-    }
-
-    return form;
+    } as ExpandAppForm;
 }
 
 export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest): Promise<string> {
     const i18nObj = configureI18n(call.context);
 
-    const mattermostUrl: string = call.context.mattermost_site_url;
-    const userAccessToken: string | undefined = call.context.acting_user_access_token;
+    const mattermostUrl: string = call.context.mattermost_site_url!;
+    const userAccessToken: string = call.context.acting_user_access_token!;
     const postId: string = call.context.post?.id;
+    if (!postId) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('upload-google.errors.no-post-id'), call);
+    }
+
     const channelId: string = call.context.post?.channel_id;
     const values = call.values as SelectedUploadFilesForm;
     const saveFiles = values.upload_file_google_drive.map((val) => val.value);
@@ -93,11 +103,19 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
 
     const post: PostResponse = await tryPromiseMattermost<PostResponse>(mmClient.getPost(postId), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
 
-    const fileIds: string[] = post.file_ids;
-    const filesMetadata: Metadata_File[] = post.metadata?.files;
-    const responseArray: Schema$File[] = [];
+    const fileIds = post.file_ids;
+    const filesMetadata = post.metadata?.files;
+    const auth = await getGoogleOAuth(call);
+    const { token } = await auth.getAccessToken();
 
-    const drive = await getGoogleDriveClient(call);
+    if (!token) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('general.validation-user.oauth-user'), call);
+    }
+
+    const promiseArray: Promise<Schema$File[]>[] = [];
+    const googleToken = token;
+    let hasSizeBigger = false;
+
     for (let index = 0; index < fileIds.length; index++) {
         const metadata = filesMetadata[index];
 
@@ -105,27 +123,48 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             continue;
         }
 
-        const file = await mmClient.getFileUploaded(metadata.id); // eslint-disable-line no-await-in-loop
+        if (metadata.size > maxSize) {
+            hasSizeBigger = true;
+            continue;
+        }
 
-        const requestBody = {
-            name: metadata.name,
+        const uploadFileRequest = async (): Promise<Schema$File[]> => {
+            const fileReq: PostResumableHeaders = await sendFirstFileRequest(metadata, googleToken);
+            const location = fileReq.location;
+            return new Promise<Schema$File[]>((res, rej) => {
+                return mmClient.getFileUploaded(metadata.id).then(async (response) => {
+                    const fullSize = metadata.size;
+                    const step = (256 * 1024 * 2);
+                    let start = 0;
+
+                    const sendChunkReq: any[] = [];
+
+                    function getChunk(): void {
+                        var data = response.read(step);
+                        if (data != null) {
+                            const startByte = start;
+                            const endByte = startByte + step > fullSize ? fullSize : startByte + step;
+                            sendChunkReq.push(sendFileData(location, startByte, endByte, metadata, googleToken, data), startByte, endByte);
+                            start += step;
+                            setImmediate(getChunk);
+                        }
+                    }
+
+                    response.on('readable', getChunk);
+
+                    response.on('end', async () => {
+                        const sendChunkRes = await Promise.all(sendChunkReq);
+                        const fileData: Schema$File[] = sendChunkRes.filter((val) => typeof val === 'object');
+                        res(fileData);
+                    });
+                });
+            });
         };
-
-        const media = {
-            mimeType: metadata.mime_type,
-            body: file,
-        };
-
-        const fileUploaded = await tryPromise<Schema$File>(drive.files.create({ // eslint-disable-line no-await-in-loop
-            requestBody,
-            media,
-            fields: 'id,name,webViewLink,iconLink,owners,createdTime',
-        }), ExceptionType.TEXT_ERROR, i18nObj.__('general.google-error'), call);
-
-        responseArray.push(fileUploaded);
+        promiseArray.push(uploadFileRequest());
     }
 
-    const attachments = responseArray.map((fileUp) => {
+    const promiseAwait = await Promise.all(promiseArray);
+    const attachments = promiseAwait.flat().map((fileUp: Schema$File) => {
         const owner: Schema$User | undefined = head(fileUp.owners);
         return {
             author_name: `${owner?.displayName}`,
@@ -137,9 +176,11 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         };
     });
 
+    const extra = hasSizeBigger ? i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }) : '';
+
     const message = attachments.length > 1 ?
-        i18nObj.__('upload-google.confirmation-submit.multiple-files') :
-        i18nObj.__('upload-google.confirmation-submit.single-file');
+        i18nObj.__('upload-google.confirmation-submit.multiple-files', { extra }) :
+        i18nObj.__('upload-google.confirmation-submit.single-file', { extra });
 
     const postCreate: PostCreate = {
         message,

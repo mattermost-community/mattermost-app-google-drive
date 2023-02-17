@@ -1,3 +1,5 @@
+import stream from 'stream';
+
 import axios, { AxiosResponse } from 'axios';
 
 import {
@@ -127,12 +129,13 @@ export class MattermostClient {
 
     public getFileUploaded(fileID: string): Promise<any> {
         const url = routesJoin([this.config.mattermostUrl, Routes.MM.ApiVersionV4, Routes.MM.FilePath]);
+
         return axios.get(replace(url, Routes.PV.Identifier, fileID), {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
             responseType: 'stream',
-        }).then((response: AxiosResponse<any>) => response.data);
+        }).then((response) => response.data);
     }
 
     public getConfigClient(): Promise<ClientConfig> {

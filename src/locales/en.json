@@ -188,12 +188,16 @@
 		"confirmation-call": {
 			"error-upload": "Selected post doesn't have any files to be uploaded",
 			"label-modal": "Select the files you'd like to upload to Google Drive",
-			"title": "Upload to Google Drive"
+			"title": "Upload to Google Drive",
+			"description": "Only files under {{ maxSize }} can be uploaded"
 		},
 		"confirmation-submit": {
 			"footer": "Google Drive for Mattermost | {{ date }}",
-			"multiple-files": "File uploaded to Google Drive!",
-			"single-file": "Files uploaded to Google Drive!"
+			"multiple-files": "Files uploaded to Google Drive! \n{{ extra }}",
+			"single-file": "File uploaded to Google Drive! \n{{ extra }}"
+		},
+		"errors": {
+			"no-post-id": "No Mattermost post was selected"
 		}
 	},
 	"install": {

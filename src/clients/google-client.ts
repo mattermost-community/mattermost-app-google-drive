@@ -1,10 +1,13 @@
-import { Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1 } from 'googleapis';
+import stream from 'stream';
+
 import { head } from 'lodash';
+import { Auth, docs_v1, drive_v3, driveactivity_v2, google, sheets_v4, slides_v1 } from 'googleapis';
+import axios, { AxiosResponse } from 'axios';
 
 import { Exception } from '../utils/exception';
 
 import { ExceptionType, KVStoreGoogleData } from '../constant';
-import { ExtendedAppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Oauth2App, Oauth2CurrentUser } from '../types';
+import { ExtendedAppCallRequest, KVGoogleData, KVGoogleUser, KVStoreOptions, Metadata_File, Oauth2App, Oauth2CurrentUser } from '../types';
 import { configureI18n } from '../utils/translations';
 import { tryPromise } from '../utils/utils';
 
@@ -94,5 +97,38 @@ export const getGoogleSheetsClient = async (call: ExtendedAppCallRequest): Promi
     return google.sheets({
         version: 'v4',
         auth,
+    });
+};
+
+export const sendFirstFileRequest = async (metadata: Metadata_File, token: string): Promise<any> => {
+    const url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name,webViewLink,iconLink,owners,createdTime';
+    return axios.post(url, { name: metadata.name }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-Upload-Content-Length': metadata.size,
+            'X-Upload-Content-Type': 'application/octet-stream',
+        },
+        responseType: 'stream',
+    }).then((response: AxiosResponse<any>) => response.headers);
+};
+
+export const sendFileData = async (locationURI: string, startByte: number, endByte: number, metadata: Metadata_File, token: string, file: string): Promise<any> => {
+    const delay = (t: any) => new Promise((resolve) => setTimeout(resolve, t));
+    return delay(2000).then(() => {
+        return axios.put(locationURI, file, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'text/plain',
+                'X-Upload-Content-Type': 'application/octet-stream',
+                'Content-Range': `bytes ${startByte}-${endByte - 1}/${metadata.size}`,
+                'Content-Length': endByte - startByte,
+            },
+        }).then((response: AxiosResponse<any>) => {
+            return response.data;
+        }).
+            catch((err) => {
+                console.log({ message: `[${startByte} - ${endByte - 1}], ${err.response.status} ${err.response.statusText}, ${err.response.data}` });
+            });
     });
 };

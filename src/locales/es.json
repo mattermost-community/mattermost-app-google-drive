@@ -187,12 +187,13 @@
     "confirmation-call": {
       "error-upload": "La publicación seleccionada no tiene ningún archivo para cargar",
       "label-modal": "Selecciona los archivos que te gustaría subir a Google Drive",
-      "title": "Subir a Google Drive"
+      "title": "Subir a Google Drive",
+      "description": "Únicamente válido para archivos menores a {{ maxSize }}."
     },
     "confirmation-submit": {
       "footer": "Google Drive para Mattermost | {{ date }}",
-      "multiple-files": "¡Archivo subido a Google Drive!",
-      "single-file": "¡Archivos subidos a Google Drive!"
+      "multiple-files": "¡Archivos subido a Google Drive! \n{{ extra }}",
+      "single-file": "¡Archivo subidos a Google Drive! \n{{ extra }}"
     }
   },
   "install": {

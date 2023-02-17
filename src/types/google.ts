@@ -407,3 +407,18 @@ export interface Params$Resource$Permissions$Create extends StandardParameters {
     useDomainAdminAccess?: boolean;
     requestBody?: Schema$Permission;
 }
+
+export interface PostResumableHeaders {
+    'content-type': string;
+    'x-guploader-uploadid': string;
+    location: string;
+    vary: string;
+    'cache-control': string;
+    pragma: string;
+    expires: string;
+    date: string;
+    'content-length': string;
+    server: string;
+    'alt-svc': string;
+    connection: string;
+}
