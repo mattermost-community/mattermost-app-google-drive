@@ -3,15 +3,16 @@ import stream from 'stream';
 import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 
+import moment from 'moment';
+
 import { MattermostClient } from '../clients';
 import { getGoogleDriveClient, getGoogleOAuth, sendFileData, sendFirstFileRequest } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
 import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, PostResumableHeaders, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
-import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '../utils/utils'; 
+import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
 import { Exception } from '../utils/exception';
-import moment from 'moment';
 
 const maxSize = 5242880;
 
@@ -34,8 +35,9 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
     if (!fileIds || !fileIds.length) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
     }
+
     // Added this validation, only files under 5MB could be uploaded (by this release)
-    const fileMetadata = Post.metadata.files//.filter(singleFile => singleFile.size <= maxSize);
+    const fileMetadata = Post.metadata.files.filter((singleFile) => singleFile.size <= maxSize);
     if (!fileMetadata.length) {
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }), call);
     }
@@ -55,7 +57,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             options,
             multiselect: true,
             is_required: true,
-            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB'}),
+            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }),
         },
     ];
 
@@ -119,37 +121,39 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
             continue;
         }
 
-        const fileReq: PostResumableHeaders = await sendFirstFileRequest(metadata, googleToken);
-        const location = fileReq.location;
-        const uploadFileRequest = new Promise<Schema$File[]>((res, rej) => {
-            return mmClient.getFileUploaded(metadata.id).then(async (response) => {
-                const fullSize = metadata.size;
-                const step = fullSize; // This needs to be used a step, instead of full length
-                let start = 0;
+        const uploadFileRequest = async (): Promise<Schema$File[]> => {
+            const fileReq: PostResumableHeaders = await sendFirstFileRequest(metadata, googleToken);
+            const location = fileReq.location;
+            return new Promise<Schema$File[]>((res, rej) => {
+                return mmClient.getFileUploaded(metadata.id).then(async (response) => {
+                    const fullSize = metadata.size;
+                    const step = (256 * 1024 * 2);
+                    let start = 0;
 
-                const sendChunkReq: any[] = [];
+                    const sendChunkReq: any[] = [];
 
-                function getChunk(): void {
-                    var data = response.read(step);
-                    if (data != null) {
-                        const startByte = start;
-                        const endByte = startByte + step > fullSize ? fullSize : startByte + step;
-                        sendChunkReq.push(sendFileData(location, startByte, endByte, metadata, googleToken, data), startByte, endByte);
-                        start += step;
-                        setImmediate(getChunk);
+                    function getChunk(): void {
+                        var data = response.read(step);
+                        if (data != null) {
+                            const startByte = start;
+                            const endByte = startByte + step > fullSize ? fullSize : startByte + step;
+                            sendChunkReq.push(sendFileData(location, startByte, endByte, metadata, googleToken, data), startByte, endByte);
+                            start += step;
+                            setImmediate(getChunk);
+                        }
                     }
-                }
 
-                response.on('readable', getChunk);
+                    response.on('readable', getChunk);
 
-                response.on('end', async function () {
-                    const sendChunkRes = await Promise.all(sendChunkReq);
-                    const fileData: Schema$File[] = sendChunkRes.filter((val) => typeof val === 'object');
-                    res(fileData);
+                    response.on('end', async () => {
+                        const sendChunkRes = await Promise.all(sendChunkReq);
+                        const fileData: Schema$File[] = sendChunkRes.filter((val) => typeof val === 'object');
+                        res(fileData);
+                    });
                 });
             });
-        });
-        promiseArray.push(uploadFileRequest);
+        };
+        promiseArray.push(uploadFileRequest());
     }
 
     const promiseAwait = await Promise.all(promiseArray);
@@ -166,10 +170,10 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
     });
 
     const extra = hasSizeBigger ? i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }) : '';
-    
+
     const message = attachments.length > 1 ?
         i18nObj.__('upload-google.confirmation-submit.multiple-files', { extra }) :
-        i18nObj.__('upload-google.confirmation-submit.single-file', { extra })
+        i18nObj.__('upload-google.confirmation-submit.single-file', { extra });
 
     const postCreate: PostCreate = {
         message,

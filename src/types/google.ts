@@ -408,7 +408,6 @@ export interface Params$Resource$Permissions$Create extends StandardParameters {
     requestBody?: Schema$Permission;
 }
 
-
 export interface PostResumableHeaders {
     'content-type': string;
     'x-guploader-uploadid': string;
