@@ -1,20 +1,19 @@
-import stream from 'stream';
-
 import { AppSelectOption } from '@mattermost/types/lib/apps';
 import { head } from 'lodash';
 
 import moment from 'moment';
 
 import { MattermostClient } from '../clients';
-import { getGoogleDriveClient, getGoogleOAuth, sendFileData, sendFirstFileRequest } from '../clients/google-client';
+import { getGoogleOAuth, sendFileData, sendFirstFileRequest } from '../clients/google-client';
 import { AppExpandLevels, AppFieldTypes, ExceptionType, FilesToUpload, GoogleDriveIcon, Routes } from '../constant';
 import { ExpandAppField, ExpandAppForm, ExtendedAppCallRequest, MattermostOptions, PostCreate, PostResponse, PostResumableHeaders, Schema$File, Schema$User } from '../types';
 import { SelectedUploadFilesForm } from '../types/forms';
 import { configureI18n } from '../utils/translations';
-import { routesJoin, throwException, tryPromise, tryPromiseMattermost } from '../utils/utils';
+import { throwException, tryPromiseMattermost } from '../utils/utils';
 import { Exception } from '../utils/exception';
 
-const maxSize = 5242880;
+const maxSize = 52428800;
+const maxSizeLabel = '50MB';
 
 export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
@@ -39,10 +38,10 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
         throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.error-upload'), call);
     }
 
-    // Added this validation, only files under 5MB could be uploaded (by this release)
+    // Added this validation, only files under 50MB could be uploaded (by this release)
     const fileMetadata = Post.metadata.files.filter((singleFile) => singleFile.size <= maxSize);
     if (!fileMetadata.length) {
-        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }), call);
+        throwException(ExceptionType.MARKDOWN, i18nObj.__('upload-google.confirmation-call.description', { maxSize: maxSizeLabel }), call);
     }
 
     const options: AppSelectOption[] = fileMetadata.map((file) => {
@@ -60,7 +59,7 @@ export async function uploadFileConfirmationCall(call: ExtendedAppCallRequest): 
             options,
             multiselect: true,
             is_required: true,
-            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }),
+            description: i18nObj.__('upload-google.confirmation-call.description', { maxSize: maxSizeLabel }),
         },
     ];
 
@@ -176,7 +175,7 @@ export async function uploadFileConfirmationSubmit(call: ExtendedAppCallRequest)
         };
     });
 
-    const extra = hasSizeBigger ? i18nObj.__('upload-google.confirmation-call.description', { maxSize: '5MB' }) : '';
+    const extra = hasSizeBigger ? i18nObj.__('upload-google.confirmation-call.description', { maxSize: maxSizeLabel }) : '';
 
     const message = attachments.length > 1 ?
         i18nObj.__('upload-google.confirmation-submit.multiple-files', { extra }) :
