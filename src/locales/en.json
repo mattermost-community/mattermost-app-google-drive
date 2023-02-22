@@ -130,15 +130,18 @@
 		},
 		"docs": {
 			"title": "Create a Google Document",
-			"success": "New Google Doc {{ file }} created!"
+			"success": "New Google Doc {{ file }} created!",
+			"error-share-file": "You can't share the Google Docs file on the channel due to server configuration"
 		},
 		"slides": {
 			"title": "Create a Google Presentation",
-			"success": "New Google Slides {{ file }} created!"
+			"success": "New Google Slides {{ file }} created!",
+			"error-share-file": "You can't share the Google Slides file on the channel due to server configuration"
 		},
 		"sheets": {
 			"title": "Create a Google Spreadsheet",
-			"success": "New Google Sheets {{ file }} created!"
+			"success": "New Google Sheets {{ file }} created!",
+			"error-share-file": "You can't share the Google Sheets file on the channel due to server configuration"
 		}
 	},
 	"comments": {

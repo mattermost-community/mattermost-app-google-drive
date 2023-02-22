@@ -130,15 +130,18 @@
     },
     "docs": {
       "title": "Crear un Documento en Google",
-      "success": "¡El archivo Google Doc {{ file }} fue creado!"
+      "success": "¡El archivo Google Doc {{ file }} fue creado!",
+      "error-share-file" : "No se puede compartir el archivo de Google Docs en el canal por la configuración del servidor"
     },
     "slides": {
       "title": "Crear una Presentación en Google",
-      "success": "¡El archivo Google Slides {{ file }} fue creado!"
+      "success": "¡El archivo Google Slides {{ file }} fue creado!",
+      "error-share-file" : "No se puede compartir el archivo de Google Slides en el canal por la configuración del servidor"
     },
     "sheets": {
       "title": "Crear una Hoja de Cálculo en Google",
-      "success": "¡El archivo Google Sheets {{ file }} fue creado!"
+      "success": "¡El archivo Google Sheets {{ file }} fue creado!",
+      "error-share-file" : "No se puede compartir el archivo de Google Sheets en el canal por la configuración del servidor"
     }
   },
   "comments": {
