@@ -1,5 +1,3 @@
-import stream from 'stream';
-
 import axios, { AxiosResponse } from 'axios';
 
 import {
@@ -142,6 +140,10 @@ export class MattermostClient {
         const url = new URL(routesJoin([this.config.mattermostUrl, Routes.MM.ApiVersionV4, Routes.MM.ConfigClientPath]));
         url.searchParams.append('format', 'old');
 
-        return axios.get(url.href).then((response: AxiosResponse<ClientConfig>) => response.data);
+        return axios.get(url.href,{
+                headers: {
+                    Authorization: `Bearer ${this.config.accessToken}`,
+            },
+        }).then((response: AxiosResponse<ClientConfig>) => response.data);
     }
 }
