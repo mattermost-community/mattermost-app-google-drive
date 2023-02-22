@@ -49,14 +49,18 @@ export const modeConfiguration = (context: ExtendedAppContext): AppSelectOption[
     ];
 };
 
+export const optFileShareWithChannel = {
+    sCView: 'channel_view',
+    sCComment: 'channel_comment',
+    sCEdit: 'channel_edit',
+};
+
 export const optFileShare = {
     notShare: 'not_share',
     sAView: 'anyone_view',
     sAComment: 'anyone_comment',
     sAEdit: 'anyone_edit',
-    sCView: 'channel_view',
-    sCComment: 'channel_comment',
-    sCEdit: 'channel_edit',
+    ...optFileShareWithChannel,
 };
 
 export const doNotShare = (context: ExtendedAppContext): AppSelectOption => {

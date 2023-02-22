@@ -6,7 +6,7 @@ import { Exception } from '../utils/exception';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient } from '../clients/google-client';
-import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel } from '../constant';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel, optFileShareWithChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
     Channel,
@@ -32,6 +32,13 @@ import { AppFormValidator, ExtendedAppFormValidator } from '../utils/validator';
 
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
+async function getShowEmailAddressValue(mmClient: MattermostClient, values: CreateFileForm, i18nObj: any, call: ExtendedAppCallRequest) {
+
+    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
+    
+    return configClient?.ShowEmailAddress === 'true';
+}
+
 export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise<ExpandAppForm> {
     const i18nObj = configureI18n(call.context);
 
@@ -45,14 +52,11 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
-    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
-    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
+    const willShare: boolean = values?.google_file_will_share || true;
 
-    const willShare = values?.google_file_will_share === undefined ?
-        true :
-        values?.google_file_will_share;
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
 
-    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+    const showWithMembers: boolean = showEmailAddress && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -64,7 +68,7 @@ export async function createGoogleDocForm(call: ExtendedAppCallRequest): Promise
         },
     ];
 
-    if (Boolean(willShare)) {
+    if (willShare) {
         fields.push(
             {
                 type: AppFieldTypes.TEXT,
@@ -145,6 +149,12 @@ export async function createGoogleDocSubmit(call: ExtendedAppCallRequest): Promi
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
+
+    if (!showEmailAddress && Object.values(optFileShareWithChannel).includes(values.google_file_access.value)) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('create-binding.docs.error-share-file'), call);
+    }
+
     const docs = await getGoogleDocsClient(call);
     const params = {
         requestBody: {
@@ -214,14 +224,11 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
-    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
-    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
+    const willShare: boolean = values?.google_file_will_share || true;
 
-    const willShare = values?.google_file_will_share === undefined ?
-        true :
-        values?.google_file_will_share;
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
 
-    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+    const showWithMembers: boolean = showEmailAddress && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -233,7 +240,7 @@ export async function createGoogleSlidesForm(call: ExtendedAppCallRequest): Prom
         },
     ];
 
-    if (Boolean(willShare)) {
+    if (willShare) {
         fields.push(
             {
                 type: AppFieldTypes.TEXT,
@@ -313,6 +320,12 @@ export async function createGoogleSlidesSubmit(call: ExtendedAppCallRequest): Pr
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
+
+    if (!showEmailAddress && Object.values(optFileShareWithChannel).includes(values.google_file_access.value)) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('create-binding.docs.error-share-file'), call);
+    }
+
     const slides = await getGoogleSlidesClient(call);
     const params = {
         requestBody: {
@@ -381,14 +394,11 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
 
-    const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
-    const showEmailAddress: string | undefined = configClient?.ShowEmailAddress;
+    const willShare: boolean = values?.google_file_will_share || true;
 
-    const willShare = values?.google_file_will_share === undefined ?
-        true :
-        values?.google_file_will_share;
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
 
-    const showWithMembers: boolean = (showEmailAddress === 'true' || showEmailAddress === undefined) && willShare;
+    const showWithMembers: boolean = showEmailAddress && willShare;
 
     const fields: ExpandAppField[] = [
         {
@@ -400,7 +410,7 @@ export async function createGoogleSheetsForm(call: ExtendedAppCallRequest): Prom
         },
     ];
 
-    if (Boolean(willShare)) {
+    if (willShare) {
         fields.push(
             {
                 type: AppFieldTypes.TEXT,
@@ -479,6 +489,12 @@ export async function createGoogleSheetsSubmit(call: ExtendedAppCallRequest): Pr
         accessToken: userAccessToken,
     };
     const mmClient: MattermostClient = new MattermostClient(mattermostOpts);
+
+    const showEmailAddress: boolean = await getShowEmailAddressValue(mmClient, values, i18nObj, call);
+
+    if (!showEmailAddress && Object.values(optFileShareWithChannel).includes(values.google_file_access.value)) {
+        throw new Exception(ExceptionType.TEXT_ERROR, i18nObj.__('create-binding.docs.error-share-file'), call);
+    }
 
     const sheets = await getGoogleSheetsClient(call);
     const params = {
