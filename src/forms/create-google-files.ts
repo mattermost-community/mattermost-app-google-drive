@@ -6,7 +6,7 @@ import { Exception } from '../utils/exception';
 
 import { MattermostClient } from '../clients';
 import { getGoogleDocsClient, getGoogleDriveClient, getGoogleSheetsClient, getGoogleSlidesClient } from '../clients/google-client';
-import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, shareFileOnChannel, optFileShareWithChannel } from '../constant';
+import { AppExpandLevels, AppFieldSubTypes, AppFieldTypes, CreateGoogleDocument, ExceptionType, GoogleDriveIcon, Routes, notShareFileOnChannel, optFileShareWithChannel, shareFileOnChannel } from '../constant';
 import GeneralConstants from '../constant/general';
 import {
     Channel,
@@ -33,9 +33,8 @@ import { AppFormValidator, ExtendedAppFormValidator } from '../utils/validator';
 import { SHARE_FILE_ACTIONS } from './share-google-file';
 
 async function getShowEmailAddressValue(mmClient: MattermostClient, values: CreateFileForm, i18nObj: any, call: ExtendedAppCallRequest) {
-
     const configClient: ClientConfig = await tryPromiseMattermost<ClientConfig>(mmClient.getConfigClient(), ExceptionType.TEXT_ERROR, i18nObj.__('general.mattermost-error'), call);
-    
+
     return configClient?.ShowEmailAddress === 'true';
 }
 
